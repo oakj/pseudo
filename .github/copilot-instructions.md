@@ -1,0 +1,1 @@
+This file is used for GitHub Copilot. Since we are using Cursor AI, refer to ../instructions folder for details.
