@@ -1,4 +1,4 @@
-# Learnings
+# Lessons Learned
 - Cursor AI using clause-3.5-sonnet did not do well with generating boilerplate code using React Native, Expo, Expo Router, TypeScript, Nativewind, React Native Reusables, Supabase, PostgreSQL, and SQLite. In the future, use the following commands in the same order to generate boilerplate code:
   1. Setup React Native and Expo SDK: 
     1. `npx create-expo-app@latest <app-name>` # Creates a boilerplate project using TypeScript and the latest Expo SDK. This includes expo-router and other default expo package`.
