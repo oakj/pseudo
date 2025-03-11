@@ -70,13 +70,12 @@ You will be using the following technologies:
     5. The solve screen should have a "Submit" button that will submit the user's solution.
     6. The solve screen should have a "Hints" button that will open a bottom sheet with a chatbot that will give the user hints.
 
-# Database Schema
+# Database
 ```sql
 -- User Table
 CREATE TABLE app_user ( -- user is a reserved keyword
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     email VARCHAR(255) UNIQUE NOT NULL,
-    password_hash VARCHAR(255),
     avatar_url VARCHAR(255),
     dark_mode_preference VARCHAR(20) DEFAULT 'system',
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -87,6 +86,7 @@ CREATE TABLE app_user ( -- user is a reserved keyword
 -- Question Table
 CREATE TABLE question (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    leetcode_id VARCHAR(255) NOT NULL,
     title VARCHAR(255) NOT NULL,
     difficulty VARCHAR(20) NOT NULL,
 	blob_url VARCHAR(255), -- URL to S3 file contining question description and solutions
@@ -176,6 +176,24 @@ CREATE TABLE weekly_streak (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Create a function to be called by the on_auth_user_created trigger.
+CREATE OR REPLACE FUNCTION insert_app_user()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    INSERT INTO public.app_user (id, email)
+    VALUES (NEW.id, NEW.email);
+    RETURN NEW;
+END;
+$$;
+
+-- Create a trigger to insert a record into app_user when a new user signs up via Supabase auth (e.g. user inserted into auth.users table).
+create trigger on_auth_user_created
+    after insert on auth.users
+    for each row
+    execute procedure public.insert_app_user();
 ```
 
 # S3 Blob Storage Structure
