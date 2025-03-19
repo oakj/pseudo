@@ -76,6 +76,7 @@ You will be using the following technologies:
 CREATE TABLE app_user ( -- user is a reserved keyword
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     email VARCHAR(255) UNIQUE NOT NULL,
+    password_hash VARCHAR(255),
     avatar_url VARCHAR(255),
     dark_mode_preference VARCHAR(20) DEFAULT 'system',
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -86,10 +87,10 @@ CREATE TABLE app_user ( -- user is a reserved keyword
 -- Question Table
 CREATE TABLE question (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    leetcode_id VARCHAR(255) NOT NULL,
     title VARCHAR(255) NOT NULL,
     difficulty VARCHAR(20) NOT NULL,
-	blob_url VARCHAR(255), -- URL to S3 file contining question description and solutions
+    blob_url VARCHAR(255),
+    leetcode_id VARCHAR(255) NOT NULL DEFAULT '',
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP WITH TIME ZONE
@@ -159,7 +160,7 @@ CREATE TABLE user_question (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id UUID REFERENCES app_user(id),
     question_id UUID REFERENCES question(id),
-	solved BOOLEAN,
+    solved BOOLEAN,
     submitted_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 	blob_url VARCHAR(255), -- URL to S3 file containing user pseudocode and chat history with the hints bot
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,

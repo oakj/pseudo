@@ -18,7 +18,7 @@ DO $$
 BEGIN
     -- Only insert if questions table is empty
     IF NOT EXISTS (SELECT 1 FROM question WHERE title LIKE '[TEST]%' LIMIT 1) THEN
-        -- Insert questions
+        -- Insert questions (*This should be updated to have a leetcode_id)
         INSERT INTO question (title, difficulty, blob_url)
         SELECT 
             '[TEST] Question ' || n,

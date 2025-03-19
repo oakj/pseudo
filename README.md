@@ -44,11 +44,17 @@ Refer to ./instructions/instructions.md for high level details on the project su
         - [ ] Consider adding a GitHub OAuth also
     - [x] Setup Supabase database
     - [X] Create a database function and trigger to automatically create a record in app_user table when a new user signs up via Supabase auth.
-    - [] Setup dummy data in Supabase database.
-        - [ ] Delete old dummy data
-        - [ ] Create a new database trigger that will create dummy data when a record is inserted into app_user table
-        - [ ] Update dummy-data.md to reflect the new script and process for enabling/disabling the trigger
+    - [] Setup Supabase dummy data.
+        - [X] Delete old dummy data
+        - [X] Create a new database trigger that will create dummy data when a record is inserted into app_user table
+        - [X] Update dummy-data.md to reflect the new script and process for enabling/disabling the trigger
         - [ ] Maybe we can keep the dummy data and create a new database for production that has real data?
+    - [ ] Create SQL scripts and/or stored procedures to be used by the app.
+    - [ ] Setup S3/Blob-storage dummy data.
+        - [ ] Start by storing dummy data in the backend/s3/dummy-data folder.
+            - [ ] Create file for each Question
+            - [ ] Create a dummy file for each test user's user_question record
+        - [ ] Once we feel comfortable testing with dummy data, we should start to move them to a real blob storage service (or use local storage on the python server).
 - [ ] Setup Login/Signup screen.
 - [ ] Setup Home screen.
 - [ ] Setup Profile screen.
@@ -64,3 +70,12 @@ Refer to ./instructions/instructions.md for high level details on the project su
     - [ ] Bonus task for implementing a CI/CD pipeline via GitHub repository.
     - [ ] Bonus task for implementing a CI/CD pipeline for database migrations using Supabase (probably should be part of backend/pseudo python project)
         - Note that the initial DB table creations were created via SQL editor in Supabase. We should have this in code somewhere for historical purposes.
+        - For Supabase database migrations, it's recommended to use the Supabase CLI. We can build this as part of GitHub Actions.
+- [ ] Create a landing page for the app.
+- [ ] Once we get a decent MVP in production, we should start sampling the app with real users.
+    - [ ] Reach out to Codesmith users.
+    - [ ] Reach out to Coffee & Code users.
+    - [ ] Reach out to coding subreddits/online communities.
+- [ ] Consider setting up a feedback loop screen in the app.
+- [ ] Consider charging a fair price once we see users are happy with the product.
+- [ ] Consider adding a "Flashcard" feature to the app.
