@@ -1,0 +1,48 @@
+{
+    "user_id": "af6eb13c-24d3-4622-8997-b386a076ede1",
+    "question_id": "b788a7db-c05d-4769-b231-2db1a6482a5e",
+    "submission": {
+        "solution": "class Solution:\n    def two_sum(self, nums: List[int], target: int) -> List[int]:\n        seen = {}\n        for i, num in enumerate(nums):\n            complement = target - num\n            if complement in seen:\n                return [seen[complement], i]\n            seen[num] = i\n        return []",
+        "timestamp": "2024-03-21T10:00:00Z",
+        "evaluation": {
+            "score": 95,
+            "approach_identified": "hash map",
+            "complexity_analysis": {
+                "time": "O(n)",
+                "space": "O(n)"
+            },
+            "feedback": {
+                "strengths": [
+                    "Optimal time complexity using hash map",
+                    "Clean and readable implementation",
+                    "Proper handling of input parameters"
+                ],
+                "improvements": [
+                    "Could add input validation"
+                ]
+            },
+            "requirements_met": [
+                "Returns correct indices",
+                "Single pass solution",
+                "Handles valid input cases"
+            ],
+            "requirements_missing": [
+                "No explicit input validation"
+            ]
+        }
+    },
+    "hint_chat": {
+        "messages": [
+            {
+                "from": "user",
+                "message": "How can I improve the brute force solution?",
+                "timestamp": "2024-03-21T09:45:00Z"
+            },
+            {
+                "from": "hint_bot",
+                "message": "Think about using a data structure to store numbers you've seen. What would help you quickly find if a complement exists?",
+                "timestamp": "2024-03-21T09:45:05Z"
+            }
+        ]
+    }
+}

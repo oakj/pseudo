@@ -1,0 +1,262 @@
+{
+    "question_id": 20,
+    "metadata": {
+        "difficulty": "easy",
+        "categories": ["string", "stack"],
+        "time_limit_ms": 1000,
+        "memory_limit_mb": 256,
+        "version": "1.0",
+        "last_modified": "2024-03-21"
+    },
+    "title": "Valid Parentheses",
+    "description": "Given a string s containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid. An input string is valid if:\n1. Open brackets must be closed by the same type of brackets.\n2. Open brackets must be closed in the correct order.\n3. Every close bracket has a corresponding open bracket of the same type.",
+    "constraints": [
+        "1 <= s.length <= 10^4",
+        "s consists of parentheses only '()[]{}'",
+        "The input string is non-empty"
+    ],
+    "complexity_requirements": {
+        "time": "O(n)",
+        "space": "O(n)"
+    },
+    "test_cases": [
+        {
+            "input": {
+                "value": "()",
+                "type": "string"
+            },
+            "output": {
+                "value": true,
+                "type": "boolean"
+            },
+            "explanation": "Simple matching pair of parentheses",
+            "is_performance_test": false
+        },
+        {
+            "input": {
+                "value": "()[]{}",
+                "type": "string"
+            },
+            "output": {
+                "value": true,
+                "type": "boolean"
+            },
+            "explanation": "Multiple pairs of matched brackets",
+            "is_performance_test": false
+        },
+        {
+            "input": {
+                "value": "(]",
+                "type": "string"
+            },
+            "output": {
+                "value": false,
+                "type": "boolean"
+            },
+            "explanation": "Mismatched brackets",
+            "is_performance_test": false
+        },
+        {
+            "input": {
+                "value": "([)]",
+                "type": "string"
+            },
+            "output": {
+                "value": false,
+                "type": "boolean"
+            },
+            "explanation": "Incorrectly ordered brackets",
+            "is_performance_test": false
+        },
+        {
+            "input": {
+                "value": "{[]}",
+                "type": "string"
+            },
+            "output": {
+                "value": true,
+                "type": "boolean"
+            },
+            "explanation": "Nested brackets",
+            "is_performance_test": false
+        },
+        {
+            "input": {
+                "value": "(((",
+                "type": "string"
+            },
+            "output": {
+                "value": false,
+                "type": "boolean"
+            },
+            "explanation": "Unclosed brackets",
+            "is_performance_test": false
+        },
+        {
+            "input": {
+                "value": ")))",
+                "type": "string"
+            },
+            "output": {
+                "value": false,
+                "type": "boolean"
+            },
+            "explanation": "No opening brackets",
+            "is_performance_test": false
+        },
+        {
+            "input": {
+                "value": "(" + "[]".repeat(5000) + ")",
+                "type": "string"
+            },
+            "output": {
+                "value": true,
+                "type": "boolean"
+            },
+            "explanation": "Large nested structure",
+            "is_performance_test": true
+        }
+    ],
+    "pseudocode_requirements": {
+        "allowed_constructs": ["stack", "loops", "conditionals", "variables"],
+        "required_concepts": ["stack operations", "character matching"],
+        "validation_rules": {
+            "syntax_flexibility": "high",
+            "variable_naming": "flexible"
+        }
+    },
+    "boilerplate_solution": {
+        "language": "python",
+        "pseudocode": "class Solution:\n    def is_valid(self, s: str) -> bool:\n        # TODO: Implement this function\n        # Return true if string has valid parentheses, false otherwise"
+    },
+    "valid_solutions": [
+        {
+            "approach": "stack",
+            "time_complexity": "O(n)",
+            "space_complexity": "O(n)",
+            "pseudocode": "function isValid(s):\n    stack = []\n    matches = {')': '(', '}': '{', ']': '['}\n    \n    for char in s:\n        if char not in matches:  # opening bracket\n            stack.push(char)\n        else:  # closing bracket\n            if not stack or stack.pop() != matches[char]:\n                return false\n    \n    return stack.isEmpty()"
+        }
+    ],
+    "evaluation_criteria": {
+        "critical_requirements": [
+            "Must handle all types of brackets",
+            "Must maintain correct order of brackets",
+            "Must check for matching pairs",
+            "Must handle empty string",
+            "Must handle single characters",
+            "Must verify complete matching (no leftover brackets)"
+        ],
+        "common_mistakes": [
+            {
+                "pattern": "Not using stack",
+                "issue": "Cannot track bracket ordering properly",
+                "suggestion": "Use stack to maintain bracket order"
+            },
+            {
+                "pattern": "Not checking stack emptiness",
+                "issue": "Might miss unclosed brackets",
+                "suggestion": "Verify stack is empty at end"
+            },
+            {
+                "pattern": "Wrong matching logic",
+                "issue": "Incorrect bracket pair matching",
+                "suggestion": "Use hash map for bracket pairs"
+            }
+        ],
+        "scoring_rubric": {
+            "correctness": {
+                "weight": 40,
+                "criteria": [
+                    "Handles all bracket types",
+                    "Maintains proper ordering",
+                    "Checks for complete matching",
+                    "Handles edge cases"
+                ]
+            },
+            "complexity": {
+                "weight": 30,
+                "criteria": [
+                    "Achieves O(n) time complexity",
+                    "Uses O(n) space efficiently",
+                    "Processes each character once"
+                ]
+            },
+            "implementation": {
+                "weight": 30,
+                "criteria": [
+                    "Proper stack usage",
+                    "Efficient bracket matching",
+                    "Clear variable naming",
+                    "Logical code organization"
+                ]
+            }
+        }
+    },
+    "solution_breakdown": {
+        "key_steps": [
+            {
+                "step": "Initialize empty stack",
+                "purpose": "Track opening brackets"
+            },
+            {
+                "step": "Define bracket pairs",
+                "purpose": "Map closing brackets to their opening matches"
+            },
+            {
+                "step": "Process each character",
+                "purpose": "Handle opening and closing brackets"
+            },
+            {
+                "step": "Check stack state",
+                "purpose": "Verify all brackets are properly matched"
+            }
+        ],
+        "invariants": [
+            "Stack contains only opening brackets",
+            "Stack maintains the order of brackets",
+            "Each closing bracket must match the most recent opening bracket",
+            "All brackets must be matched for validity"
+        ]
+    },
+    "anti_patterns": [
+        {
+            "pattern": "Using counters instead of stack",
+            "why_wrong": "Cannot handle nested brackets properly",
+            "correction": "Use stack to maintain bracket order"
+        },
+        {
+            "pattern": "Not handling all bracket types",
+            "why_wrong": "Solution incomplete for some valid inputs",
+            "correction": "Handle all six bracket characters"
+        },
+        {
+            "pattern": "String manipulation",
+            "why_wrong": "Inefficient and complex approach",
+            "correction": "Use stack-based approach"
+        }
+    ],
+    "validation_examples": {
+        "incorrect_solutions": [
+            {
+                "code": "def isValid(s):\n    return s.count('(') == s.count(')') and\n           s.count('[') == s.count(']') and\n           s.count('{') == s.count('}')",
+                "why_wrong": "Only checks counts, not ordering",
+                "feedback": "Need to verify proper nesting order using stack"
+            },
+            {
+                "code": "def isValid(s):\n    while '()' in s or '[]' in s or '{}' in s:\n        s = s.replace('()', '').replace('[]', '').replace('{}', '')\n    return len(s) == 0",
+                "why_wrong": "Inefficient string manipulation",
+                "feedback": "Use stack for O(n) time complexity"
+            }
+        ],
+        "partially_correct": [
+            {
+                "code": "def isValid(s):\n    stack = []\n    for c in s:\n        if c in '({[':\n            stack.append(c)\n        else:\n            if not stack: return False\n            stack.pop()",
+                "issues": [
+                    "Doesn't verify matching bracket types",
+                    "Doesn't check final stack state"
+                ],
+                "feedback": "Add bracket type matching and final empty stack check"
+            }
+        ]
+    }
+} 

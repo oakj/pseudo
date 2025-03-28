@@ -1,0 +1,22 @@
+{
+    "user_id": "af6eb13c-24d3-4622-8997-b386a076ede1",
+    "question_id": "781d865f-376f-495f-ab4b-52e3e9b2e35c",
+    "submission": {
+        "solution": "",
+        "timestamp": "2024-03-21T17:15:00Z"
+    },
+    "hint_chat": {
+        "messages": [
+            {
+                "from": "user",
+                "message": "How do I traverse the tree level by level?",
+                "timestamp": "2024-03-21T17:15:00Z"
+            },
+            {
+                "from": "hint_bot",
+                "message": "Think about using a queue data structure. How can it help you process nodes level by level?",
+                "timestamp": "2024-03-21T17:15:05Z"
+            }
+        ]
+    }
+} 

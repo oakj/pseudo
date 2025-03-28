@@ -1,0 +1,44 @@
+{
+    "user_id": "af6eb13c-24d3-4622-8997-b386a076ede1",
+    "question_id": "cb8b2437-6618-42ce-a771-41a7b01cca4f",
+    "submission": {
+        "solution": "class Solution:\n    def max_profit(self, prices: List[int]) -> int:\n        if not prices:\n            return 0\n        min_price = float('inf')\n        max_profit = 0\n        for price in prices:\n            min_price = min(min_price, price)\n            max_profit = max(max_profit, price - min_price)\n        return max_profit",
+        "timestamp": "2024-03-21T18:00:00Z",
+        "evaluation": {
+            "score": 100,
+            "approach_identified": "one pass with tracking minimum",
+            "complexity_analysis": {
+                "time": "O(n)",
+                "space": "O(1)"
+            },
+            "feedback": {
+                "strengths": [
+                    "Optimal single pass solution",
+                    "Constant space usage",
+                    "Handles edge cases properly"
+                ],
+                "improvements": []
+            },
+            "requirements_met": [
+                "Finds maximum profit",
+                "Handles all edge cases",
+                "Optimal time and space complexity"
+            ],
+            "requirements_missing": []
+        }
+    },
+    "hint_chat": {
+        "messages": [
+            {
+                "from": "user",
+                "message": "Do I need to consider every possible buy and sell combination?",
+                "timestamp": "2024-03-21T17:45:00Z"
+            },
+            {
+                "from": "hint_bot",
+                "message": "Not necessarily. Think about tracking the minimum price you've seen so far. How can that help you find the maximum profit?",
+                "timestamp": "2024-03-21T17:45:05Z"
+            }
+        ]
+    }
+} 

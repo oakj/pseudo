@@ -1,0 +1,253 @@
+{
+    "question_id": 200,
+    "metadata": {
+        "difficulty": "medium",
+        "categories": ["array", "depth-first search", "breadth-first search", "union find", "matrix"],
+        "time_limit_ms": 1500,
+        "memory_limit_mb": 256,
+        "version": "1.0",
+        "last_modified": "2024-03-21"
+    },
+    "title": "Number of Islands",
+    "description": "Given an m x n 2D binary grid 'grid' which represents a map of '1's (land) and '0's (water), return the number of islands. An island is surrounded by water and is formed by connecting adjacent lands horizontally or vertically. You may assume all four edges of the grid are all surrounded by water.",
+    "constraints": [
+        "m == grid.length",
+        "n == grid[i].length",
+        "1 <= m, n <= 300",
+        "grid[i][j] is '0' or '1'",
+        "Adjacent cells are connected horizontally or vertically only"
+    ],
+    "complexity_requirements": {
+        "time": "O(m × n)",
+        "space": "O(min(m, n))"
+    },
+    "test_cases": [
+        {
+            "input": {
+                "value": [
+                    ["1","1","1","1","0"],
+                    ["1","1","0","1","0"],
+                    ["1","1","0","0","0"],
+                    ["0","0","0","0","0"]
+                ],
+                "type": "matrix"
+            },
+            "output": {
+                "value": 1,
+                "type": "integer"
+            },
+            "explanation": "One island connected horizontally and vertically",
+            "is_performance_test": false
+        },
+        {
+            "input": {
+                "value": [
+                    ["1","1","0","0","0"],
+                    ["1","1","0","0","0"],
+                    ["0","0","1","0","0"],
+                    ["0","0","0","1","1"]
+                ],
+                "type": "matrix"
+            },
+            "output": {
+                "value": 3,
+                "type": "integer"
+            },
+            "explanation": "Three separate islands",
+            "is_performance_test": false
+        },
+        {
+            "input": {
+                "value": [["1"]],
+                "type": "matrix"
+            },
+            "output": {
+                "value": 1,
+                "type": "integer"
+            },
+            "explanation": "Single cell island",
+            "is_performance_test": false
+        },
+        {
+            "input": {
+                "value": [["0"]],
+                "type": "matrix"
+            },
+            "output": {
+                "value": 0,
+                "type": "integer"
+            },
+            "explanation": "No islands",
+            "is_performance_test": false
+        },
+        {
+            "input": {
+                "value": generateLargeIslandGrid(300, 300),
+                "type": "matrix"
+            },
+            "output": {
+                "value": "LARGE_OUTPUT",
+                "type": "integer"
+            },
+            "explanation": "Large grid with multiple islands",
+            "is_performance_test": true
+        }
+    ],
+    "pseudocode_requirements": {
+        "allowed_constructs": ["loops", "conditionals", "recursion", "queue", "stack", "variables"],
+        "required_concepts": ["depth-first search", "matrix traversal", "flood fill"],
+        "validation_rules": {
+            "syntax_flexibility": "high",
+            "variable_naming": "flexible"
+        }
+    },
+    "boilerplate_solution": {
+        "language": "python",
+        "pseudocode": "class Solution:\n    def num_islands(self, grid: List[List[str]]) -> int:\n        # TODO: Implement this function\n        # Return number of islands in the grid"
+    },
+    "valid_solutions": [
+        {
+            "approach": "DFS",
+            "time_complexity": "O(m × n)",
+            "space_complexity": "O(m × n)",
+            "pseudocode": "function numIslands(grid):\n    if not grid: return 0\n    islands = 0\n    rows, cols = length(grid), length(grid[0])\n    \n    def dfs(r, c):\n        if r < 0 or c < 0 or r >= rows or c >= cols or grid[r][c] != '1':\n            return\n        grid[r][c] = '#'  # mark as visited\n        dfs(r+1, c)\n        dfs(r-1, c)\n        dfs(r, c+1)\n        dfs(r, c-1)\n    \n    for r in range(rows):\n        for c in range(cols):\n            if grid[r][c] == '1':\n                islands += 1\n                dfs(r, c)\n    \n    return islands"
+        },
+        {
+            "approach": "BFS",
+            "time_complexity": "O(m × n)",
+            "space_complexity": "O(min(m, n))",
+            "pseudocode": "function numIslands(grid):\n    if not grid: return 0\n    islands = 0\n    rows, cols = length(grid), length(grid[0])\n    \n    for r in range(rows):\n        for c in range(cols):\n            if grid[r][c] == '1':\n                islands += 1\n                queue = [(r, c)]\n                grid[r][c] = '#'\n                \n                while queue:\n                    curr_r, curr_c = queue.pop(0)\n                    for nr, nc in [(curr_r+1,curr_c), (curr_r-1,curr_c),\n                                  (curr_r,curr_c+1), (curr_r,curr_c-1)]:\n                        if 0 <= nr < rows and 0 <= nc < cols and grid[nr][nc] == '1':\n                            queue.append((nr, nc))\n                            grid[nr][nc] = '#'\n    \n    return islands"
+        }
+    ],
+    "evaluation_criteria": {
+        "critical_requirements": [
+            "Must count connected land cells as single island",
+            "Must handle grid boundaries correctly",
+            "Must process each cell exactly once",
+            "Must handle different grid sizes",
+            "Must consider only horizontal and vertical connections",
+            "Must handle edge cases (single cell, empty grid)"
+        ],
+        "common_mistakes": [
+            {
+                "pattern": "Not marking visited cells",
+                "issue": "Leads to infinite loops or double counting",
+                "suggestion": "Mark visited cells with special character"
+            },
+            {
+                "pattern": "Including diagonal connections",
+                "issue": "Violates problem constraints",
+                "suggestion": "Check only horizontal and vertical neighbors"
+            },
+            {
+                "pattern": "Incorrect boundary checking",
+                "issue": "Array index out of bounds",
+                "suggestion": "Validate indices before accessing grid"
+            }
+        ],
+        "scoring_rubric": {
+            "correctness": {
+                "weight": 40,
+                "criteria": [
+                    "Correct island count",
+                    "Proper connection handling",
+                    "Boundary checking",
+                    "Edge case handling"
+                ]
+            },
+            "complexity": {
+                "weight": 30,
+                "criteria": [
+                    "Achieves O(m × n) time complexity",
+                    "Optimizes space usage",
+                    "Efficient traversal"
+                ]
+            },
+            "implementation": {
+                "weight": 30,
+                "criteria": [
+                    "Clean traversal logic",
+                    "Proper visited marking",
+                    "Clear variable naming",
+                    "Logical code organization"
+                ]
+            }
+        }
+    },
+    "solution_breakdown": {
+        "key_steps": [
+            {
+                "step": "Initialize counter",
+                "purpose": "Track number of islands found"
+            },
+            {
+                "step": "Iterate through grid",
+                "purpose": "Find unvisited land cells"
+            },
+            {
+                "step": "Explore connected lands",
+                "purpose": "Mark all cells of current island"
+            },
+            {
+                "step": "Mark visited cells",
+                "purpose": "Prevent double counting"
+            },
+            {
+                "step": "Validate boundaries",
+                "purpose": "Ensure safe grid access"
+            }
+        ],
+        "invariants": [
+            "Visited cells are marked and not recounted",
+            "Each cell is processed exactly once",
+            "Only valid grid positions are accessed",
+            "Only horizontal and vertical connections count"
+        ]
+    },
+    "anti_patterns": [
+        {
+            "pattern": "Using extra grid for visited",
+            "why_wrong": "Unnecessary space usage",
+            "correction": "Modify input grid to mark visited cells"
+        },
+        {
+            "pattern": "Checking diagonal neighbors",
+            "why_wrong": "Problem specifies only horizontal/vertical connections",
+            "correction": "Check only four adjacent cells"
+        },
+        {
+            "pattern": "Resetting visited marks",
+            "why_wrong": "Unnecessary extra pass through grid",
+            "correction": "Leave visited marks as is"
+        },
+        {
+            "pattern": "Complex data structures",
+            "why_wrong": "Overcomplicated solution",
+            "correction": "Simple DFS/BFS is sufficient"
+        }
+    ],
+    "validation_examples": {
+        "incorrect_solutions": [
+            {
+                "code": "def numIslands(grid):\n    count = 0\n    for i in range(len(grid)):\n        for j in range(len(grid[0])):\n            if grid[i][j] == '1':\n                count += 1\n    return count",
+                "why_wrong": "Only counts cells, doesn't consider connections",
+                "feedback": "Need to explore connected land cells as single island"
+            },
+            {
+                "code": "def numIslands(grid):\n    def dfs(i, j):\n        if grid[i][j] == '1':\n            grid[i][j] = '0'\n            for ni, nj in [(i+1,j), (i-1,j), (i,j+1), (i,j-1),\n                          (i+1,j+1), (i-1,j-1), (i+1,j-1), (i-1,j+1)]:\n                if 0 <= ni < len(grid) and 0 <= nj < len(grid[0]):\n                    dfs(ni, nj)\n    count = 0\n    for i in range(len(grid)):\n        for j in range(len(grid[0])):\n            if grid[i][j] == '1':\n                count += 1\n                dfs(i, j)\n    return count",
+                "why_wrong": "Includes diagonal connections",
+                "feedback": "Only consider horizontal and vertical connections"
+            }
+        ],
+        "partially_correct": [
+            {
+                "code": "def numIslands(grid):\n    visited = set()\n    def dfs(i, j):\n        if (i,j) in visited: return\n        visited.add((i,j))\n        for ni, nj in [(i+1,j), (i-1,j), (i,j+1), (i,j-1)]:\n            if 0 <= ni < len(grid) and 0 <= nj < len(grid[0]) and grid[ni][nj] == '1':\n                dfs(ni, nj)\n    count = 0\n    for i in range(len(grid)):\n        for j in range(len(grid[0])):\n            if grid[i][j] == '1' and (i,j) not in visited:\n                count += 1\n                dfs(i, j)\n    return count",
+                "issues": [
+                    "Uses extra space for visited set",
+                    "Could modify grid instead"
+                ],
+                "feedback": "Modify input grid to mark visited cells instead of using extra space"
+            }
+        ]
+    }
+} 

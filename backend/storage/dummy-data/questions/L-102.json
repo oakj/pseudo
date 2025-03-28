@@ -1,0 +1,236 @@
+{
+    "question_id": 102,
+    "metadata": {
+        "difficulty": "medium",
+        "categories": ["tree", "breadth-first search", "binary tree"],
+        "time_limit_ms": 1000,
+        "memory_limit_mb": 256,
+        "version": "1.0",
+        "last_modified": "2024-03-21"
+    },
+    "title": "Binary Tree Level Order Traversal",
+    "description": "Given the root of a binary tree, return the level order traversal of its nodes' values (i.e., from left to right, level by level).",
+    "constraints": [
+        "The number of nodes in the tree is in the range [0, 2000]",
+        "-1000 <= Node.val <= 1000",
+        "Each level must be represented as a separate array",
+        "Levels must be ordered from top to bottom"
+    ],
+    "complexity_requirements": {
+        "time": "O(n)",
+        "space": "O(n)"
+    },
+    "test_cases": [
+        {
+            "input": {
+                "value": [3,9,20,null,null,15,7],
+                "type": "binary_tree"
+            },
+            "output": {
+                "value": [[3],[9,20],[15,7]],
+                "type": "array_of_arrays"
+            },
+            "explanation": "Three levels: root, second level, and leaf nodes",
+            "is_performance_test": false
+        },
+        {
+            "input": {
+                "value": [1],
+                "type": "binary_tree"
+            },
+            "output": {
+                "value": [[1]],
+                "type": "array_of_arrays"
+            },
+            "explanation": "Single node tree",
+            "is_performance_test": false
+        },
+        {
+            "input": {
+                "value": [],
+                "type": "binary_tree"
+            },
+            "output": {
+                "value": [],
+                "type": "array_of_arrays"
+            },
+            "explanation": "Empty tree",
+            "is_performance_test": false
+        },
+        {
+            "input": {
+                "value": [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],
+                "type": "binary_tree"
+            },
+            "output": {
+                "value": [[1],[2,3],[4,5,6,7],[8,9,10,11,12,13,14,15]],
+                "type": "array_of_arrays"
+            },
+            "explanation": "Perfect binary tree with 4 levels",
+            "is_performance_test": false
+        },
+        {
+            "input": {
+                "value": generatePerfectBinaryTree(10),
+                "type": "binary_tree"
+            },
+            "output": {
+                "value": "LARGE_OUTPUT",
+                "type": "array_of_arrays"
+            },
+            "explanation": "Large perfect binary tree",
+            "is_performance_test": true
+        }
+    ],
+    "pseudocode_requirements": {
+        "allowed_constructs": ["queue", "loops", "conditionals", "variables"],
+        "required_concepts": ["breadth-first search", "queue operations", "level tracking"],
+        "validation_rules": {
+            "syntax_flexibility": "high",
+            "variable_naming": "flexible"
+        }
+    },
+    "boilerplate_solution": {
+        "language": "python",
+        "pseudocode": "class Solution:\n    def level_order_traversal(self, root: TreeNode) -> List[List[int]]:\n        # TODO: Implement this function\n        # Return array of arrays representing each level"
+    },
+    "valid_solutions": [
+        {
+            "approach": "queue-based BFS",
+            "time_complexity": "O(n)",
+            "space_complexity": "O(n)",
+            "pseudocode": "function levelOrder(root):\n    if not root:\n        return []\n    \n    result = []\n    queue = [root]\n    \n    while queue:\n        level_size = length(queue)\n        current_level = []\n        \n        for i in range(level_size):\n            node = queue.pop(0)\n            current_level.append(node.val)\n            \n            if node.left:\n                queue.append(node.left)\n            if node.right:\n                queue.append(node.right)\n        \n        result.append(current_level)\n    \n    return result"
+        }
+    ],
+    "evaluation_criteria": {
+        "critical_requirements": [
+            "Must process nodes level by level",
+            "Must maintain left-to-right order within each level",
+            "Must handle empty trees",
+            "Must handle single-node trees",
+            "Must separate each level into its own array",
+            "Must process all nodes exactly once"
+        ],
+        "common_mistakes": [
+            {
+                "pattern": "Using DFS instead of BFS",
+                "issue": "Cannot guarantee level order",
+                "suggestion": "Use queue-based BFS approach"
+            },
+            {
+                "pattern": "Not tracking level size",
+                "issue": "Levels may be mixed together",
+                "suggestion": "Process fixed number of nodes for each level"
+            },
+            {
+                "pattern": "Not handling null nodes",
+                "issue": "May crash on empty tree",
+                "suggestion": "Add null check at start"
+            }
+        ],
+        "scoring_rubric": {
+            "correctness": {
+                "weight": 40,
+                "criteria": [
+                    "Correct level ordering",
+                    "Proper left-to-right ordering",
+                    "Handles all test cases",
+                    "Maintains level separation"
+                ]
+            },
+            "complexity": {
+                "weight": 30,
+                "criteria": [
+                    "Achieves O(n) time complexity",
+                    "Uses O(n) space efficiently",
+                    "Processes each node once"
+                ]
+            },
+            "implementation": {
+                "weight": 30,
+                "criteria": [
+                    "Proper queue usage",
+                    "Correct level tracking",
+                    "Clear variable naming",
+                    "Logical code organization"
+                ]
+            }
+        }
+    },
+    "solution_breakdown": {
+        "key_steps": [
+            {
+                "step": "Initialize queue with root",
+                "purpose": "Start BFS traversal"
+            },
+            {
+                "step": "Process level size",
+                "purpose": "Determine number of nodes in current level"
+            },
+            {
+                "step": "Create level array",
+                "purpose": "Store nodes at current depth"
+            },
+            {
+                "step": "Add children to queue",
+                "purpose": "Prepare next level for processing"
+            },
+            {
+                "step": "Add level to result",
+                "purpose": "Store completed level"
+            }
+        ],
+        "invariants": [
+            "Queue contains nodes of next level to process",
+            "Nodes are processed left to right within each level",
+            "Each level is completely processed before moving to next",
+            "Result maintains top-to-bottom level order"
+        ]
+    },
+    "anti_patterns": [
+        {
+            "pattern": "Using DFS traversal",
+            "why_wrong": "Cannot guarantee level order processing",
+            "correction": "Use queue-based BFS approach"
+        },
+        {
+            "pattern": "Not separating levels",
+            "why_wrong": "Loses level structure information",
+            "correction": "Track and process level size"
+        },
+        {
+            "pattern": "Using recursive approach",
+            "why_wrong": "Makes level tracking more complex",
+            "correction": "Use iterative approach with queue"
+        },
+        {
+            "pattern": "Using global variables",
+            "why_wrong": "Creates issues with multiple calls",
+            "correction": "Maintain state within function"
+        }
+    ],
+    "validation_examples": {
+        "incorrect_solutions": [
+            {
+                "code": "def levelOrder(root):\n    result = []\n    def dfs(node, level):\n        if not node: return\n        if len(result) <= level:\n            result.append([])\n        result[level].append(node.val)\n        dfs(node.left, level+1)\n        dfs(node.right, level+1)\n    dfs(root, 0)\n    return result",
+                "why_wrong": "Uses DFS which is more complex and less intuitive",
+                "feedback": "Use BFS with queue for clearer level order traversal"
+            },
+            {
+                "code": "def levelOrder(root):\n    if not root: return []\n    result = []\n    queue = [root]\n    while queue:\n        node = queue.pop(0)\n        result.append(node.val)\n        if node.left: queue.append(node.left)\n        if node.right: queue.append(node.right)\n    return [result]",
+                "why_wrong": "Doesn't separate levels into different arrays",
+                "feedback": "Track level size and create separate arrays for each level"
+            }
+        ],
+        "partially_correct": [
+            {
+                "code": "def levelOrder(root):\n    if not root: return []\n    result = []\n    queue = [(root, 0)]\n    while queue:\n        node, level = queue.pop(0)\n        if len(result) <= level:\n            result.append([])\n        result[level].append(node.val)\n        if node.left: queue.append((node.left, level+1))\n        if node.right: queue.append((node.right, level+1))\n    return result",
+                "issues": [
+                    "Unnecessarily tracks level number",
+                    "More complex than needed"
+                ],
+                "feedback": "Can use level size counting instead of tracking level numbers"
+            }
+        ]
+    }
+} 

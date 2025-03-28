@@ -1,4 +1,14 @@
-# Project overview
+# Table of Contents
+1. [Project Overview](#project-overview)
+2. [Tech Stack Documentation](#tech-stack-documentation)
+3. [Core Functionalities](#core-functionalities)
+4. [Database](#database)
+5. [Blob Storage](#blob-storage)
+6. [Prompt Engineering Guidelines and Pseudocode Validation](#prompt-engineering-guidelines-and-pseudocode-validation)
+7. [Python Data Models](#python-data-models)
+8. [Project File Structure](#project-file-structure)
+
+# Project Overview
 Pseudo is a mobile application that allows users to solve coding interview questions using pseudocode.
 
 You will be using the following technologies:
@@ -12,7 +22,7 @@ You will be using the following technologies:
 - Supabase (for authentication and postgresql database)
 - S3 Blob Storage
 
-# Documentation
+# Tech Stack Documentation
 - React Native: https://reactnative.dev/docs/getting-started
 - React Native Async Storage: https://react-native-async-storage.github.io/async-storage/docs/usage
 - Expo: https://docs.expo.dev/
@@ -197,9 +207,11 @@ create trigger on_auth_user_created
     execute procedure public.insert_app_user();
 ```
 
-# S3 Blob Storage Structure
+# Blob Storage
+For the most up-to-date JSON schema and formatting guidelines, see [backend/storage/blob/formatting.md](../backend/storage/blob/formatting.md).
+
 ```json
-// Question description and solutions
+// Question description and solutions (Question json files)
 {
     "question_id": "001",
     "title": "Two Sum",
@@ -212,7 +224,7 @@ create trigger on_auth_user_created
     ]
 }
 
-// User pseudocode and chat history with the hints bot
+// User pseudocode and chat history with the hints bot (UserQuestion json files)
 {
     "pseudocode": "# first create a dictionary called numDictionary\n# then iterate over nums to populate the dictionary\n\ndef two_sum(nums, target):\n    numDictionary = {}\n    for i in range(len(nums)):\n        complement = target - nums[i]\n        if complement in numDictionary:\n            return [numDictionary[complement], i]\n        numDictionary[nums[i]] = i\n    return []",
     "hint": {
@@ -235,7 +247,106 @@ create trigger on_auth_user_created
 
 ```
 
-# Data Models
+# Prompt Engineering Guidelines and Pseudocode Validation
+The prompt engineering guidelines and validation rules for pseudocode solutions are detailed in [backend/storage/blob/formatting.md](../backend/storage/blob/formatting.md).
+
+## Solution Validation Flow
+1. **User Submits Solution**
+   ```json
+   {
+     "questionId": "001",
+     "solution": "def twoSum(nums, target):\n    seen = {}\n    for i, num in enumerate(nums):\n        complement = target - num\n        if complement in seen:\n            return [seen[complement], i]\n        seen[num] = i\n    return []"
+   }
+   ```
+
+2. **Backend Prepares Context**
+   - Fetches question JSON from S3
+   - Combines question metadata with user solution
+   ```json
+   {
+     "prompt": {
+       "role": "strict programming instructor",
+       "question": {
+         "title": "Two Sum",
+         "complexity": {
+           "time": "O(n)",
+           "space": "O(n)"
+         },
+         "requiredConcepts": ["hash table", "array iteration"],
+         "testCases": ["[2,7,11,15], 9", "[3,2,4], 6"]
+       },
+       "userSolution": "def twoSum(nums, target)...",
+       "evaluationCriteria": {
+         "correctness": 40,
+         "complexity": 30,
+         "implementation": 30
+       }
+     }
+   }
+   ```
+
+3. **LLM Evaluation Response**
+   ```json
+   {
+     "score": 95,
+     "feedback": {
+       "correctness": {
+         "score": 40,
+         "comments": "Solution correctly handles all test cases"
+       },
+       "complexity": {
+         "score": 28,
+         "comments": "Achieves O(n) time and O(n) space as required"
+       },
+       "implementation": {
+         "score": 27,
+         "comments": "Good use of hash table, clear variable names. Consider adding input validation."
+       }
+     },
+     "suggestions": [
+       "Add input validation for empty arrays",
+       "Consider documenting the space-time tradeoff"
+     ]
+   }
+   ```
+
+4. **Application Response to User**
+   ```json
+   {
+     "success": true,
+     "score": 95,
+     "passed": true,
+     "feedback": {
+       "summary": "Excellent solution! Meets all core requirements.",
+       "improvements": [
+         "Add input validation for empty arrays",
+         "Consider documenting the space-time tradeoff"
+       ]
+     }
+   }
+   ```
+
+## Key Components
+1. **Validation Process**:
+   - Solutions are evaluated for correctness, complexity, and style
+   - LLM acts as a strict programming instructor
+   - Scoring is based on a 0-100 scale with detailed feedback
+
+2. **Evaluation Criteria**:
+   - Correctness (handles all test cases)
+   - Time and space complexity requirements
+   - Proper implementation of required concepts
+   - Code clarity and style
+
+3. **Feedback System**:
+   - Provides specific feedback on errors
+   - Suggests improvements
+   - Identifies common anti-patterns
+   - References specific test cases when needed
+
+For complete implementation details and prompt templates, refer to the formatting guide.
+
+# Python Data Models
 ```python
 from pydantic import BaseModel, UUID4
 from typing import Optional, List

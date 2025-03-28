@@ -1,0 +1,237 @@
+{
+    "question_id": 15,
+    "metadata": {
+        "difficulty": "medium",
+        "categories": ["array", "two pointers", "sorting"],
+        "time_limit_ms": 2000,
+        "memory_limit_mb": 256,
+        "version": "1.0",
+        "last_modified": "2024-03-21"
+    },
+    "title": "3Sum",
+    "description": "Given an integer array nums, return all the triplets [nums[i], nums[j], nums[k]] such that i != j, i != k, and j != k, and nums[i] + nums[j] + nums[k] == 0. The solution set must not contain duplicate triplets.",
+    "constraints": [
+        "3 <= nums.length <= 3000",
+        "-10^5 <= nums[i] <= 10^5",
+        "Solution must not contain duplicate triplets",
+        "Triplet indices must be distinct"
+    ],
+    "complexity_requirements": {
+        "time": "O(n²)",
+        "space": "O(1)" 
+    },
+    "test_cases": [
+        {
+            "input": {
+                "value": [-1,0,1,2,-1,-4],
+                "type": "array"
+            },
+            "output": {
+                "value": [[-1,-1,2],[-1,0,1]],
+                "type": "array_of_arrays"
+            },
+            "explanation": "Two unique triplets sum to zero",
+            "is_performance_test": false
+        },
+        {
+            "input": {
+                "value": [0,1,1],
+                "type": "array"
+            },
+            "output": {
+                "value": [],
+                "type": "array_of_arrays"
+            },
+            "explanation": "No triplets sum to zero",
+            "is_performance_test": false
+        },
+        {
+            "input": {
+                "value": [0,0,0],
+                "type": "array"
+            },
+            "output": {
+                "value": [[0,0,0]],
+                "type": "array_of_arrays"
+            },
+            "explanation": "Single triplet of zeros",
+            "is_performance_test": false
+        },
+        {
+            "input": {
+                "value": [-2,0,1,1,2],
+                "type": "array"
+            },
+            "output": {
+                "value": [[-2,0,2],[-2,1,1]],
+                "type": "array_of_arrays"
+            },
+            "explanation": "Multiple solutions with some duplicates in input",
+            "is_performance_test": false
+        },
+        {
+            "input": {
+                "value": Array.from({length: 3000}, (_, i) => i % 3 - 1),
+                "type": "array"
+            },
+            "output": {
+                "value": "LARGE_OUTPUT",
+                "type": "array_of_arrays"
+            },
+            "explanation": "Large input with repeating pattern",
+            "is_performance_test": true
+        }
+    ],
+    "pseudocode_requirements": {
+        "allowed_constructs": ["loops", "conditionals", "variables", "sorting", "two pointers"],
+        "required_concepts": ["array sorting", "two pointer technique", "duplicate handling"],
+        "validation_rules": {
+            "syntax_flexibility": "high",
+            "variable_naming": "flexible"
+        }
+    },
+    "boilerplate_solution": {
+        "language": "python",
+        "pseudocode": "class Solution:\n    def three_sum(self, nums: List[int]) -> List[List[int]]:\n        # TODO: Implement this function\n        # Return array of triplets that sum to zero"
+    },
+    "valid_solutions": [
+        {
+            "approach": "sorting and two pointers",
+            "time_complexity": "O(n²)",
+            "space_complexity": "O(1)",
+            "pseudocode": "function threeSum(nums):\n    sort(nums)\n    result = []\n    \n    for i in range(length(nums) - 2):\n        if i > 0 and nums[i] == nums[i-1]:\n            continue\n        \n        left = i + 1\n        right = length(nums) - 1\n        \n        while left < right:\n            sum = nums[i] + nums[left] + nums[right]\n            \n            if sum == 0:\n                result.append([nums[i], nums[left], nums[right]])\n                while left < right and nums[left] == nums[left+1]:\n                    left += 1\n                while left < right and nums[right] == nums[right-1]:\n                    right -= 1\n                left += 1\n                right -= 1\n            elif sum < 0:\n                left += 1\n            else:\n                right -= 1\n    \n    return result"
+        }
+    ],
+    "evaluation_criteria": {
+        "critical_requirements": [
+            "Must handle duplicates in input array",
+            "Must not return duplicate triplets",
+            "Must use distinct indices for each number in triplet",
+            "Must handle positive and negative numbers",
+            "Must handle arrays with no valid triplets",
+            "Must handle arrays with multiple valid triplets"
+        ],
+        "common_mistakes": [
+            {
+                "pattern": "Not handling duplicates",
+                "issue": "Returns duplicate triplets",
+                "suggestion": "Skip duplicate values after finding a triplet"
+            },
+            {
+                "pattern": "Using nested loops without optimization",
+                "issue": "Results in O(n³) time complexity",
+                "suggestion": "Use sorting and two pointers approach"
+            },
+            {
+                "pattern": "Not sorting input array",
+                "issue": "Makes duplicate handling difficult",
+                "suggestion": "Sort array first to simplify solution"
+            }
+        ],
+        "scoring_rubric": {
+            "correctness": {
+                "weight": 40,
+                "criteria": [
+                    "Returns all valid triplets",
+                    "No duplicate triplets",
+                    "Handles all test cases",
+                    "Uses distinct indices"
+                ]
+            },
+            "complexity": {
+                "weight": 30,
+                "criteria": [
+                    "Achieves O(n²) time complexity",
+                    "Maintains O(1) auxiliary space",
+                    "Efficient duplicate handling"
+                ]
+            },
+            "implementation": {
+                "weight": 30,
+                "criteria": [
+                    "Proper two pointer usage",
+                    "Efficient duplicate skipping",
+                    "Clear variable naming",
+                    "Logical code organization"
+                ]
+            }
+        }
+    },
+    "solution_breakdown": {
+        "key_steps": [
+            {
+                "step": "Sort input array",
+                "purpose": "Enable two pointer approach and duplicate handling"
+            },
+            {
+                "step": "Iterate through array",
+                "purpose": "Fix first number of triplet"
+            },
+            {
+                "step": "Use two pointers",
+                "purpose": "Find pairs that sum to negative of first number"
+            },
+            {
+                "step": "Handle duplicates",
+                "purpose": "Skip duplicate values to avoid duplicate triplets"
+            },
+            {
+                "step": "Collect valid triplets",
+                "purpose": "Store unique solutions"
+            }
+        ],
+        "invariants": [
+            "Array remains sorted throughout execution",
+            "No duplicate triplets in result",
+            "All indices in each triplet are distinct",
+            "Two pointers move towards each other",
+            "Sum of triplet equals zero when found"
+        ]
+    },
+    "anti_patterns": [
+        {
+            "pattern": "Triple nested loops",
+            "why_wrong": "Results in O(n³) time complexity",
+            "correction": "Use sorting and two pointers for O(n²)"
+        },
+        {
+            "pattern": "Using hash set without sorting",
+            "why_wrong": "Makes duplicate handling complex",
+            "correction": "Sort first and use two pointers"
+        },
+        {
+            "pattern": "Not skipping duplicates",
+            "why_wrong": "Leads to duplicate triplets",
+            "correction": "Skip duplicate values after finding triplets"
+        },
+        {
+            "pattern": "Using extra arrays/sets for seen values",
+            "why_wrong": "Unnecessary space usage",
+            "correction": "Use sorting and two pointers instead"
+        }
+    ],
+    "validation_examples": {
+        "incorrect_solutions": [
+            {
+                "code": "def threeSum(nums):\n    result = []\n    for i in range(len(nums)):\n        for j in range(i+1, len(nums)):\n            for k in range(j+1, len(nums)):\n                if nums[i] + nums[j] + nums[k] == 0:\n                    result.append([nums[i], nums[j], nums[k]])",
+                "why_wrong": "O(n³) time complexity and doesn't handle duplicates",
+                "feedback": "Use sorting and two pointers for O(n²) complexity"
+            },
+            {
+                "code": "def threeSum(nums):\n    seen = set()\n    result = []\n    for i in range(len(nums)):\n        target = -nums[i]\n        seen_pairs = set()\n        for j in range(i+1, len(nums)):\n            if -(nums[i] + nums[j]) in seen_pairs:\n                triplet = tuple(sorted([nums[i], nums[j], -(nums[i] + nums[j])]))\n                if triplet not in seen:\n                    seen.add(triplet)\n                    result.append(list(triplet))\n            seen_pairs.add(nums[j])",
+                "why_wrong": "Uses extra space and complex duplicate handling",
+                "feedback": "Sort array first and use two pointers approach"
+            }
+        ],
+        "partially_correct": [
+            {
+                "code": "def threeSum(nums):\n    nums.sort()\n    result = []\n    for i in range(len(nums)-2):\n        left = i + 1\n        right = len(nums) - 1\n        while left < right:\n            sum = nums[i] + nums[left] + nums[right]\n            if sum == 0:\n                result.append([nums[i], nums[left], nums[right]])\n                left += 1\n                right -= 1\n            elif sum < 0:\n                left += 1\n            else:\n                right -= 1\n    return result",
+                "issues": [
+                    "Doesn't handle duplicates",
+                    "May include duplicate triplets"
+                ],
+                "feedback": "Add duplicate checking and skipping logic"
+            }
+        ]
+    }
+} 

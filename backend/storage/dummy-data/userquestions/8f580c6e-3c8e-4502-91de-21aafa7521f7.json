@@ -1,0 +1,22 @@
+{
+    "user_id": "af6eb13c-24d3-4622-8997-b386a076ede1",
+    "question_id": "9d8abe9c-316d-4e12-b288-5c5540db940e",
+    "submission": {
+        "solution": "",
+        "timestamp": "2024-03-21T15:30:00Z"
+    },
+    "hint_chat": {
+        "messages": [
+            {
+                "from": "user",
+                "message": "What data structure should I use for this problem?",
+                "timestamp": "2024-03-21T15:30:00Z"
+            },
+            {
+                "from": "hint_bot",
+                "message": "Think about using a stack. How can it help you match opening and closing parentheses?",
+                "timestamp": "2024-03-21T15:30:05Z"
+            }
+        ]
+    }
+} 

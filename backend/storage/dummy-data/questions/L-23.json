@@ -1,0 +1,245 @@
+{
+    "question_id": 23,
+    "metadata": {
+        "difficulty": "hard",
+        "categories": ["linked list", "divide and conquer", "heap", "merge sort"],
+        "time_limit_ms": 2000,
+        "memory_limit_mb": 256,
+        "version": "1.0",
+        "last_modified": "2024-03-21"
+    },
+    "title": "Merge k Sorted Lists",
+    "description": "You are given an array of k linked-lists lists, each linked-list is sorted in ascending order. Merge all the linked-lists into one sorted linked-list and return it.",
+    "constraints": [
+        "k == lists.length",
+        "0 <= k <= 10^4",
+        "0 <= lists[i].length <= 500",
+        "-10^4 <= lists[i][j] <= 10^4",
+        "lists[i] is sorted in ascending order",
+        "The sum of lists[i].length will not exceed 10^4"
+    ],
+    "complexity_requirements": {
+        "time": "O(N log k) where N is total number of nodes",
+        "space": "O(k)"
+    },
+    "test_cases": [
+        {
+            "input": {
+                "value": [[1,4,5],[1,3,4],[2,6]],
+                "type": "array_of_linked_lists"
+            },
+            "output": {
+                "value": [1,1,2,3,4,4,5,6],
+                "type": "linked_list"
+            },
+            "explanation": "Merging three sorted lists",
+            "is_performance_test": false
+        },
+        {
+            "input": {
+                "value": [],
+                "type": "array_of_linked_lists"
+            },
+            "output": {
+                "value": [],
+                "type": "linked_list"
+            },
+            "explanation": "Empty input array",
+            "is_performance_test": false
+        },
+        {
+            "input": {
+                "value": [[]],
+                "type": "array_of_linked_lists"
+            },
+            "output": {
+                "value": [],
+                "type": "linked_list"
+            },
+            "explanation": "Array containing empty list",
+            "is_performance_test": false
+        },
+        {
+            "input": {
+                "value": [[1],[2],[3],[4],[5]],
+                "type": "array_of_linked_lists"
+            },
+            "output": {
+                "value": [1,2,3,4,5],
+                "type": "linked_list"
+            },
+            "explanation": "Multiple single-node lists",
+            "is_performance_test": false
+        },
+        {
+            "input": {
+                "value": generateKSortedLists(10000, 500),
+                "type": "array_of_linked_lists"
+            },
+            "output": {
+                "value": "LARGE_OUTPUT",
+                "type": "linked_list"
+            },
+            "explanation": "Large input with maximum constraints",
+            "is_performance_test": true
+        }
+    ],
+    "pseudocode_requirements": {
+        "allowed_constructs": ["heap", "loops", "conditionals", "recursion", "linked list operations"],
+        "required_concepts": ["priority queue", "merge sort", "linked list manipulation"],
+        "validation_rules": {
+            "syntax_flexibility": "high",
+            "variable_naming": "flexible"
+        }
+    },
+    "boilerplate_solution": {
+        "language": "python",
+        "pseudocode": "class Solution:\n    def merge_k_lists(self, lists: List[ListNode]) -> ListNode:\n        # TODO: Implement this function\n        # Return merged sorted linked list"
+    },
+    "valid_solutions": [
+        {
+            "approach": "min heap",
+            "time_complexity": "O(N log k)",
+            "space_complexity": "O(k)",
+            "pseudocode": "function mergeKLists(lists):\n    heap = min_heap()\n    # Add first node from each list\n    for i in range(length(lists)):\n        if lists[i]:\n            heap.push((lists[i].val, i))\n            lists[i] = lists[i].next\n    \n    dummy = ListNode(0)\n    current = dummy\n    \n    while heap:\n        val, i = heap.pop()\n        current.next = ListNode(val)\n        current = current.next\n        \n        if lists[i]:\n            heap.push((lists[i].val, i))\n            lists[i] = lists[i].next\n    \n    return dummy.next"
+        },
+        {
+            "approach": "divide and conquer",
+            "time_complexity": "O(N log k)",
+            "space_complexity": "O(log k)",
+            "pseudocode": "function mergeKLists(lists):\n    if not lists: return null\n    \n    def mergeTwoLists(l1, l2):\n        dummy = ListNode(0)\n        current = dummy\n        while l1 and l2:\n            if l1.val <= l2.val:\n                current.next = l1\n                l1 = l1.next\n            else:\n                current.next = l2\n                l2 = l2.next\n            current = current.next\n        current.next = l1 or l2\n        return dummy.next\n    \n    def merge(start, end):\n        if start == end:\n            return lists[start]\n        if start + 1 == end:\n            return mergeTwoLists(lists[start], lists[end])\n        mid = (start + end) // 2\n        return mergeTwoLists(merge(start, mid), merge(mid + 1, end))\n    \n    return merge(0, length(lists) - 1)"
+        }
+    ],
+    "evaluation_criteria": {
+        "critical_requirements": [
+            "Must maintain sorted order",
+            "Must handle empty lists",
+            "Must handle lists of different lengths",
+            "Must achieve O(N log k) time complexity",
+            "Must preserve all nodes",
+            "Must handle edge cases (empty input, single list)"
+        ],
+        "common_mistakes": [
+            {
+                "pattern": "Using array to store all values",
+                "issue": "Unnecessary space usage and extra conversions",
+                "suggestion": "Process nodes directly using heap or divide-and-conquer"
+            },
+            {
+                "pattern": "Sequential merging",
+                "issue": "Results in O(kN) time complexity",
+                "suggestion": "Use heap or divide-and-conquer for O(N log k)"
+            },
+            {
+                "pattern": "Not handling null values",
+                "issue": "May cause null pointer exceptions",
+                "suggestion": "Add proper null checks"
+            }
+        ],
+        "scoring_rubric": {
+            "correctness": {
+                "weight": 40,
+                "criteria": [
+                    "Maintains sorted order",
+                    "Handles all edge cases",
+                    "Preserves all nodes",
+                    "Proper list connections"
+                ]
+            },
+            "complexity": {
+                "weight": 30,
+                "criteria": [
+                    "Achieves O(N log k) time",
+                    "Optimizes space usage",
+                    "Efficient node processing"
+                ]
+            },
+            "implementation": {
+                "weight": 30,
+                "criteria": [
+                    "Clean code structure",
+                    "Proper data structure usage",
+                    "Clear variable naming",
+                    "Efficient algorithm choice"
+                ]
+            }
+        }
+    },
+    "solution_breakdown": {
+        "key_steps": [
+            {
+                "step": "Initialize data structure",
+                "purpose": "Set up heap or prepare for divide-and-conquer"
+            },
+            {
+                "step": "Process input lists",
+                "purpose": "Handle each list's nodes in sorted order"
+            },
+            {
+                "step": "Maintain sorted order",
+                "purpose": "Ensure output list is properly sorted"
+            },
+            {
+                "step": "Connect nodes",
+                "purpose": "Build final merged list"
+            },
+            {
+                "step": "Handle edge cases",
+                "purpose": "Process empty lists and null values"
+            }
+        ],
+        "invariants": [
+            "Output list maintains sorted order",
+            "All nodes are included in result",
+            "No nodes are duplicated or lost",
+            "Memory is used efficiently",
+            "Time complexity remains O(N log k)"
+        ]
+    },
+    "anti_patterns": [
+        {
+            "pattern": "Converting to array",
+            "why_wrong": "Wastes space and time with conversions",
+            "correction": "Process nodes directly"
+        },
+        {
+            "pattern": "Sequential merging",
+            "why_wrong": "Poor time complexity of O(kN)",
+            "correction": "Use heap or divide-and-conquer"
+        },
+        {
+            "pattern": "Sorting all values",
+            "why_wrong": "Ignores existing sorted order",
+            "correction": "Leverage the fact that inputs are sorted"
+        },
+        {
+            "pattern": "Creating new nodes",
+            "why_wrong": "Wastes space unnecessarily",
+            "correction": "Reuse existing nodes"
+        }
+    ],
+    "validation_examples": {
+        "incorrect_solutions": [
+            {
+                "code": "def mergeKLists(lists):\n    all_values = []\n    for lst in lists:\n        while lst:\n            all_values.append(lst.val)\n            lst = lst.next\n    all_values.sort()\n    dummy = ListNode(0)\n    curr = dummy\n    for val in all_values:\n        curr.next = ListNode(val)\n        curr = curr.next\n    return dummy.next",
+                "why_wrong": "Inefficient use of extra space and ignores sorted nature",
+                "feedback": "Use heap or divide-and-conquer to maintain O(N log k) complexity"
+            },
+            {
+                "code": "def mergeKLists(lists):\n    result = None\n    for lst in lists:\n        result = mergeTwoLists(result, lst)\n    return result",
+                "why_wrong": "O(kN) time complexity with sequential merging",
+                "feedback": "Use divide-and-conquer or heap for better efficiency"
+            }
+        ],
+        "partially_correct": [
+            {
+                "code": "def mergeKLists(lists):\n    heap = []\n    for i, lst in enumerate(lists):\n        if lst:\n            heapq.heappush(heap, (lst.val, i, lst))\n    dummy = ListNode(0)\n    curr = dummy\n    while heap:\n        val, i, node = heapq.heappop(heap)\n        curr.next = node\n        curr = curr.next\n        if node.next:\n            heapq.heappush(heap, (node.next.val, i, node.next))\n    return dummy.next",
+                "issues": [
+                    "Stores entire node in heap",
+                    "Could optimize space usage"
+                ],
+                "feedback": "Store only necessary information in heap"
+            }
+        ]
+    }
+} 

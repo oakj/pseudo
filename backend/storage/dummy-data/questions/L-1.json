@@ -1,0 +1,255 @@
+{
+    "question_id": 1,
+    "metadata": {
+        "difficulty": "easy",
+        "categories": ["array", "hash table"],
+        "time_limit_ms": 1000,
+        "memory_limit_mb": 256,
+        "version": "1.0",
+        "last_modified": "2024-03-21"
+    },
+    "title": "Two Sum",
+    "description": "Given an array of integers nums and an integer target, return indices of the two numbers in the array such that they add up to target. You may assume that each input would have exactly one solution, and you may not use the same element twice.",
+    "constraints": [
+        "2 <= nums.length <= 10^4",
+        "-10^9 <= nums[i] <= 10^9",
+        "-10^9 <= target <= 10^9",
+        "Only one valid answer exists"
+    ],
+    "complexity_requirements": {
+        "time": "O(n)",
+        "space": "O(n)"
+    },
+    "test_cases": [
+        {
+            "input": {
+                "nums": [2, 7, 11, 15],
+                "target": 9,
+                "type": "array_and_integer"
+            },
+            "output": {
+                "value": [0, 1],
+                "type": "array"
+            },
+            "explanation": "Because nums[0] + nums[1] == 9, we return [0, 1]",
+            "is_performance_test": false
+        },
+        {
+            "input": {
+                "nums": [3, 2, 4],
+                "target": 6,
+                "type": "array_and_integer"
+            },
+            "output": {
+                "value": [1, 2],
+                "type": "array"
+            },
+            "explanation": "Because nums[1] + nums[2] == 6, we return [1, 2]",
+            "is_performance_test": false
+        },
+        {
+            "input": {
+                "nums": [3, 3],
+                "target": 6,
+                "type": "array_and_integer"
+            },
+            "output": {
+                "value": [0, 1],
+                "type": "array"
+            },
+            "explanation": "Because nums[0] + nums[1] == 6, we return [0, 1]",
+            "is_performance_test": false
+        },
+        {
+            "input": {
+                "nums": [-1, -2, -3, -4, -5],
+                "target": -8,
+                "type": "array_and_integer"
+            },
+            "output": {
+                "value": [2, 4],
+                "type": "array"
+            },
+            "explanation": "Because nums[2] + nums[4] == -8, we return [2, 4]",
+            "is_performance_test": false
+        },
+        {
+            "input": {
+                "nums": Array.from({length: 10000}, (_, i) => i),
+                "target": 19997,
+                "type": "array_and_integer"
+            },
+            "output": {
+                "value": [9998, 9999],
+                "type": "array"
+            },
+            "explanation": "Large input test case",
+            "is_performance_test": true
+        }
+    ],
+    "pseudocode_requirements": {
+        "allowed_constructs": ["loops", "conditionals", "variables", "basic operations", "hash table operations"],
+        "required_concepts": ["hash table", "array traversal", "complement calculation"],
+        "validation_rules": {
+            "syntax_flexibility": "high",
+            "variable_naming": "flexible"
+        }
+    },
+    "boilerplate_solution": {
+        "language": "python",
+        "pseudocode": "class Solution:\n    def two_sum(self, nums: List[int], target: int) -> List[int]:\n        # TODO: Implement this function\n        # Return indices of two numbers that add up to target"
+    },
+    "valid_solutions": [
+        {
+            "approach": "hash table",
+            "time_complexity": "O(n)",
+            "space_complexity": "O(n)",
+            "pseudocode": "function twoSum(nums, target):\n    seen = {}\n    for i in range(length(nums)):\n        complement = target - nums[i]\n        if complement in seen:\n            return [seen[complement], i]\n        seen[nums[i]] = i\n    return []"
+        },
+        {
+            "approach": "two-pass hash table",
+            "time_complexity": "O(n)",
+            "space_complexity": "O(n)",
+            "pseudocode": "function twoSum(nums, target):\n    map = {}\n    for i in range(length(nums)):\n        map[nums[i]] = i\n    for i in range(length(nums)):\n        complement = target - nums[i]\n        if complement in map and map[complement] != i:\n            return [i, map[complement]]\n    return []"
+        }
+    ],
+    "evaluation_criteria": {
+        "critical_requirements": [
+            "Must return correct indices",
+            "Must handle positive and negative numbers",
+            "Must not use same element twice",
+            "Must find exactly one solution",
+            "Must handle array of size 2",
+            "Must maintain O(n) time complexity"
+        ],
+        "common_mistakes": [
+            {
+                "pattern": "Not checking for same index usage",
+                "issue": "Solution might use same element twice",
+                "suggestion": "Add index comparison check when finding complement"
+            },
+            {
+                "pattern": "Using nested loops",
+                "issue": "Results in O(n²) time complexity",
+                "suggestion": "Use hash table for O(1) lookups"
+            },
+            {
+                "pattern": "No input validation",
+                "issue": "Might crash on empty or invalid input",
+                "suggestion": "Add basic input validation checks"
+            }
+        ],
+        "scoring_rubric": {
+            "correctness": {
+                "weight": 40,
+                "criteria": [
+                    "Returns correct indices",
+                    "Handles all test cases",
+                    "Maintains proper array bounds",
+                    "Handles edge cases"
+                ]
+            },
+            "complexity": {
+                "weight": 30,
+                "criteria": [
+                    "Achieves O(n) time complexity",
+                    "Uses O(n) space efficiently",
+                    "Avoids unnecessary iterations"
+                ]
+            },
+            "implementation": {
+                "weight": 30,
+                "criteria": [
+                    "Proper hash table usage",
+                    "Efficient complement checking",
+                    "Clear variable naming",
+                    "Logical code organization"
+                ]
+            }
+        }
+    },
+    "solution_breakdown": {
+        "key_steps": [
+            {
+                "step": "Initialize hash table",
+                "purpose": "Store previously seen numbers and their indices"
+            },
+            {
+                "step": "Iterate through array",
+                "purpose": "Check each number in the input array"
+            },
+            {
+                "step": "Calculate complement",
+                "purpose": "Find what number we need to reach target"
+            },
+            {
+                "step": "Check hash table",
+                "purpose": "Look for complement in previously seen numbers"
+            },
+            {
+                "step": "Store current number",
+                "purpose": "Add current number and index to hash table for future lookups"
+            }
+        ],
+        "invariants": [
+            "Hash table always contains numbers we've seen so far and their indices",
+            "We never use the same element twice",
+            "We maintain O(n) time complexity by doing single pass",
+            "Each number is processed exactly once"
+        ]
+    },
+    "anti_patterns": [
+        {
+            "pattern": "Nested loop approach",
+            "why_wrong": "Results in O(n²) time complexity, which is inefficient",
+            "correction": "Use hash table for O(1) lookups"
+        },
+        {
+            "pattern": "Sorting first",
+            "why_wrong": "Unnecessarily increases time complexity to O(n log n) and loses original indices",
+            "correction": "Use hash table approach which maintains O(n)"
+        },
+        {
+            "pattern": "Using same element twice",
+            "why_wrong": "Violates problem constraint of using each element once",
+            "correction": "Ensure indices are different when returning solution"
+        },
+        {
+            "pattern": "Linear search for complement",
+            "why_wrong": "Results in O(n²) time complexity",
+            "correction": "Use hash table for O(1) complement lookup"
+        }
+    ],
+    "validation_examples": {
+        "incorrect_solutions": [
+            {
+                "code": "def two_sum(nums, target):\n    for i in range(len(nums)):\n        for j in range(len(nums)):\n            if nums[i] + nums[j] == target:\n                return [i,j]",
+                "why_wrong": "Uses O(n²) approach with nested loops",
+                "feedback": "Use hash table to achieve O(n) time complexity"
+            },
+            {
+                "code": "def two_sum(nums, target):\n    nums.sort()\n    left, right = 0, len(nums)-1\n    while left < right:\n        if nums[left] + nums[right] == target:\n            return [left,right]",
+                "why_wrong": "Sorting loses original indices and increases complexity",
+                "feedback": "Original indices are needed; use hash table instead"
+            }
+        ],
+        "partially_correct": [
+            {
+                "code": "def two_sum(nums, target):\n    seen = {}\n    for i in range(len(nums)):\n        seen[nums[i]] = i\n    for i in range(len(nums)):\n        if target-nums[i] in seen:\n            return [i, seen[target-nums[i]]]",
+                "issues": [
+                    "Uses two passes through array instead of one",
+                    "Might use same element twice if not careful"
+                ],
+                "feedback": "Can be done in single pass while checking complement"
+            },
+            {
+                "code": "def two_sum(nums, target):\n    seen = {}\n    for i in range(len(nums)):\n        if target-nums[i] in seen:\n            return [seen[target-nums[i]], i]\n        seen[nums[i]] = i",
+                "issues": [
+                    "No input validation",
+                    "No handling of edge cases"
+                ],
+                "feedback": "Add input validation and edge case handling"
+            }
+        ]
+    }
+} 

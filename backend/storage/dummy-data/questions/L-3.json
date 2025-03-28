@@ -1,0 +1,266 @@
+{
+    "question_id": 3,
+    "metadata": {
+        "difficulty": "medium",
+        "categories": ["string", "sliding window", "hash table"],
+        "time_limit_ms": 1000,
+        "memory_limit_mb": 256,
+        "version": "1.0",
+        "last_modified": "2024-03-20"
+    },
+    "title": "Longest Substring Without Repeating Characters",
+    "description": "Given a string s, find the length of the longest substring without duplicate characters.",
+    "constraints": [
+        "1 <= s.length <= 5 * 10^4",
+        "s consists of English letters, digits, symbols, and spaces."
+    ],
+    "complexity_requirements": {
+        "time": "O(n)",
+        "space": "O(min(m,n))"
+    },
+    "test_cases": [
+        {
+            "input": {
+                "value": "abcabcbb",
+                "type": "string"
+            },
+            "output": {
+                "value": 3,
+                "type": "integer"
+            },
+            "explanation": "The longest substring without repeating characters is 'abc'.",
+            "is_performance_test": false
+        },
+        {
+            "input": {
+                "value": "pwwkew",
+                "type": "string"
+            },
+            "output": {
+                "value": 3,
+                "type": "integer"
+            },
+            "explanation": "The longest substring without repeating characters is 'wke'.",
+            "is_performance_test": false
+        },
+        {
+            "input": {
+                "value": "dvdf",
+                "type": "string"
+            },
+            "output": {
+                "value": 3,
+                "type": "integer"
+            },
+            "explanation": "The longest substring without repeating characters is 'vdf'.",
+            "is_performance_test": false
+        },
+        {
+            "input": {
+                "value": "tmmzuxt",
+                "type": "string"
+            },
+            "output": {
+                "value": 5,
+                "type": "integer"
+            },
+            "explanation": "The longest substring without repeating characters is 'mzuxt'.",
+            "is_performance_test": false
+        },
+        {
+            "input": {
+                "value": "",
+                "type": "string"
+            },
+            "output": {
+                "value": 0,
+                "type": "integer"
+            },
+            "explanation": "The input string is empty, so the longest substring without duplicate characters is 0.",
+            "is_performance_test": false
+        },
+        {
+            "input": {
+                "value": "abcdef",
+                "type": "string"
+            },
+            "output": {
+                "value": 6,
+                "type": "integer"
+            },
+            "explanation": "All characters are unique, so the entire string is the longest substring.",
+            "is_performance_test": false
+        },
+        {
+            "input": {
+                "value": "bbbbb",
+                "type": "string"
+            },
+            "output": {
+                "value": 1,
+                "type": "integer"
+            },
+            "explanation": "The longest substring without repeating characters is 'b'.",
+            "is_performance_test": false
+        },
+        {
+            "input": {
+                "value": " ",
+                "type": "string"
+            },
+            "output": {
+                "value": 1,
+                "type": "integer"
+            },
+            "explanation": "A single space is considered a valid substring of length 1.",
+            "is_performance_test": false
+        }
+    ],
+    "pseudocode_requirements": {
+        "allowed_constructs": ["loops", "conditionals", "variables", "basic operations"],
+        "required_concepts": ["sliding window", "tracking seen elements"],
+        "validation_rules": {
+            "syntax_flexibility": "high",
+            "variable_naming": "flexible"
+        }
+    },
+    "boilerplate_solution": {
+        "language": "python",
+        "pseudocode": "class Solution:\n    def length_of_longest_substring(self, s: str) -> int:\n        # TODO: Implement this function"
+    },
+    "valid_solutions": [
+        {
+            "approach": "sliding window",
+            "time_complexity": "O(n)",
+            "space_complexity": "O(min(m,n))",
+            "pseudocode": "class Solution:\n    def length_of_longest_substring(self, s: str) -> int:\n        if not s:\n            return 0\n        left_pointer = 0\n        max_length = 0\n        seen_chars = {}\n        for right_pointer, char in enumerate(s):\n            if char in seen_chars and seen_chars[char] >= left_pointer:\n                left_pointer = seen_chars[char] + 1\n            seen_chars[char] = right_pointer\n            max_length = max(max_length, right_pointer - left_pointer + 1)\n        return max_length"
+        },
+        {
+            "approach": "hash set",
+            "time_complexity": "O(n)",
+            "space_complexity": "O(min(m,n))",
+            "pseudocode": "class Solution:\n    def length_of_longest_substring(self, s: str) -> int:\n        if not s:\n            return 0\n        seen_chars = set()\n        left_pointer = 0\n        max_length = 0\n        for right_pointer in range(len(s)):\n            while s[right_pointer] in seen_chars:\n                seen_chars.remove(s[left_pointer])\n                left_pointer += 1\n            seen_chars.add(s[right_pointer])\n            max_length = max(max_length, right_pointer - left_pointer + 1)\n        return max_length"
+        }
+    ],
+    "evaluation_criteria": {
+        "critical_requirements": [
+            "Must handle empty strings",
+            "Must maintain correct window boundaries",
+            "Must track character frequencies accurately",
+            "Must handle single-character strings",
+            "Must handle strings with all unique characters",
+            "Must handle strings with all repeated characters"
+        ],
+        "common_mistakes": [
+            {
+                "pattern": "Not checking for empty string",
+                "issue": "Fails on edge case",
+                "suggestion": "Add initial check: if not s: return 0"
+            },
+            {
+                "pattern": "Using only a set without position tracking",
+                "issue": "May miss optimal substrings when updating window",
+                "suggestion": "Use dictionary to track character positions"
+            }
+        ],
+        "scoring_rubric": {
+            "correctness": {
+                "weight": 40,
+                "criteria": [
+                    "Handles all test cases",
+                    "Maintains proper window state",
+                    "Correctly identifies longest substring",
+                    "Handles edge cases"
+                ]
+            },
+            "complexity": {
+                "weight": 30,
+                "criteria": [
+                    "Achieves O(n) time complexity",
+                    "Uses O(min(m,n)) space",
+                    "Avoids unnecessary iterations"
+                ]
+            },
+            "implementation": {
+                "weight": 30,
+                "criteria": [
+                    "Proper sliding window technique",
+                    "Efficient character tracking",
+                    "Clear variable naming",
+                    "Logical code organization"
+                ]
+            }
+        }
+    },
+    "solution_breakdown": {
+        "key_steps": [
+            {
+                "step": "Initialize sliding window pointers",
+                "purpose": "Track current substring boundaries"
+            },
+            {
+                "step": "Track seen characters",
+                "purpose": "Detect duplicates efficiently using hash table/set"
+            },
+            {
+                "step": "Update left pointer on duplicate",
+                "purpose": "Move window to exclude duplicate character"
+            },
+            {
+                "step": "Track maximum length",
+                "purpose": "Keep record of longest valid substring found"
+            }
+        ],
+        "invariants": [
+            "Window [left, right] always contains no duplicates",
+            "seen_chars always contains accurate last positions",
+            "max_length always holds the longest valid substring length seen so far"
+        ]
+    },
+    "anti_patterns": [
+        {
+            "pattern": "Nested loops over the string",
+            "why_wrong": "Results in O(n²) time complexity",
+            "correction": "Use sliding window with a single pass"
+        },
+        {
+            "pattern": "Not updating left pointer correctly",
+            "why_wrong": "May miss valid substrings",
+            "correction": "Update left pointer to position after last occurrence of duplicate"
+        },
+        {
+            "pattern": "Using list/array for character lookup",
+            "why_wrong": "Leads to O(n) lookup time instead of O(1)",
+            "correction": "Use hash table/set for O(1) lookup time"
+        },
+        {
+            "pattern": "Resetting window on every duplicate",
+            "why_wrong": "Misses potential longer substrings",
+            "correction": "Move left pointer only to position after last duplicate"
+        }
+    ],
+    "validation_examples": {
+        "incorrect_solutions": [
+            {
+                "code": "def length_of_longest_substring(s):\n    return len(set(s))",
+                "why_wrong": "Only counts unique characters, doesn't consider order",
+                "feedback": "Need to consider character sequence, not just uniqueness"
+            },
+            {
+                "code": "def length_of_longest_substring(s):\n    max_len = 0\n    for i in range(len(s)):\n        seen = set()\n        for j in range(i, len(s)):\n            if s[j] in seen: break\n            seen.add(s[j])\n            max_len = max(max_len, j-i+1)\n    return max_len",
+                "why_wrong": "O(n²) time complexity due to nested loops",
+                "feedback": "Use sliding window to achieve O(n) time complexity"
+            }
+        ],
+        "partially_correct": [
+            {
+                "code": "def length_of_longest_substring(s):\n    seen = set()\n    max_len = left = 0\n    for c in s:\n        if c in seen:\n            seen.clear()\n        seen.add(c)\n        max_len = max(max_len, len(seen))\n    return max_len",
+                "issues": [
+                    "Incorrectly resets entire window on duplicate",
+                    "Doesn't maintain proper substring boundaries"
+                ],
+                "feedback": "Should only remove characters up to the duplicate instead of clearing entire set"
+            }
+        ]
+    }
+}

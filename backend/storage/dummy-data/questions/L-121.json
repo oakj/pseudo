@@ -1,0 +1,244 @@
+{
+    "question_id": 121,
+    "metadata": {
+        "difficulty": "easy",
+        "categories": ["array", "dynamic programming"],
+        "time_limit_ms": 1000,
+        "memory_limit_mb": 256,
+        "version": "1.0",
+        "last_modified": "2024-03-21"
+    },
+    "title": "Best Time to Buy and Sell Stock",
+    "description": "You are given an array prices where prices[i] is the price of a given stock on the ith day. You want to maximize your profit by choosing a single day to buy one stock and choosing a different day in the future to sell that stock. Return the maximum profit you can achieve from this transaction. If you cannot achieve any profit, return 0.",
+    "constraints": [
+        "1 <= prices.length <= 10^5",
+        "0 <= prices[i] <= 10^4",
+        "You must buy before you sell",
+        "You can only make one transaction"
+    ],
+    "complexity_requirements": {
+        "time": "O(n)",
+        "space": "O(1)"
+    },
+    "test_cases": [
+        {
+            "input": {
+                "value": [7,1,5,3,6,4],
+                "type": "array"
+            },
+            "output": {
+                "value": 5,
+                "type": "integer"
+            },
+            "explanation": "Buy on day 2 (price = 1) and sell on day 5 (price = 6), profit = 6-1 = 5",
+            "is_performance_test": false
+        },
+        {
+            "input": {
+                "value": [7,6,4,3,1],
+                "type": "array"
+            },
+            "output": {
+                "value": 0,
+                "type": "integer"
+            },
+            "explanation": "No profitable transaction possible",
+            "is_performance_test": false
+        },
+        {
+            "input": {
+                "value": [2,4,1],
+                "type": "array"
+            },
+            "output": {
+                "value": 2,
+                "type": "integer"
+            },
+            "explanation": "Buy on day 1 (price = 2) and sell on day 2 (price = 4), profit = 4-2 = 2",
+            "is_performance_test": false
+        },
+        {
+            "input": {
+                "value": [1],
+                "type": "array"
+            },
+            "output": {
+                "value": 0,
+                "type": "integer"
+            },
+            "explanation": "Single day, no transaction possible",
+            "is_performance_test": false
+        },
+        {
+            "input": {
+                "value": Array.from({length: 100000}, (_, i) => i % 2 === 0 ? 1 : 2),
+                "type": "array"
+            },
+            "output": {
+                "value": 1,
+                "type": "integer"
+            },
+            "explanation": "Large input with alternating prices",
+            "is_performance_test": true
+        }
+    ],
+    "pseudocode_requirements": {
+        "allowed_constructs": ["loops", "conditionals", "variables", "basic operations"],
+        "required_concepts": ["array traversal", "tracking minimum", "maximum difference"],
+        "validation_rules": {
+            "syntax_flexibility": "high",
+            "variable_naming": "flexible"
+        }
+    },
+    "boilerplate_solution": {
+        "language": "python",
+        "pseudocode": "class Solution:\n    def max_profit(self, prices: List[int]) -> int:\n        # TODO: Implement this function\n        # Return maximum profit possible from one transaction"
+    },
+    "valid_solutions": [
+        {
+            "approach": "one pass",
+            "time_complexity": "O(n)",
+            "space_complexity": "O(1)",
+            "pseudocode": "function maxProfit(prices):\n    min_price = infinity\n    max_profit = 0\n    \n    for price in prices:\n        min_price = min(min_price, price)\n        current_profit = price - min_price\n        max_profit = max(max_profit, current_profit)\n    \n    return max_profit"
+        }
+    ],
+    "evaluation_criteria": {
+        "critical_requirements": [
+            "Must handle arrays of any length",
+            "Must return 0 if no profit possible",
+            "Must maintain O(1) space complexity",
+            "Must process array in one pass",
+            "Must handle edge cases (single element, decreasing prices)",
+            "Must buy before selling"
+        ],
+        "common_mistakes": [
+            {
+                "pattern": "Using nested loops",
+                "issue": "Results in O(n²) time complexity",
+                "suggestion": "Track minimum price seen so far instead"
+            },
+            {
+                "pattern": "Using extra arrays",
+                "issue": "Violates O(1) space requirement",
+                "suggestion": "Use only variables for tracking min price and max profit"
+            },
+            {
+                "pattern": "Not initializing properly",
+                "issue": "May miss edge cases",
+                "suggestion": "Initialize min_price to infinity and max_profit to 0"
+            }
+        ],
+        "scoring_rubric": {
+            "correctness": {
+                "weight": 40,
+                "criteria": [
+                    "Returns correct maximum profit",
+                    "Handles all test cases",
+                    "Maintains buy before sell order",
+                    "Handles edge cases"
+                ]
+            },
+            "complexity": {
+                "weight": 30,
+                "criteria": [
+                    "Achieves O(n) time complexity",
+                    "Maintains O(1) space complexity",
+                    "Single pass through array"
+                ]
+            },
+            "implementation": {
+                "weight": 30,
+                "criteria": [
+                    "Proper variable initialization",
+                    "Efficient profit calculation",
+                    "Clear variable naming",
+                    "Logical code organization"
+                ]
+            }
+        }
+    },
+    "solution_breakdown": {
+        "key_steps": [
+            {
+                "step": "Initialize tracking variables",
+                "purpose": "Set up min_price and max_profit trackers"
+            },
+            {
+                "step": "Iterate through prices",
+                "purpose": "Process each price in single pass"
+            },
+            {
+                "step": "Update minimum price",
+                "purpose": "Track lowest buying opportunity seen so far"
+            },
+            {
+                "step": "Calculate current profit",
+                "purpose": "Determine profit if we sell at current price"
+            },
+            {
+                "step": "Update maximum profit",
+                "purpose": "Track best profit opportunity found"
+            }
+        ],
+        "invariants": [
+            "min_price always holds minimum price seen so far",
+            "max_profit always holds maximum achievable profit",
+            "Current price is always compared against previous minimum",
+            "Buy day always comes before sell day"
+        ]
+    },
+    "anti_patterns": [
+        {
+            "pattern": "Nested loop comparison",
+            "why_wrong": "O(n²) time complexity is inefficient",
+            "correction": "Use single pass with minimum price tracking"
+        },
+        {
+            "pattern": "Sorting array",
+            "why_wrong": "Loses day ordering information",
+            "correction": "Maintain original order and track minimum"
+        },
+        {
+            "pattern": "Using additional arrays",
+            "why_wrong": "Violates O(1) space requirement",
+            "correction": "Use only variables for tracking state"
+        },
+        {
+            "pattern": "Multiple array passes",
+            "why_wrong": "Inefficient use of time",
+            "correction": "Solve in single pass through array"
+        }
+    ],
+    "validation_examples": {
+        "incorrect_solutions": [
+            {
+                "code": "def maxProfit(prices):\n    max_profit = 0\n    for i in range(len(prices)):\n        for j in range(i+1, len(prices)):\n            profit = prices[j] - prices[i]\n            max_profit = max(max_profit, profit)\n    return max_profit",
+                "why_wrong": "Uses O(n²) approach with nested loops",
+                "feedback": "Use single pass approach tracking minimum price"
+            },
+            {
+                "code": "def maxProfit(prices):\n    return max(prices) - min(prices) if len(prices) > 1 else 0",
+                "why_wrong": "Doesn't consider order of prices",
+                "feedback": "Need to ensure buy price comes before sell price"
+            }
+        ],
+        "partially_correct": [
+            {
+                "code": "def maxProfit(prices):\n    min_price = prices[0]\n    max_profit = 0\n    for price in prices:\n        min_price = min(min_price, price)\n        max_profit = max(max_profit, price - min_price)\n    return max_profit",
+                "issues": [
+                    "Doesn't handle empty array",
+                    "Assumes first element exists"
+                ],
+                "feedback": "Add input validation and handle empty array case"
+            },
+            {
+                "code": "def maxProfit(prices):\n    if len(prices) < 2: return 0\n    profits = [prices[i+1] - prices[i] for i in range(len(prices)-1)]\n    return max(sum(x for x in profits if x > 0), 0)",
+                "issues": [
+                    "Uses extra space unnecessarily",
+                    "More complex than needed"
+                ],
+                "feedback": "Can be solved with simple variables instead of arrays"
+            }
+        ]
+    }
+} 

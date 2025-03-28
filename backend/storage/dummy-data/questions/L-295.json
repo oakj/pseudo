@@ -1,0 +1,224 @@
+{
+    "question_id": 295,
+    "metadata": {
+        "difficulty": "hard",
+        "categories": ["heap", "design", "data stream", "two heaps"],
+        "time_limit_ms": 1500,
+        "memory_limit_mb": 256,
+        "version": "1.0",
+        "last_modified": "2024-03-21"
+    },
+    "title": "Find Median from Data Stream",
+    "description": "Design a data structure that supports adding integers from a data stream and finding the median of all elements so far. Implement the MedianFinder class:\n- MedianFinder() initializes the MedianFinder object.\n- void addNum(int num) adds the integer num from the data stream to the data structure.\n- double findMedian() returns the median of all elements so far. If the count of elements is even, return the average of the two middle elements.",
+    "constraints": [
+        "-10^5 <= num <= 10^5",
+        "At most 5 × 10^4 calls will be made to addNum and findMedian",
+        "There will be at least one element in the data structure when findMedian is called",
+        "Method calls will be valid"
+    ],
+    "complexity_requirements": {
+        "time": {
+            "addNum": "O(log n)",
+            "findMedian": "O(1)"
+        },
+        "space": "O(n)"
+    },
+    "test_cases": [
+        {
+            "input": {
+                "operations": ["MedianFinder", "addNum", "addNum", "findMedian", "addNum", "findMedian"],
+                "values": [[], [1], [2], [], [3], []],
+                "type": "operations"
+            },
+            "output": {
+                "value": [null, null, null, 1.5, null, 2.0],
+                "type": "array"
+            },
+            "explanation": "Basic operations with even and odd counts",
+            "is_performance_test": false
+        },
+        {
+            "input": {
+                "operations": ["MedianFinder", "addNum", "findMedian"],
+                "values": [[], [1], []],
+                "type": "operations"
+            },
+            "output": {
+                "value": [null, null, 1.0],
+                "type": "array"
+            },
+            "explanation": "Single element median",
+            "is_performance_test": false
+        },
+        {
+            "input": {
+                "operations": ["MedianFinder", "addNum", "addNum", "addNum", "addNum", "findMedian"],
+                "values": [[], [5], [4], [3], [2], []],
+                "type": "operations"
+            },
+            "output": {
+                "value": [null, null, null, null, null, 3.5],
+                "type": "array"
+            },
+            "explanation": "Even number of elements",
+            "is_performance_test": false
+        },
+        {
+            "operations": generateLargeOperations(50000),
+            "values": generateLargeValues(50000),
+            "type": "operations",
+            "explanation": "Maximum number of operations",
+            "is_performance_test": true
+        }
+    ],
+    "pseudocode_requirements": {
+        "allowed_constructs": ["heap", "priority queue", "variables", "conditionals"],
+        "required_concepts": ["two heaps pattern", "median maintenance"],
+        "validation_rules": {
+            "syntax_flexibility": "high",
+            "variable_naming": "flexible"
+        }
+    },
+    "boilerplate_solution": {
+        "language": "python",
+        "pseudocode": "class MedianFinder:\n    def __init__(self) -> None:\n        # TODO: Initialize your data structure here\n\n    def add_num(self, num: int) -> None:\n        # TODO: Add number to data structure\n\n    def find_median(self) -> float:\n        # TODO: Return median of current numbers"
+    },
+    "valid_solutions": [
+        {
+            "approach": "two heaps",
+            "time_complexity": {
+                "addNum": "O(log n)",
+                "findMedian": "O(1)"
+            },
+            "space_complexity": "O(n)",
+            "pseudocode": "class MedianFinder:\n    function __init__():\n        self.small = max_heap()  # numbers <= median\n        self.large = min_heap()  # numbers > median\n    \n    function addNum(num):\n        if self.small.empty() or num <= -self.small.top():\n            self.small.push(-num)\n        else:\n            self.large.push(num)\n        \n        # Balance heaps\n        if self.small.size() > self.large.size() + 1:\n            self.large.push(-self.small.pop())\n        elif self.large.size() > self.small.size():\n            self.small.push(-self.large.pop())\n    \n    function findMedian():\n        if self.small.size() > self.large.size():\n            return -self.small.top()\n        return (-self.small.top() + self.large.top()) / 2.0"
+        }
+    ],
+    "evaluation_criteria": {
+        "critical_requirements": [
+            "Must maintain correct median at all times",
+            "Must handle both even and odd counts",
+            "Must achieve required time complexities",
+            "Must handle duplicate values",
+            "Must maintain heap balance",
+            "Must handle single element case"
+        ],
+        "common_mistakes": [
+            {
+                "pattern": "Using sorted array",
+                "issue": "O(n) insertion time",
+                "suggestion": "Use two heaps for O(log n) insertion"
+            },
+            {
+                "pattern": "Single heap approach",
+                "issue": "Cannot efficiently find median",
+                "suggestion": "Use two heaps to track middle elements"
+            },
+            {
+                "pattern": "Incorrect heap balance",
+                "issue": "May lead to wrong median",
+                "suggestion": "Maintain size difference ≤ 1"
+            }
+        ],
+        "scoring_rubric": {
+            "correctness": {
+                "weight": 40,
+                "criteria": [
+                    "Correct median calculation",
+                    "Proper heap balance",
+                    "Handles all cases",
+                    "Maintains data integrity"
+                ]
+            },
+            "complexity": {
+                "weight": 30,
+                "criteria": [
+                    "O(log n) addNum",
+                    "O(1) findMedian",
+                    "Efficient space usage"
+                ]
+            },
+            "implementation": {
+                "weight": 30,
+                "criteria": [
+                    "Clean heap operations",
+                    "Proper balancing logic",
+                    "Clear variable naming",
+                    "Logical code organization"
+                ]
+            }
+        }
+    },
+    "solution_breakdown": {
+        "key_steps": [
+            {
+                "step": "Initialize heaps",
+                "purpose": "Set up max-heap for smaller half and min-heap for larger half"
+            },
+            {
+                "step": "Add new number",
+                "purpose": "Insert into appropriate heap based on current median"
+            },
+            {
+                "step": "Balance heaps",
+                "purpose": "Ensure size difference is at most 1"
+            },
+            {
+                "step": "Calculate median",
+                "purpose": "Return middle value(s) based on heap sizes"
+            }
+        ],
+        "invariants": [
+            "Max-heap contains all elements ≤ median",
+            "Min-heap contains all elements > median",
+            "Heap size difference is at most 1",
+            "Larger heap never has more than smaller heap + 1 elements"
+        ]
+    },
+    "anti_patterns": [
+        {
+            "pattern": "Sorting on each insert",
+            "why_wrong": "O(n log n) time complexity per insertion",
+            "correction": "Use heap operations for O(log n)"
+        },
+        {
+            "pattern": "Storing all elements in array",
+            "why_wrong": "Requires sorting or linear search",
+            "correction": "Use two heaps to track median"
+        },
+        {
+            "pattern": "Recalculating median",
+            "why_wrong": "Inefficient for large datasets",
+            "correction": "Maintain median with heap operations"
+        },
+        {
+            "pattern": "Using single heap",
+            "why_wrong": "Cannot efficiently access middle elements",
+            "correction": "Use two heaps for O(1) median access"
+        }
+    ],
+    "validation_examples": {
+        "incorrect_solutions": [
+            {
+                "code": "class MedianFinder:\n    def __init__(self):\n        self.nums = []\n    def addNum(self, num):\n        self.nums.append(num)\n        self.nums.sort()\n    def findMedian(self):\n        n = len(self.nums)\n        if n % 2:\n            return self.nums[n//2]\n        return (self.nums[n//2-1] + self.nums[n//2]) / 2.0",
+                "why_wrong": "O(n log n) insertion time due to sorting",
+                "feedback": "Use two heaps to maintain sorted order efficiently"
+            },
+            {
+                "code": "class MedianFinder:\n    def __init__(self):\n        self.heap = []\n    def addNum(self, num):\n        heapq.heappush(self.heap, num)\n    def findMedian(self):\n        temp = self.heap.copy()\n        n = len(temp)\n        for _ in range(n//2):\n            heapq.heappop(temp)\n        if n % 2:\n            return heapq.heappop(temp)\n        return (heapq.heappop(temp) + temp[0]) / 2.0",
+                "why_wrong": "O(n) time for findMedian",
+                "feedback": "Use two heaps to access median elements in O(1)"
+            }
+        ],
+        "partially_correct": [
+            {
+                "code": "class MedianFinder:\n    def __init__(self):\n        self.small = []\n        self.large = []\n    def addNum(self, num):\n        heapq.heappush(self.small, -num)\n        heapq.heappush(self.large, -heapq.heappop(self.small))\n        if len(self.large) > len(self.small):\n            heapq.heappush(self.small, -heapq.heappop(self.large))\n    def findMedian(self):\n        if len(self.small) > len(self.large):\n            return -self.small[0]\n        return (-self.small[0] + self.large[0]) / 2.0",
+                "issues": [
+                    "Unnecessary heap operations",
+                    "Could optimize balancing logic"
+                ],
+                "feedback": "Add comparison before pushing to reduce heap operations"
+            }
+        ]
+    }
+} 

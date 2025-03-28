@@ -1,0 +1,22 @@
+{
+    "user_id": "af6eb13c-24d3-4622-8997-b386a076ede1",
+    "question_id": "087405c7-79ca-490d-bbcb-b7d31f72112a",
+    "submission": {
+        "solution": "",
+        "timestamp": "2024-03-21T14:00:00Z"
+    },
+    "hint_chat": {
+        "messages": [
+            {
+                "from": "user",
+                "message": "Can you give me a hint on how to start?",
+                "timestamp": "2024-03-21T14:00:00Z"
+            },
+            {
+                "from": "hint_bot",
+                "message": "Think about using a sliding window approach. What do you need to track to find the longest substring without repeating characters?",
+                "timestamp": "2024-03-21T14:00:05Z"
+            }
+        ]
+    }
+} 

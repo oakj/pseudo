@@ -1,0 +1,22 @@
+{
+    "user_id": "af6eb13c-24d3-4622-8997-b386a076ede1",
+    "question_id": "8004809c-4523-4daf-bb2d-8344c4f1cb54",
+    "submission": {
+        "solution": "",
+        "timestamp": "2024-03-21T21:00:00Z"
+    },
+    "hint_chat": {
+        "messages": [
+            {
+                "from": "user",
+                "message": "What data structures should I use to efficiently find the median?",
+                "timestamp": "2024-03-21T21:00:00Z"
+            },
+            {
+                "from": "hint_bot",
+                "message": "Consider using two heaps - a max heap for the lower half and a min heap for the upper half. How would this help maintain the median?",
+                "timestamp": "2024-03-21T21:00:05Z"
+            }
+        ]
+    }
+} 
