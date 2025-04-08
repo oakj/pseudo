@@ -87,6 +87,7 @@ Refer to ./instructions/instructions.md for high level details on the project su
     - Consider a freemium-premium model where flashcards and games are free and the pseudocode evaluator is premium.
 - [ ] Consider adding a "Flashcard" feature to the app.
 - [ ] Create a markdown file discussing major flows in the app. Emphasis on how data is inserted, updated, fetched, indexed, cached, stored, and served to the user.
+    - [ ] Consider adding a "pattern matching" flow to the pseudocode evaluator. Intent is to avoid going to an LLM if we don't need to.
 
 ## On-going Changes To Consider
 | Status |
