@@ -1,14 +1,14 @@
-import { Tabs } from "expo-router"
-import { Ionicons } from "@expo/vector-icons"
+import React from 'react';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+
+const Tabs = createBottomTabNavigator();
 
 export default function TabsLayout() {
   return (
-    <Tabs
+    <Tabs.Navigator
       screenOptions={{
-        headerStyle: {
-          backgroundColor: '#FFFFFF',
-        },
-        headerTintColor: '#000000',
+        headerShown: false,
         tabBarStyle: {
           backgroundColor: '#FFFFFF',
         },
@@ -30,6 +30,6 @@ export default function TabsLayout() {
           tabBarIcon: ({ color, size }) => <Ionicons name="person-outline" size={size} color={color} />,
         }}
       />
-    </Tabs>
+    </Tabs.Navigator>
   )
-}
+} 

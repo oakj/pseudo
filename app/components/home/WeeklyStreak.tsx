@@ -18,7 +18,7 @@ export function WeeklyStreak() {
             <View
               className={cn(
                 "w-6 h-6 rounded-full",
-                streakData[index] ? "bg-success-500" : "bg-error-500"
+                streakData[index] ? "bg-green-500" : "bg-red-500"
               )}
             />
           </View>
@@ -26,4 +26,4 @@ export function WeeklyStreak() {
       </View>
     </View>
   )
-}
+} 

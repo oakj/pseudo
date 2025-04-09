@@ -2,7 +2,7 @@ import { View, Pressable } from "react-native"
 import { Card } from '../ui/card'
 import { Text } from '../ui/text'
 import { Ionicons } from "@expo/vector-icons"
-import { cn } from "~/lib/utils"
+import { cn } from "~/app/lib/utils"
 
 // Define valid icon types to fix the type error
 type CollectionType = {

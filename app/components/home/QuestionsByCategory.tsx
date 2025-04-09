@@ -3,33 +3,8 @@ import { Text } from "../ui/text"
 import { Badge } from "../ui/badge"
 import { cn } from "~/app/lib/utils"
 
-interface Question {
-  name: string
-  completed: boolean
-  time: string
-}
-
-interface QuestionsByCategoryProps {
-  type: "difficulty" | "pattern"
-}
-
 export function QuestionsByCategory({ type }: QuestionsByCategoryProps) {
-  const questions: Question[] = type === "difficulty"
-    ? [
-        { name: "Two Pointer", completed: true, time: "30s" },
-        { name: "Two Sum", completed: false, time: "30s" },
-        { name: "Pair with Target Sum", completed: true, time: "30s" },
-        { name: "Trapping Rain Water", completed: false, time: "30s" },
-        { name: "Back Tracking", completed: true, time: "30s" },
-        { name: "Permutations", completed: false, time: "30s" },
-        { name: "Sudoku Solver", completed: false, time: "30s" },
-      ]
-    : [
-        { name: "Binary Search", completed: true, time: "30s" },
-        { name: "Sliding Window", completed: false, time: "30s" },
-        { name: "Dynamic Programming", completed: true, time: "30s" },
-        { name: "Greedy", completed: false, time: "30s" },
-      ]
+  // ... existing code
 
   return (
     <View className="bg-white rounded-xl p-2 shadow-soft">
@@ -40,7 +15,7 @@ export function QuestionsByCategory({ type }: QuestionsByCategoryProps) {
               className={cn(
                 "w-5 h-5 rounded-full mr-3",
                 question.completed 
-                  ? "bg-success-500" 
+                  ? "bg-green-500" // Changed from success-500
                   : "bg-white border border-gray-200"
               )}
             />
@@ -53,4 +28,4 @@ export function QuestionsByCategory({ type }: QuestionsByCategoryProps) {
       ))}
     </View>
   )
-}
+} 

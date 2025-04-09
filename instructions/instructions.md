@@ -30,6 +30,40 @@ You will be using the following technologies:
 - TypeScript: https://www.typescriptlang.org/docs/
 - NativeWind: https://www.nativewind.dev/
 - React Native Reusables: https://rnr-docs.vercel.app/getting-started/initial-setup/
+    - Components:
+        - Accordion: https://rnr-docs.vercel.app/components/accordion
+        - Alert: https://rnr-docs.vercel.app/components/alert
+        - Alert Dialog: https://rnr-docs.vercel.app/components/alert-dialog
+        - Aspect Ratio: https://rnr-docs.vercel.app/components/aspect-ratio
+        - Avatar: https://rnr-docs.vercel.app/components/avatar
+        - Badge: https://rnr-docs.vercel.app/components/badge
+        - Button: https://rnr-docs.vercel.app/components/button
+        - Card: https://rnr-docs.vercel.app/components/card
+        - Checkbox: https://rnr-docs.vercel.app/components/checkbox
+        - Collapsible: https://rnr-docs.vercel.app/components/collapsible
+        - Context Menu: https://rnr-docs.vercel.app/components/context-menu
+        - Dialog: https://rnr-docs.vercel.app/components/dialog
+        - Dropdown Menu: https://rnr-docs.vercel.app/components/dropdown-menu
+        - Hover Card: https://rnr-docs.vercel.app/components/hover-card
+        - Input: https://rnr-docs.vercel.app/components/input
+        - Label: https://rnr-docs.vercel.app/components/label
+        - Menubar: https://rnr-docs.vercel.app/components/menubar
+        - Navigation Menu: https://rnr-docs.vercel.app/components/navigation-menu
+        - Popover: https://rnr-docs.vercel.app/components/popover
+        - Progress: https://rnr-docs.vercel.app/components/progress
+        - Radio Group: https://rnr-docs.vercel.app/components/radio-group
+        - Select: https://rnr-docs.vercel.app/components/select
+        - Separator: https://rnr-docs.vercel.app/components/separator
+        - Skeleton: https://rnr-docs.vercel.app/components/skeleton
+        - Switch: https://rnr-docs.vercel.app/components/switch
+        - Table: https://rnr-docs.vercel.app/components/table
+        - Tabs: https://rnr-docs.vercel.app/components/tabs
+        - Text: https://rnr-docs.vercel.app/components/text
+        - Textarea: https://rnr-docs.vercel.app/components/textarea
+        - Toggle: https://rnr-docs.vercel.app/components/toggle
+        - Toggle Group: https://rnr-docs.vercel.app/components/toggle-group
+        - Tooltip: https://rnr-docs.vercel.app/components/tooltip
+        - Typography: https://rnr-docs.vercel.app/components/typography
 - Supabase: https://supabase.com/docs
 - PostgreSQL: https://www.postgresql.org/docs/
 
