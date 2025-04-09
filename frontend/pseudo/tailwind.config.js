@@ -30,6 +30,20 @@ module.exports = {
         indicator: {
           active: '#0000FF', // Blue for active indicators
           inactive: '#808080', // Gray for inactive indicators
+        },
+        success: {
+          500: '#22C55E',  // or your preferred green color
+        },
+        error: {
+          500: '#EF4444',  // or your preferred red color
+        },
+        accent: {
+          DEFAULT: '#3B82F6',  // or your preferred accent color
+        },
+        gray: {
+          200: '#E5E7EB',
+          400: '#9CA3AF',
+          800: '#1F2937',
         }
       },
     },
