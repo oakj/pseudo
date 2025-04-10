@@ -1,8 +1,12 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = YOUR_REACT_NATIVE_SUPABASE_URL
-const supabaseAnonKey = YOUR_REACT_NATIVE_SUPABASE_ANON_KEY
+const supabaseUrl = process.env.REACT_NATIVE_SUPABASE_URL ?? ''
+ const supabaseAnonKey = process.env.REACT_NATIVE_SUPABASE_ANON_KEY ?? ''
+ 
+ if (!supabaseUrl || !supabaseAnonKey) {
+   throw new Error('Missing Supabase URL or Anon Key')
+ }
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
@@ -12,6 +16,8 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     detectSessionInUrl: false,
   },
 })
+
+// Auth functions
 
 export const auth = {
     // Email/password signup
@@ -61,3 +67,47 @@ export const auth = {
       return { error }
     }
   }
+
+/* Below functions are temporary. They are intended to be used to fetch test data from supabase. */
+const testUserId = process.env.REACT_NATIVE_SUPABASE_TEST_USER_ID // solvepseudo-test-2@gmail.com
+ 
+export const testData = {
+  // TEST: Profile functions
+  async getProfileByUserId(userId: string) {
+    const { data, error } = await supabase
+      .rpc('selectprofilebyuserid', {
+        p_user_id: testUserId // temporarily hard coding a testUserId
+      })
+    return { data, error }
+  },
+  
+  // TEST: HomeScreen functions
+  async getStreakByUserId(userId: string) {
+    const { data, error } = await supabase
+      .rpc('selectweeklystreakbyuserid', {
+        p_user_id: testUserId // temporarily hard coding a testUserId
+      })
+    return { data, error }
+  },
+
+  // leaving userId as null will return only default collections
+  async getCollectionsByUserId(userId: string) {
+    const { data, error } = await supabase
+      .rpc('selectcollectionsbyuserid', {
+        p_user_id: testUserId // temporarily hard coding a testUserId
+      })
+    return { data, error }
+  },
+
+  async getQuestionsByUserId(userId: string) {
+    const { data, error } = await supabase
+      .rpc('selectquestionsbyuserid', {
+        p_user_id: testUserId // temporarily hard coding a testUserId
+      })
+    return { data, error }
+  }
+}
+
+// TEST: CollectionScreen functions
+
+// TEST: SolveScreen functions

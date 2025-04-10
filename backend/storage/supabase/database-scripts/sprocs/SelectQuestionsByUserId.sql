@@ -5,7 +5,7 @@ RETURNS TABLE (
     question_difficulty VARCHAR(20),
     question_blob_url VARCHAR(255),
     question_leetcode_id VARCHAR(255),
-    design_patterns TEXT[],
+    design_patterns VARCHAR[],
     is_solved BOOLEAN
 ) AS $$
 BEGIN
