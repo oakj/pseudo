@@ -2,34 +2,48 @@ import { View, Pressable } from "react-native"
 import { Card } from '../ui/card'
 import { Text } from '../ui/text'
 import { Ionicons } from "@expo/vector-icons"
-import { cn } from "~/app/lib/utils"
 
-// Define valid icon types to fix the type error
-type CollectionType = {
-  name: string;
-  icon: keyof typeof Ionicons.glyphMap;
+interface Collection {
+  collection_id: string
+  collection_name: string
+  is_default: boolean
+  user_id: string | null
+  default_collection_id: string | null
 }
 
-export function Collections({ onMorePress }: { onMorePress: () => void }) {
-  const collections: CollectionType[] = [
-    { name: "Search", icon: "search" },
-    { name: "Google", icon: "logo-google" },
-    { name: "Bloomberg", icon: "business" },
-    { name: "Custom Group 1", icon: "folder" },
-  ]
+// Map collection names to icons
+const getCollectionIcon = (name: string): keyof typeof Ionicons.glyphMap => {
+  const iconMap: Record<string, keyof typeof Ionicons.glyphMap> = {
+    'Search': 'search',
+    'Google': 'logo-google',
+    'Bloomberg': 'business',
+    'Default': 'folder'
+  }
+  return iconMap[name] || 'folder'
+}
 
+export function Collections({ 
+  collections = [], 
+  onMorePress 
+}: { 
+  collections: Collection[]
+  onMorePress: () => void 
+}) {
   return (
     <View className="flex-row flex-wrap justify-between gap-3">
-      {collections.map((collection, index) => (
-        <Card key={index} className="w-[48%] p-4 items-center justify-center bg-white shadow-soft">
+      {collections.slice(0, 4).map((collection) => (
+        <Card 
+          key={collection.collection_id} 
+          className="w-[48%] p-4 items-center justify-center bg-white shadow-soft"
+        >
           <Ionicons 
-            name={collection.icon} 
+            name={getCollectionIcon(collection.collection_name)} 
             size={24} 
             color="#8A56FF"
             className="mb-2" 
           />
           <Text className="text-sm font-medium text-center text-gray-800">
-            {collection.name}
+            {collection.collection_name}
           </Text>
         </Card>
       ))}

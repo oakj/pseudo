@@ -4,51 +4,61 @@ import { Badge } from "../ui/badge"
 import { cn } from "~/app/lib/utils"
 
 interface Question {
-  name: string
-  completed: boolean
-  time: string
+  question_id: string
+  title: string
+  difficulty: string
+  design_patterns: string[]
+  is_solved: boolean
+  leetcode_id: string
 }
 
 interface QuestionsByCategoryProps {
   type: "difficulty" | "pattern"
+  questions: Question[]
 }
 
-export function QuestionsByCategory({ type }: QuestionsByCategoryProps) {
-  const questions: Question[] = type === "difficulty"
-    ? [
-        { name: "Two Pointer", completed: true, time: "30s" },
-        { name: "Two Sum", completed: false, time: "30s" },
-        { name: "Pair with Target Sum", completed: true, time: "30s" },
-        { name: "Trapping Rain Water", completed: false, time: "30s" },
-        { name: "Back Tracking", completed: true, time: "30s" },
-        { name: "Permutations", completed: false, time: "30s" },
-        { name: "Sudoku Solver", completed: false, time: "30s" },
-      ]
-    : [
-        { name: "Binary Search", completed: true, time: "30s" },
-        { name: "Sliding Window", completed: false, time: "30s" },
-        { name: "Dynamic Programming", completed: true, time: "30s" },
-        { name: "Greedy", completed: false, time: "30s" },
-      ]
+export function QuestionsByCategory({ type, questions = [] }: QuestionsByCategoryProps) {
+  const groupedQuestions = type === "difficulty"
+    ? questions.reduce((acc, q) => {
+        acc[q.difficulty] = acc[q.difficulty] || []
+        acc[q.difficulty].push(q)
+        return acc
+      }, {} as Record<string, Question[]>)
+    : questions.reduce((acc, q) => {
+        q.design_patterns.forEach(pattern => {
+          acc[pattern] = acc[pattern] || []
+          acc[pattern].push(q)
+        })
+        return acc
+      }, {} as Record<string, Question[]>)
 
   return (
     <View className="bg-white rounded-xl p-2 shadow-soft">
-      {questions.map((question, index) => (
-        <View key={index} className="flex-row items-center justify-between py-3 px-4 border-b border-gray-200 last:border-b-0">
-          <View className="flex-row items-center">
-            <View
-              className={cn(
-                "w-5 h-5 rounded-full mr-3",
-                question.completed 
-                  ? "bg-success-500" 
-                  : "bg-white border border-gray-200"
-              )}
-            />
-            <Text className="text-sm text-gray-800">{question.name}</Text>
-          </View>
-          <Badge variant="secondary" className="bg-accent px-2 py-1">
-            <Text className="text-xs text-white">{question.time}</Text>
-          </Badge>
+      {Object.entries(groupedQuestions).map(([category, categoryQuestions]) => (
+        <View key={category}>
+          {categoryQuestions.map((question) => (
+            <View 
+              key={question.question_id} 
+              className="flex-row items-center justify-between py-3 px-4 border-b border-gray-200 last:border-b-0"
+            >
+              <View className="flex-row items-center">
+                <View
+                  className={cn(
+                    "w-5 h-5 rounded-full mr-3",
+                    question.is_solved 
+                      ? "bg-success-500" 
+                      : "bg-white border border-gray-200"
+                  )}
+                />
+                <Text className="text-sm text-gray-800">{question.title}</Text>
+              </View>
+              <Badge variant="secondary" className="bg-accent px-2 py-1">
+                <Text className="text-xs text-white">
+                  {type === "difficulty" ? question.design_patterns[0] : question.difficulty}
+                </Text>
+              </Badge>
+            </View>
+          ))}
         </View>
       ))}
     </View>
