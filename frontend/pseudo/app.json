@@ -5,19 +5,22 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "com.pseudoapp.mobile://",
+    "scheme": "pseudo",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "bundleIdentifier": "com.pseudoapp.mobile://",
+      "bundleIdentifier": "com.labandboston.pseudo",
       "supportsTablet": true
     },
     "android": {
-      "package": "com.pseudoapp.mobile://",
+      "package": "com.labandboston.pseudo",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "compileSdkVersion": 34,
+      "targetSdkVersion": 34,
+      "buildToolsVersion": "34.0.0"
     },
     "web": {
       "bundler": "metro",
@@ -38,6 +41,16 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "fonts": [
+      "./assets/fonts/Montserrat/Montserrat-VariableFont_wght.ttf"
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "2e095dd2-7bb7-4950-bd99-f87471fadd98"
+      }
+    },
+    "owner": "oakj28"
   }
 }

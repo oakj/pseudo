@@ -30,6 +30,7 @@ You will be using the following technologies:
 - TypeScript: https://www.typescriptlang.org/docs/
 - NativeWind: https://www.nativewind.dev/
 - React Native Reusables: https://rnr-docs.vercel.app/getting-started/initial-setup/
+    - Icons: https://lucide.dev/guide/basics/color
     - Components:
         - Accordion: https://rnr-docs.vercel.app/components/accordion
         - Alert: https://rnr-docs.vercel.app/components/alert
@@ -441,3 +442,9 @@ class WeeklyStreak(BaseModel):
 ```
 
 # Project File Structure
+```
+how to:
+1. open command prompt
+2. navigate to the root directory of the project
+3. ``
+```

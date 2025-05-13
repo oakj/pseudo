@@ -17,49 +17,53 @@ module.exports = {
         card: "0 10px 15px -3px rgba(0, 0, 0, 0.05)",
       },
       colors: {
-        primary: {
-          DEFAULT: '#000000', // Black for icons
-          accent: '#0000FF', // Blue for indicators
+        white: {
+          DEFAULT: '#FFFFFF', // background
         },
-        background: {
-          DEFAULT: '#FFFFFF', // White background
-        },
-        text: {
-          DEFAULT: '#000000', // Black text
-        },
-        indicator: {
-          active: '#0000FF', // Blue for active indicators
-          inactive: '#808080', // Gray for inactive indicators
-        },
-        success: {
-          500: '#22C55E',  // or your preferred green color
-        },
-        error: {
-          500: '#EF4444',  // or your preferred red color
-        },
-        accent: {
-          DEFAULT: '#3B82F6',  // or your preferred accent color
+        black: {
+          DEFAULT: '#18181B', // text
         },
         gray: {
-          200: '#E5E7EB',
-          400: '#9CA3AF',
-          800: '#1F2937',
+          soft: '#E7E7E7', // 
+        },
+        red: {
+          soft: '#FFE3E3', // 
+          hard: '#FF4E4E', // 
+        },
+        green: {
+          soft: '#DDFFD6', // 
+          hard: '#2AB333', // 
+        },
+        orange: {
+          soft: '#FFEBCB', // 
+        },
+        blue: {
+          soft: '#D9D9FF', // 
         }
+      },
+      fontFamily: {
+        sans: ['Montserrat'], // Default font
+        montserrat: ['Montserrat'], // Optional: if you want to explicitly use montserrat class
+      },
+      fontSize: {
+        'xxs': ['10px', { lineHeight: '14px' }],
+        'xs': ['12px', { lineHeight: '16px' }],
+        'sm': ['14px', { lineHeight: '20px' }],
+        'base': ['16px', { lineHeight: '24px' }],
+        'lg': ['18px', { lineHeight: '28px' }],
+        'xl': ['24px', { lineHeight: '32px' }],
+        '2xl': ['32px', { lineHeight: '40px' }],
       },
     },
     borderRadius: {
       none: "0",
-      sm: "0.125rem",
-      DEFAULT: "0.25rem",
-      md: "0.375rem",
-      lg: "0.5rem",
-      xl: "0.75rem",
-      "2xl": "1rem",
-      full: "9999px",
-      lg: "var(--radius)",
-      md: "calc(var(--radius) - 2px)",
       sm: "calc(var(--radius) - 4px)",
+      md: "calc(var(--radius) - 2px)",
+      DEFAULT: "0.25rem",
+      lg: "var(--radius)",
+      xl: "0.75rem",
       "2xl": "1.5rem",
+      full: "9999px",
     },
   },
   plugins: [require("tailwindcss-animate")],

@@ -3,33 +3,50 @@ import { Text } from "../ui/text"
 import { cn } from "~/app/lib/utils"
 
 interface WeeklyStreakProps {
-  streak: number[]
+  streak: {
+    day: string
+    date: number
+    status: "completed" | "missed" | "upcoming" | "current"
+  }[]
 }
 
-export function WeeklyStreak({ streak = [] }: WeeklyStreakProps) {
-  const days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"]
-  const today = new Date().getDay() // 0-6, where 0 is Sunday
-  
-  // Calculate which days should be marked as completed
-  const getIsCompleted = (dayIndex: number) => {
-    return streak.includes(dayIndex)
-  }
-
+export function WeeklyStreak({ streak }: WeeklyStreakProps) {
   return (
-    <View className="bg-white rounded-xl p-4 shadow-soft">
-      <Text className="text-base font-semibold mb-3 text-gray-800">
+    <View className="w-[340px] h-[130px] bg-white rounded-xl p-4">
+      <Text className="font-montserrat font-semibold text-lg text-black mb-4">
         Weekly Streak
       </Text>
-      <View className="flex-row justify-between mt-2">
-        {days.map((day, index) => (
-          <View key={index} className="items-center">
-            <Text className="text-xs text-gray-400 mb-2">{day}</Text>
+      <View className="flex-row justify-between">
+        {streak.map((day) => (
+          <View key={day.date} className="items-center">
+            <Text 
+              className={cn(
+                "font-montserrat text-xs mb-2",
+                day.status === "current" ? "text-white" : "text-gray-400"
+              )}
+            >
+              {day.day}
+            </Text>
             <View
               className={cn(
-                "w-6 h-6 rounded-full",
-                getIsCompleted(index) ? "bg-success-500" : "bg-error-500"
+                "w-8 h-8 rounded-full items-center justify-center",
+                day.status === "current" && "bg-black",
+                day.status === "completed" && "bg-green-soft",
+                day.status === "missed" && "bg-red-soft"
               )}
-            />
+            >
+              <Text
+                className={cn(
+                  "font-montserrat",
+                  day.status === "current" && "text-white",
+                  day.status === "completed" && "text-green-hard",
+                  day.status === "missed" && "text-red-hard",
+                  day.status === "upcoming" && "text-gray-400"
+                )}
+              >
+                {day.date}
+              </Text>
+            </View>
           </View>
         ))}
       </View>

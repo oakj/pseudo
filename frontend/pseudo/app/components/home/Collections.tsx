@@ -1,65 +1,39 @@
-import { View, Pressable } from "react-native"
-import { Card } from '../ui/card'
-import { Text } from '../ui/text'
-import { Ionicons } from "@expo/vector-icons"
+import { ScrollView, TouchableOpacity, View } from "react-native"
+import { Text } from "../ui/text"
 
 interface Collection {
   collection_id: string
-  collection_name: string
-  is_default: boolean
-  user_id: string | null
-  default_collection_id: string | null
+  name: string
 }
 
-// Map collection names to icons
-const getCollectionIcon = (name: string): keyof typeof Ionicons.glyphMap => {
-  const iconMap: Record<string, keyof typeof Ionicons.glyphMap> = {
-    'Search': 'search',
-    'Google': 'logo-google',
-    'Bloomberg': 'business',
-    'Default': 'folder'
-  }
-  return iconMap[name] || 'folder'
-}
-
-export function Collections({ 
-  collections = [], 
-  onMorePress 
-}: { 
+interface CollectionsProps {
   collections: Collection[]
-  onMorePress: () => void 
-}) {
+  onMorePress: () => void
+}
+
+export function Collections({ collections, onMorePress }: CollectionsProps) {
   return (
-    <View className="flex-row flex-wrap justify-between gap-3">
-      {collections.slice(0, 4).map((collection) => (
-        <Card 
-          key={collection.collection_id} 
-          className="w-[48%] p-4 items-center justify-center bg-white shadow-soft"
+    <ScrollView 
+      horizontal 
+      showsHorizontalScrollIndicator={false}
+      className="px-4"
+    >
+      {collections.map((collection) => (
+        <TouchableOpacity
+          key={collection.collection_id}
+          className="bg-gray-100 rounded-full px-4 h-[50px] justify-center mr-2"
         >
-          <Ionicons 
-            name={getCollectionIcon(collection.collection_name)} 
-            size={24} 
-            color="#8A56FF"
-            className="mb-2" 
-          />
-          <Text className="text-sm font-medium text-center text-gray-800">
-            {collection.collection_name}
+          <Text className="font-montserrat text-base text-black">
+            {collection.name}
           </Text>
-        </Card>
+        </TouchableOpacity>
       ))}
-      <Pressable onPress={onMorePress} className="w-[48%]">
-        <Card className="p-4 items-center justify-center bg-white shadow-soft">
-          <Ionicons 
-            name="ellipsis-horizontal" 
-            size={24} 
-            color="#8A56FF"
-            className="mb-2" 
-          />
-          <Text className="text-sm font-medium text-center text-gray-800">
-            More
-          </Text>
-        </Card>
-      </Pressable>
-    </View>
+      <TouchableOpacity
+        onPress={onMorePress}
+        className="bg-gray-100 rounded-full px-4 h-[50px] justify-center"
+      >
+        <Text className="font-montserrat text-xxs text-black">More</Text>
+      </TouchableOpacity>
+    </ScrollView>
   )
 }

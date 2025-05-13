@@ -7,10 +7,18 @@ import { QuestionsByCategory } from "../components/home/QuestionsByCategory"
 import { MoreCollections } from "../components/home/MoreCollections"
 import { useDrawer } from "../hooks/useDrawer"
 import { useHomeData } from "../hooks/useHomeData"
+import { Ionicons } from "@expo/vector-icons"
+import { format } from "date-fns"
+import { ScrollView as RNScrollView } from "react-native"
+import { CollectionsBottomDrawer } from "../components/home/CollectionsBottomDrawer"
+import { SaveQuestionToCollectionBottomDrawer } from "../components/home/SaveQuestionToCollectionBottomDrawer"
+import { useState } from "react"
 
 export default function HomeScreen() {
   const { drawerVisible, translateY, showDrawer, hideDrawer } = useDrawer()
   const { data, loading, error } = useHomeData()
+  const [showSaveDrawer, setShowSaveDrawer] = useState(false)
+  const [selectedQuestionId, setSelectedQuestionId] = useState<string | null>(null)
 
   if (loading) {
     return (
@@ -34,52 +42,72 @@ export default function HomeScreen() {
     )
   }
 
+  // Calculate week range
+  const weekStart = data?.weeklyStreak?.week_start || new Date()
+  const weekEnd = new Date(weekStart)
+  weekEnd.setDate(weekEnd.getDate() + 6)
+  const weekRange = `${format(weekStart, 'M/d')} - ${format(weekEnd, 'M/d')}`
+
   return (
     <SafeAreaView className="flex-1 bg-background">
       <Header />
 
-      <ScrollView className="flex-1 px-4">
-        <WeeklyStreak streak={data?.weeklyStreak?.streak_days || []} />
+      <ScrollView className="flex-1">
+        {/* Weekly Streak Section */}
+        <View className="px-4">
+            <WeeklyStreak streak={data?.weeklyStreak?.streak_days || []} />
+        </View>
 
-        <Text className="text-lg font-semibold mt-6 mb-3 text-gray-800">Collections</Text>
-        <Collections 
-          collections={data?.collections || []} 
-          onMorePress={showDrawer} 
-        />
+        {/* Collections Section */}
+        <View className="mt-6">
+          <View className="flex-row justify-between items-center px-4 mb-3">
+            <Text className="text-2xl font-montserrat font-semibold text-black">Collections</Text>
+            <TouchableOpacity onPress={showDrawer}>
+              <Ionicons name="ellipsis-horizontal" size={24} color="#6B7280" />
+            </TouchableOpacity>
+          </View>
+          <Collections collections={data?.collections || []} onMorePress={showDrawer} />
+        </View>
 
-        <Text className="text-lg font-semibold mt-6 mb-3 text-gray-800">Questions by difficulty</Text>
-        <QuestionsByCategory 
-          type="difficulty" 
-          questions={data?.questions || []} 
-        />
-
-        <Text className="text-lg font-semibold mt-6 mb-3 text-gray-800">by design pattern</Text>
-        <QuestionsByCategory 
-          type="pattern" 
-          questions={data?.questions || []} 
-        />
+        {/* Questions Section - updated to match new design */}
+        <View className="mt-6 px-4 mb-6">
+          <View className="flex-row justify-between items-center mb-3">
+            <Text className="text-2xl font-montserrat font-semibold text-black">Questions</Text>
+            <TouchableOpacity>
+              <Ionicons name="ellipsis-horizontal" size={24} color="#6B7280" />
+            </TouchableOpacity>
+          </View>
+          <QuestionsByCategory 
+            type="difficulty" 
+            questions={data?.questions || []} 
+          />
+        </View>
       </ScrollView>
 
-      {/* Bottom Drawer */}
+      {/* Collections Bottom Drawer */}
       {drawerVisible && (
-        <View className="absolute inset-0 z-50">
-          <TouchableOpacity 
-            className="absolute inset-0 bg-black/50" 
-            onPress={hideDrawer} 
-          />
-          <Animated.View 
-            className="bg-white rounded-t-3xl pt-3 pb-6 px-4"
-            style={{ transform: [{ translateY }] }}
-          >
-            <View className="w-10 h-1 bg-gray-200 rounded-full self-center mb-4" />
-            <Text className="text-xl font-semibold text-center mb-4 text-gray-800">
-              More Collections
-            </Text>
-            <ScrollView className="flex-1">
-              <MoreCollections collections={data?.collections || []} />
-            </ScrollView>
-          </Animated.View>
-        </View>
+        <CollectionsBottomDrawer
+          collections={data?.collections || []}
+          onCollectionPress={(collectionId) => {
+            // Handle collection navigation
+            hideDrawer()
+          }}
+          onClose={hideDrawer}
+        />
+      )}
+
+      {/* Save Question To Collection Bottom Drawer */}
+      {showSaveDrawer && selectedQuestionId && (
+        <SaveQuestionToCollectionBottomDrawer
+          collections={data?.collections || []}
+          onCollectionPress={(collectionId) => {
+            // Handle saving/removing question to/from collection
+          }}
+          onClose={() => {
+            setShowSaveDrawer(false)
+            setSelectedQuestionId(null)
+          }}
+        />
       )}
     </SafeAreaView>
   )
