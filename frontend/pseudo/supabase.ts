@@ -1,12 +1,14 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { createClient } from '@supabase/supabase-js'
+import Constants from 'expo-constants'
 
-const supabaseUrl = process.env.REACT_NATIVE_SUPABASE_URL ?? ''
- const supabaseAnonKey = process.env.REACT_NATIVE_SUPABASE_ANON_KEY ?? ''
- 
- if (!supabaseUrl || !supabaseAnonKey) {
-   throw new Error('Missing Supabase URL or Anon Key')
- }
+const supabaseUrl = Constants.expoConfig?.extra?.supabaseUrl ?? ''
+const supabaseAnonKey = Constants.expoConfig?.extra?.supabaseAnonKey ?? ''
+const testUserId = Constants.expoConfig?.extra?.supabaseTestUserId
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error('Missing Supabase URL or Anon Key')
+}
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
@@ -69,8 +71,7 @@ export const auth = {
   }
 
 /* Below functions are temporary. They are intended to be used to fetch test data from supabase. */
-const testUserId = process.env.REACT_NATIVE_SUPABASE_TEST_USER_ID // solvepseudo-test-2@gmail.com
- 
+
 export const testData = {
   // TEST: Profile functions
   async getProfileByUserId(userId: string) {

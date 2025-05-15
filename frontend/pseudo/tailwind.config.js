@@ -41,10 +41,12 @@ module.exports = {
           soft: '#D9D9FF', // 
         }
       },
+      /*
       fontFamily: {
         sans: ['Montserrat'], // Default font
         montserrat: ['Montserrat'], // Optional: if you want to explicitly use montserrat class
       },
+      */
       fontSize: {
         'xxs': ['10px', { lineHeight: '14px' }],
         'xs': ['12px', { lineHeight: '16px' }],

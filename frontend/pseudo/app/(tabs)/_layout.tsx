@@ -2,6 +2,7 @@ import { Tabs } from "expo-router"
 import { Ionicons } from "@expo/vector-icons"
 
 export default function TabsLayout() {
+  console.log('======== TABS LAYOUT MOUNTED ========');
   return (
     <Tabs
       screenOptions={{

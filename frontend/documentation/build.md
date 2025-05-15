@@ -192,3 +192,34 @@ TBD
 ### Unorganized Notes
 
 EAS build uses the latest git commit to build the app. This caused an issue for us when setting up EAS builds because we never commiited the change.
+
+***will `npx expo run:android` automatically use the latest eas build?***
+If you want to install and run the latest EAS build, you have a few options:
+Download the APK directly from EAS (from your build page on Expo's website) and install it:
+Use the EAS CLI to download and install the latest build:
+If you're using internal distribution, you can install it directly from EAS:
+Remember that EAS builds (cloud builds) and local development builds (npx expo run:android) are separate build processes. The local command will always create a new build on your machine rather than using an existing EAS build.
+
+***Does the local command use my code repository in its current state, or does it use the latest git commit?***
+
+The local command npx expo run:android uses your code repository in its current state - exactly as it exists on your local filesystem. It will include:
+All your current changes
+Uncommitted changes
+Untracked files
+Changes that aren't pushed to git
+This is different from EAS builds, which build from your git repository and require you to commit and push your changes before building.
+So if you want to test local changes quickly, npx expo run:android is perfect as it will reflect exactly what's in your working directory right now, regardless of git status.
+
+***Does `npx expo run:android` rebuild everything, including native packages?***
+
+npx expo run:android is smart about what it rebuilds:
+For JavaScript/TypeScript code:
+Always rebuilds to ensure latest changes are included
+Uses Metro bundler to handle the JS bundle
+For native code:
+Only rebuilds native modules if there are changes to native dependencies or configurations
+Changes that trigger native rebuilds include:
+Modifications to android/ directory
+Changes to native dependencies in package.json
+Changes to app.json/app.config.js
+Running npx expo prebuild
