@@ -21,15 +21,15 @@ export function WeeklyStreak({ streak }: WeeklyStreakProps) {
           <View key={day.date} className="items-center">
             <Text 
               className={cn(
-                "font-montserrat text-xs mb-2",
-                day.status === "current" ? "text-white" : "text-gray-400"
+                "font-montserrat text-xs text-gray-soft",
+                day.status === "current" && "text-white"
               )}
             >
               {day.day}
             </Text>
             <View
               className={cn(
-                "w-8 h-8 rounded-full items-center justify-center",
+                "w-8 h-8 rounded-full items-center justify-center mt-2",
                 day.status === "current" && "bg-black",
                 day.status === "completed" && "bg-green-soft",
                 day.status === "missed" && "bg-red-soft"
@@ -41,7 +41,7 @@ export function WeeklyStreak({ streak }: WeeklyStreakProps) {
                   day.status === "current" && "text-white",
                   day.status === "completed" && "text-green-hard",
                   day.status === "missed" && "text-red-hard",
-                  day.status === "upcoming" && "text-gray-400"
+                  day.status === "upcoming" && "text-gray-soft"
                 )}
               >
                 {day.date}

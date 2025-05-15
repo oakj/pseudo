@@ -151,8 +151,12 @@ $$ LANGUAGE plpgsql;
 -- This is only required if has been over 7 days since the test user has been created.
 
 -- Create recent weekly streak data for a user:
-
-TBD
+-- Note that the week_start should be a Sunday and index 0 of streak_days is Sunday.
+INSERT INTO public.weekly_streak (user_id, week_start, streak_days)
+VALUES 
+('3b68160b-4d21-41da-8856-a9549cd85577', '2025-05-11', ARRAY[0, 1, 2, 4, 5, 6]),
+('3b68160b-4d21-41da-8856-a9549cd85577', '2025-05-18', ARRAY[1, 2, 3, 4, 5]),
+('3b68160b-4d21-41da-8856-a9549cd85577', '2025-05-25', ARRAY[1, 3, 5]);
 ```
 
 How to use dummy data:
