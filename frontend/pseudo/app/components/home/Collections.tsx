@@ -9,28 +9,25 @@ interface Collection {
 
 interface CollectionsProps {
   collections: Collection[]
-  onMorePress: () => void
 }
 
-export function Collections({ collections, onMorePress }: CollectionsProps) {
+export function Collections({ collections }: CollectionsProps) {
+  const truncateText = (text: string, maxLength: number) => {
+    return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
+  };
+
   return (
     <View className="flex-row">
       {collections.map((collection) => (
         <TouchableOpacity
           key={collection.id}
-          className="bg-gray-soft rounded-full px-4 h-[50px] justify-center mr-2"
+          className="bg-gray-soft rounded-xl px-4 h-[50px] justify-center mr-2"
         >
-          <Text className="font-montserrat text-base text-black">
-            {collection.name}
+          <Text className="font-montserrat-medium text-sm text-black">
+            {truncateText(collection.name, 30)}
           </Text>
         </TouchableOpacity>
       ))}
-      <TouchableOpacity
-        onPress={onMorePress}
-        className="bg-gray-soft rounded-full px-4 h-[50px] justify-center"
-      >
-        <Text className="font-montserrat text-xxs text-black">More</Text>
-      </TouchableOpacity>
     </View>
   )
 }

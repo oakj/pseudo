@@ -25,6 +25,7 @@ module.exports = {
         },
         gray: {
           soft: '#E7E7E7', // 
+          hard: '#A1A1AA', // darker gray variant
         },
         red: {
           soft: '#FFE3E3', // 
@@ -43,8 +44,11 @@ module.exports = {
       },
       
       fontFamily: {
-        sans: ['Montserrat'], // Default font
-        montserrat: ['Montserrat'], // Optional: if you want to explicitly use montserrat class
+        sans: ['Montserrat-Regular'],
+        montserrat: ['Montserrat-Regular'],
+        'montserrat-medium': ['Montserrat-Medium'],
+        'montserrat-semibold': ['Montserrat-SemiBold'],
+        'montserrat-bold': ['Montserrat-Bold'],
       },
       
       fontSize: {
@@ -59,13 +63,16 @@ module.exports = {
     },
     borderRadius: {
       none: "0",
+      "0.1": "0.1rem",
       sm: "calc(var(--radius) - 4px)",
       md: "calc(var(--radius) - 2px)",
       DEFAULT: "0.25rem",
+      "0.5": "0.5rem",
       lg: "var(--radius)",
       xl: "0.75rem",
       "2xl": "1.5rem",
       full: "9999px",
+      '20': '20px',
     },
   },
   plugins: [require("tailwindcss-animate")],

@@ -70,7 +70,7 @@ export function Questions({ questions, onSortByDifficulty, onSortByStatus }: Que
           >
             <View className="flex-row items-center flex-1">
               <Ionicons 
-                name={question.is_solved ? "checkmark-circle" : "circle-outline"} 
+                name={question.is_solved ? "checkmark-circle" : "ellipse-outline"} 
                 size={20} 
                 color={question.is_solved ? "#22C55E" : "#EF4444"} 
               />

@@ -1,7 +1,10 @@
+import * as React from "react"
 import { View, TouchableOpacity } from "react-native"
 import { Text } from "../ui/text"
 import { cn } from "~/app/lib/utils"
+import { Separator } from "../ui/separator"
 import { Ionicons } from "@expo/vector-icons"
+import { Bookmark } from "~/app/lib/icons/Bookmark"
 
 interface Question {
   id: string
@@ -31,45 +34,48 @@ export function QuestionsByCategory({ type, questions = [], onBookmarkPress }: Q
     }
   };
 
+  const truncateText = (text: string, maxLength: number) => {
+    return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
+  };
+
   return (
     <View>
-      {questions.map((question) => (
-        <View 
-          key={question.id} 
-          className="flex-row items-center justify-between py-3"
-        >
-          <View className="flex-row items-center flex-1">
-            <Ionicons 
-              name={question.isSolved ? "checkmark-circle" : "circle-outline"} 
-              size={24} 
-              color={question.isSolved ? "#2AB333" : "#FF4E4E"} 
-              className="mr-3"
-            />
-            <Text className="font-montserrat text-base text-black flex-1">
-              {question.title}
-            </Text>
-          </View>
-          <View className="flex-row items-center">
-            <View className={cn(
-              "px-2 py-1 rounded-full mr-2",
-              getDifficultyStyle(question.difficulty)
-            )}>
-              <Text className="font-montserrat text-xs capitalize">
-                {question.difficulty}
+      {questions.map((question, index) => (
+        <React.Fragment key={question.id}>
+          <View className="flex-row items-center justify-between py-3">
+            <View className="flex-row items-center flex-1">
+              <Ionicons 
+                name={question.isSolved ? "checkmark-circle" : "ellipse-outline"} 
+                size={20} 
+                color={question.isSolved ? "#2AB333" : "#FF4E4E"} 
+                className="mr-3"
+              />
+              <Text className="font-montserrat-medium text-xs text-black flex-1">
+                {truncateText(question.title, 30)}
               </Text>
             </View>
-            <TouchableOpacity 
-              onPress={() => onBookmarkPress(question.id)}
-              className="border border-gray-soft rounded-full p-2"
-            >
-              <Ionicons 
-                name="bookmark-outline" 
-                size={20} 
-                color="#E7E7E7" 
-              />
-            </TouchableOpacity>
+            <View className="flex-row items-center">
+              <View className={cn(
+                "px-2 py-1 rounded-0.5 mr-2",
+                getDifficultyStyle(question.difficulty)
+              )}>
+                <Text className="font-montserrat-medium text-xxs capitalize">
+                  {question.difficulty}
+                </Text>
+              </View>
+              <TouchableOpacity 
+                onPress={() => onBookmarkPress(question.id)}
+                className="rounded-full p-2"
+              >
+                <Bookmark 
+                  size={20} 
+                  className="text-gray-soft"
+                />
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
+          <Separator className="bg-gray-soft" />
+        </React.Fragment>
       ))}
     </View>
   )

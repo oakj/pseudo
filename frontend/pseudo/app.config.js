@@ -46,7 +46,11 @@ module.exports = {
         "expo-font",
         {
           "fonts": [
-            "./assets/fonts/Montserrat/Montserrat-VariableFont_wght.ttf"
+            "./assets/fonts/Montserrat/Montserrat-VariableFont_wght.ttf",
+            "./assets/fonts/Montserrat/static/Montserrat-Regular.ttf",
+            "./assets/fonts/Montserrat/static/Montserrat-Medium.ttf",
+            "./assets/fonts/Montserrat/static/Montserrat-SemiBold.ttf",
+            "./assets/fonts/Montserrat/static/Montserrat-Bold.ttf"
           ]
         }
       ]

@@ -6,13 +6,11 @@ import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import "../global.css";
 
-console.log('========= ROOT LAYOUT FILE IS BEING PROCESSED =========');
+console.log('======== ROOT LAYOUT FILE IS BEING PROCESSED ========');
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  console.log('========= ROOT LAYOUT COMPONENT IS RENDERING =========');
-  
   const [fontsLoaded] = useFonts({
     'Montserrat': require('../assets/fonts/Montserrat/Montserrat-VariableFont_wght.ttf')
   });

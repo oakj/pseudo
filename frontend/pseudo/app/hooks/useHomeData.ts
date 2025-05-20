@@ -10,7 +10,7 @@ export interface HomeData {
   } | null
   weeklyStreak: {
     streak_days: number[]
-    week_start: Date
+    week_start_utc: Date
   } | null
   collections: {
     collection_id: string
@@ -50,15 +50,15 @@ export function useHomeData() {
         if (streakRes.error) throw new Error(streakRes.error.message)
         if (collectionsRes.error) throw new Error(collectionsRes.error.message)
         if (questionsRes.error) throw new Error(questionsRes.error.message)
-
+        
         // Convert week_start string to Date if it exists
         const streakData = Array.isArray(streakRes.data) && streakRes.data[0] 
           ? {
               ...streakRes.data[0],
-              week_start: new Date(streakRes.data[0].week_start)
+              week_start_utc: new Date(streakRes.data[0].week_start)
             }
           : null
-
+        
         setData({
           profile: Array.isArray(profileRes.data) ? profileRes.data[0] : profileRes.data,
           weeklyStreak: streakData,
