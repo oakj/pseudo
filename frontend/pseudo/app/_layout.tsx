@@ -5,6 +5,7 @@ import React from 'react';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import "../global.css";
+import { PortalHost } from '@rn-primitives/portal';
 
 console.log('======== ROOT LAYOUT FILE IS BEING PROCESSED ========');
 
@@ -37,6 +38,8 @@ export default function RootLayout() {
           }
         }}
       />
+      {/* Default Portal Host (one per app) */}
+      <PortalHost />
     </View>
   );
 }
