@@ -17,17 +17,24 @@ import { Input } from "./components/ui/input"
 import { IdCard } from "./lib/icons/IdCard"
 import { Bug } from "./lib/icons/Bug"
 import { Separator } from "./components/ui/separator"
-import { ArrowLeft } from "./lib/icons/ArrowLeft"
-import { useAvatar, DEFAULT_AVATARS } from "./contexts/AvatarContext"
+
+const DEFAULT_AVATARS = [
+  { id: "1", url: require("../assets/avatars/1.png") },
+  { id: "2", url: require("../assets/avatars/2.png") },
+  { id: "3", url: require("../assets/avatars/3.png") },
+  { id: "4", url: require("../assets/avatars/4.png") },
+  { id: "5", url: require("../assets/avatars/5.png") },
+  { id: "6", url: require("../assets/avatars/6.png") },
+  { id: "7", url: require("../assets/avatars/7.png") },
+  { id: "8", url: require("../assets/avatars/8.png") },
+]
 
 type ThemeOption = "light" | "dark" | "system"
 
 export default function ProfileScreen() {
   const router = useRouter()
-  const { selectedAvatar, setSelectedAvatar } = useAvatar()
-  const [showAvatarList, setShowAvatarList] = useState(false)
+  const [selectedAvatar, setSelectedAvatar] = useState(DEFAULT_AVATARS[0])
   const [theme, setTheme] = useState<ThemeOption>("system")
-  const [displayName, setDisplayName] = useState("oonniejak")
   const statusBarHeight = Platform.OS === 'android' ? (StatusBar.currentHeight ?? 24) : 0
 
   const handleLogout = async () => {
@@ -49,32 +56,9 @@ export default function ProfileScreen() {
       />
       
       <View style={{ paddingTop: statusBarHeight }} className="flex-1">
-        {/* New Header */}
-        <View className="px-4 py-4">
-          <View className="flex-row items-center mb-6 relative">
-            <TouchableOpacity 
-              onPress={() => router.back()}
-              className="z-10"
-            >
-              <ArrowLeft size={24} className="text-black" />
-            </TouchableOpacity>
-            <View className="absolute w-full items-center">
-              <Text className="text-lg font-montserrat-semibold">Profile & Settings</Text>
-            </View>
-          </View>
-          
-          <View className="items-center">
-            <Avatar className="w-20 h-20 mb-2">
-              <AvatarImage source={selectedAvatar.url} />
-              <AvatarFallback>
-                <Text>{selectedAvatar.id}</Text>
-              </AvatarFallback>
-            </Avatar>
-            <Text className="text-lg font-montserrat-semibold mb-1">{displayName}</Text>
-          </View>
-        </View>
-
-        <ScrollView className="flex-1 px-4">
+        <Header />
+        
+        <ScrollView className="flex-1 px-4 py-6">
           {/* Testing Link */}
           <View className="flex-row items-center mb-4">
             <Pressable 
@@ -102,8 +86,7 @@ export default function ProfileScreen() {
                 borderRadius: 4,
               }}
               placeholder="Enter display name"
-              value={displayName}
-              onChangeText={setDisplayName}
+              defaultValue="oonniejak"
             />
           </View>
 
@@ -176,24 +159,22 @@ export default function ProfileScreen() {
               </DropdownMenuContent>
             </DropdownMenu>
           </View>
-        </ScrollView>
 
-        {/* Action Buttons */}
-        <View className="px-4 py-4">
+          {/* Action Buttons */}
           <View className="flex-row gap-4">
             <Button 
               className="flex-1 bg-red-soft"
               onPress={handleLogout}
             >
-              <Text className="text-black font-semibold">Logout</Text>
+              <Text className="text-white font-semibold">Logout</Text>
             </Button>
             <Button 
               className="flex-1 bg-gray-100"
             >
-              <Text className="text-black font-semibold">Save</Text>
+              <Text className="font-semibold">Save</Text>
             </Button>
           </View>
-        </View>
+        </ScrollView>
       </View>
     </SafeAreaView>
   )

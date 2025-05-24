@@ -1,8 +1,8 @@
 import { View, TouchableOpacity } from "react-native"
-import { Button } from "../ui/button"
 import { Text } from "../ui/text"
 import { Link, useRouter } from "expo-router"
 import { Avatar, AvatarImage } from "../ui/avatar"
+import { useAvatar } from "../../contexts/AvatarContext"
 
 interface HeaderProps {
   title?: string
@@ -10,6 +10,7 @@ interface HeaderProps {
 
 export function Header({ title = "Pseudo" }: HeaderProps) {
   const router = useRouter()
+  const { selectedAvatar } = useAvatar()
 
   return (
     <View 
@@ -29,7 +30,7 @@ export function Header({ title = "Pseudo" }: HeaderProps) {
             className="bg-gray-100 rounded-full items-center justify-center h-[40px] w-[40px]"
           >
             <Avatar alt="Avatar">
-              <AvatarImage source={require('../../../assets/avatars/bosty-1.png')} />
+              <AvatarImage source={selectedAvatar.url} />
             </Avatar>
           </View>
         </TouchableOpacity>

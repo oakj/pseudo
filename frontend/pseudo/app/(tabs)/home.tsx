@@ -127,7 +127,7 @@ export default function HomeScreen() {
       <View style={{ paddingTop: statusBarHeight }} className="flex-1">
         <Header />
         <ScrollView>
-          <View className="mt-4">
+          <View className="mt-2">
             {/* Weekly Streak Section */}
             <View className="px-4 items-center justify-center">
               <WeeklyStreak 
@@ -139,7 +139,7 @@ export default function HomeScreen() {
             {/* Collections Section */}
             <View className="mt-6">
               <View className="flex-row justify-between items-center px-4 mb-3">
-                <Text className="font-montserrat-semibold text-lg text-black">Collections</Text>
+                <Text className="font-montserrat-semibold text-lg text-black">Featured Collections</Text>
                 <TouchableOpacity onPress={showDrawer}>
                   <Ionicons name="ellipsis-horizontal" size={20} color="#A1A1AA" />
                 </TouchableOpacity>
@@ -169,7 +169,7 @@ export default function HomeScreen() {
             {/* Questions Section */}
             <View className="mt-6 px-4 mb-6">
               <View className="flex-row justify-between items-center">
-                <Text className="font-montserrat-semibold text-lg text-black">Questions</Text>
+                <Text className="font-montserrat-semibold text-lg text-black">Featured Questions</Text>
                 <TouchableOpacity>
                   <Ionicons name="ellipsis-horizontal" size={20} color="#A1A1AA" />
                 </TouchableOpacity>

@@ -6,6 +6,7 @@ import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import "../global.css";
 import { PortalHost } from '@rn-primitives/portal';
+import { AvatarProvider } from './contexts/AvatarContext'
 
 console.log('======== ROOT LAYOUT FILE IS BEING PROCESSED ========');
 
@@ -28,18 +29,20 @@ export default function RootLayout() {
   
 
   return (
-    <View className="flex-1 bg-background">
-      <StatusBar style="dark" backgroundColor="#F8F7FC" />
-      <Stack
-        screenOptions={{
-          headerShown: false,
-          contentStyle: {
-            backgroundColor: "#F8F7FC"
-          }
-        }}
-      />
-      {/* Default Portal Host (one per app) */}
-      <PortalHost />
-    </View>
+    <AvatarProvider>
+      <View className="flex-1 bg-background">
+        <StatusBar style="dark" backgroundColor="#F8F7FC" />
+        <Stack
+          screenOptions={{
+            headerShown: false,
+            contentStyle: {
+              backgroundColor: "#F8F7FC"
+            }
+          }}
+        />
+        {/* Default Portal Host (one per app) */}
+        <PortalHost />
+      </View>
+    </AvatarProvider>
   );
 }
