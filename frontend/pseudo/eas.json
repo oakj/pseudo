@@ -11,7 +11,12 @@
         },
         "android": {
           "gradleCommand": ":app:assembleDebug",
-          "buildType": "apk"
+          "buildType": "apk",
+          "gradleProperties": {
+            "android.defaults.buildfeatures.buildconfig": "true",
+            "android.useAndroidX": "true",
+            "android.enableJetifier": "true"
+          }
         }
       },
       "preview": {
@@ -19,7 +24,21 @@
         "android": {
           "buildType": "apk",
           "gradleCommand": ":app:assembleRelease",
-          "withoutCredentials": true
+          "withoutCredentials": true,
+          "gradleProperties": {
+            "android.defaults.buildfeatures.buildconfig": "true",
+            "android.useAndroidX": "true",
+            "android.enableJetifier": "true"
+          }
+        }
+      },
+      "production": {
+        "android": {
+          "gradleProperties": {
+            "android.defaults.buildfeatures.buildconfig": "true",
+            "android.useAndroidX": "true",
+            "android.enableJetifier": "true"
+          }
         }
       }
     }

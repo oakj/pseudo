@@ -22,9 +22,7 @@ module.exports = {
       },
       compileSdkVersion: 34,
       targetSdkVersion: 34,
-      buildToolsVersion: "34.0.0",
-      gradleVersion: "8.3",
-      androidGradlePlugin: "7.4.2"
+      buildToolsVersion: "34.0.0"
     },
     
     web: {
