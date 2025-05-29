@@ -1,11 +1,9 @@
 import { SafeAreaView, View, ScrollView, Pressable, Platform, StatusBar, TouchableOpacity } from "react-native"
 import { Text } from "./components/ui/text"
-import { Header } from "./components/shared/Header"
 import { Avatar, AvatarImage, AvatarFallback } from "./components/ui/avatar"
 import { Button } from "./components/ui/button"
 import { useRouter } from "expo-router"
 import { useState } from "react"
-import { UserRoundPen } from "./lib/icons/UserRoundPen"
 import { Palette } from "./lib/icons/Palette"
 import {
   DropdownMenu,
@@ -14,21 +12,22 @@ import {
   DropdownMenuTrigger,
 } from "./components/ui/dropdown-menu"
 import { Input } from "./components/ui/input"
-import { IdCard } from "./lib/icons/IdCard"
 import { Bug } from "./lib/icons/Bug"
 import { Separator } from "./components/ui/separator"
 import { ArrowLeft } from "./lib/icons/ArrowLeft"
 import { useAvatar, DEFAULT_AVATARS } from "./contexts/AvatarContext"
+import { Pencil } from "./lib/icons/Pencil"
 
 type ThemeOption = "light" | "dark" | "system"
 
 export default function ProfileScreen() {
   const router = useRouter()
   const { selectedAvatar, setSelectedAvatar } = useAvatar()
-  const [showAvatarList, setShowAvatarList] = useState(false)
   const [theme, setTheme] = useState<ThemeOption>("system")
   const [displayName, setDisplayName] = useState("oonniejak")
   const statusBarHeight = Platform.OS === 'android' ? (StatusBar.currentHeight ?? 24) : 0
+  const [isAvatarSheetOpen, setIsAvatarSheetOpen] = useState(false)
+  const [isEditingName, setIsEditingName] = useState(false)
 
   const handleLogout = async () => {
     // TODO: Implement logout logic
@@ -64,13 +63,40 @@ export default function ProfileScreen() {
           </View>
           
           <View className="items-center">
-            <Avatar className="w-20 h-20 mb-2">
-              <AvatarImage source={selectedAvatar.url} />
-              <AvatarFallback>
-                <Text>{selectedAvatar.id}</Text>
-              </AvatarFallback>
-            </Avatar>
-            <Text className="text-lg font-montserrat-semibold mb-1">{displayName}</Text>
+            <Pressable onPress={() => setIsAvatarSheetOpen(true)}>
+              <Avatar className="w-20 h-20 mb-2">
+                <AvatarImage source={selectedAvatar.url} />
+                <AvatarFallback>
+                  <Text>{selectedAvatar.id}</Text>
+                </AvatarFallback>
+              </Avatar>
+            </Pressable>
+            
+            {isEditingName ? (
+              <View className="flex-row items-center gap-2 mb-1">
+                <Input 
+                  className="h-[25px] w-[150px] justify-start px-2 leading-[12px] text-black font-montserrat-medium border-[1px] border-gray-300 rounded-[4px]"
+                  style={{
+                    fontSize: 14,
+                    height: 25,
+                    padding: 0,
+                    paddingHorizontal: 8,
+                    borderRadius: 4,
+                  }}
+                  value={displayName}
+                  onChangeText={setDisplayName}
+                  autoFocus
+                  onBlur={() => setIsEditingName(false)}
+                />
+              </View>
+            ) : (
+              <View className="flex-row items-center gap-2 mb-1">
+                <Text className="text-lg font-montserrat-semibold">{displayName}</Text>
+                <Pressable onPress={() => setIsEditingName(true)}>
+                  <Pencil size={16} className="text-gray-500" />
+                </Pressable>
+              </View>
+            )}
           </View>
         </View>
 
@@ -82,60 +108,15 @@ export default function ProfileScreen() {
               className="flex-row items-center gap-3"
             >
               <Bug size={24} className="text-black" />
-              <Text className="text-xs text-muted-foreground">Debug Screen</Text>
+              <Text className="text-[10px] text-black font-montserrat">Debug Screen</Text>
             </Pressable>
-          </View>
-
-          {/* Display Name Section */}
-          <View className="flex-row items-center justify-between mb-4">
-            <View className="flex-row items-center gap-3">
-              <IdCard size={24} className="text-black" />
-              <Text className="text-xs text-muted-foreground">Display Name</Text>
-            </View>
-            <Input 
-              className="h-[25px] w-[150px] justify-start px-2 leading-[12px] text-black font-montserrat-medium border-[1px] border-gray-300 rounded-[4px]"
-              style={{
-                fontSize: 10,
-                height: 25,
-                padding: 0,
-                paddingHorizontal: 8,
-                borderRadius: 4,
-              }}
-              placeholder="Enter display name"
-              value={displayName}
-              onChangeText={setDisplayName}
-            />
-          </View>
-
-          {/* Avatar Section */}
-          <View className="mb-4">
-            <View className="flex-row items-center gap-3 mb-3">
-              <UserRoundPen size={24} className="text-black" />
-              <Text className="text-xs text-muted-foreground">Avatar</Text>
-            </View>
-            <View className="flex-row flex-wrap gap-2">
-              {DEFAULT_AVATARS.map((avatar) => (
-                <Avatar
-                  key={avatar.id}
-                  className={`w-12 h-12 ${
-                    selectedAvatar.id === avatar.id ? "border-2 border-primary" : ""
-                  }`}
-                  onPress={() => setSelectedAvatar(avatar)}
-                >
-                  <AvatarImage source={avatar.url} />
-                  <AvatarFallback>
-                    <Text>{avatar.id}</Text>
-                  </AvatarFallback>
-                </Avatar>
-              ))}
-            </View>
           </View>
 
           {/* Theme Section */}
           <View className="flex-row items-center justify-between mb-4">
             <View className="flex-row items-center gap-3">
               <Palette size={24} className="text-black" />
-              <Text className="text-xs text-muted-foreground">Theme</Text>
+              <Text className="text-[10px] text-black font-montserrat">Theme</Text>
             </View>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -143,8 +124,8 @@ export default function ProfileScreen() {
                   <View 
                     className="h-[25px] w-[150px] justify-center px-2 border-[1px] border-gray-300 rounded-[4px] bg-white"
                   >
-                    <Text className="text-[12px] text-black font-montserrat-medium">
-                      {theme.charAt(0).toUpperCase() + theme.slice(1)}
+                    <Text className="text-[10px] text-black font-montserrat">
+                      {theme}
                     </Text>
                   </View>
                 </TouchableOpacity>
@@ -157,21 +138,21 @@ export default function ProfileScreen() {
                   className="px-2 py-2 active:bg-gray-100"
                   onPress={() => setTheme("system")}
                 >
-                  <Text className="text-xs text-black font-montserrat">system</Text>
+                  <Text style={{ fontSize: 10 }} className="text-black font-montserrat">system</Text>
                 </DropdownMenuItem>
                 <Separator />
                 <DropdownMenuItem 
                   className="px-2 py-2 active:bg-gray-100"
                   onPress={() => setTheme("light")}
                 >
-                  <Text className="text-xs text-black font-montserrat">light</Text>
+                  <Text style={{ fontSize: 10 }} className="text-black font-montserrat">light</Text>
                 </DropdownMenuItem>
                 <Separator />
                 <DropdownMenuItem 
-                  className="px-2 py-2 active:bg-gray-100 text-xxs"
+                  className="px-2 py-2 active:bg-gray-100"
                   onPress={() => setTheme("dark")}
                 >
-                  <Text className="text-xs text-red-soft font-montserrat">dark</Text>
+                  <Text style={{ fontSize: 10 }} className="text-black font-montserrat">dark</Text>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -179,22 +160,59 @@ export default function ProfileScreen() {
         </ScrollView>
 
         {/* Action Buttons */}
-        <View className="px-4 py-4">
-          <View className="flex-row gap-4">
+        <View className="px-8 py-8">
+          <View className="flex-row justify-between">
             <Button 
-              className="flex-1 bg-red-soft"
+              className="w-[40%] bg-red-soft rounded-[8px]"
               onPress={handleLogout}
             >
-              <Text className="text-black font-semibold">Logout</Text>
+              <Text className="text-base text-black font-montserrat">Logout</Text>
             </Button>
             <Button 
-              className="flex-1 bg-gray-100"
+              className="w-[40%] bg-gray-100 rounded-[8px]"
             >
-              <Text className="text-black font-semibold">Save</Text>
+              <Text className="text-base text-black font-montserrat">Save</Text>
             </Button>
           </View>
         </View>
       </View>
+
+      {/* Avatar Bottom Sheet */}
+      {isAvatarSheetOpen && (
+        <View className="absolute inset-0 bg-gray-soft/50">
+          <Pressable 
+            className="flex-1"
+            onPress={() => setIsAvatarSheetOpen(false)}
+          />
+          <View className="bg-white rounded-t-[20px] p-6">
+            <View className="items-center mb-6">
+              <View className="w-10 h-1 bg-gray-300 rounded-full" />
+            </View>
+            
+            <Text className="text-lg font-montserrat-semibold mb-4 text-center">Choose Avatar</Text>
+            
+            <View className="flex-row flex-wrap gap-4 justify-center">
+              {DEFAULT_AVATARS.map((avatar) => (
+                <Pressable
+                  key={avatar.id}
+                  onPress={() => setSelectedAvatar(avatar)}
+                >
+                  <Avatar
+                    className={`w-16 h-16 ${
+                      selectedAvatar.id === avatar.id ? "border-2 border-primary" : ""
+                    }`}
+                  >
+                    <AvatarImage source={avatar.url} />
+                    <AvatarFallback>
+                      <Text>{avatar.id}</Text>
+                    </AvatarFallback>
+                  </Avatar>
+                </Pressable>
+              ))}
+            </View>
+          </View>
+        </View>
+      )}
     </SafeAreaView>
   )
 }

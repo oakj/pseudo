@@ -223,3 +223,98 @@ Modifications to android/ directory
 Changes to native dependencies in package.json
 Changes to app.json/app.config.js
 Running npx expo prebuild
+
+### Local Android Builds
+1. Debug Mode:
+```bash
+npx expo run:android --variant debug
+```
+
+2. Release Mode:
+```bash
+npx expo run:android --variant release
+```
+
+3. Preview Mode:
+```bash
+npx expo run:android --variant preview
+```
+
+Add `--stacktrace` flag to any of these commands to see detailed error information if the build fails:
+```bash
+npx expo run:android --variant debug --stacktrace
+```
+
+### EAS Cloud Builds for Android Testing
+1. Development Build:
+```bash
+eas build --platform android --profile development
+```
+
+2. Preview Build (for internal testing):
+```bash
+eas build --platform android --profile preview
+```
+
+3. Production Build:
+```bash
+eas build --platform android --profile production
+```
+
+To download APK:
+1. After build completes, EAS CLI will provide a URL
+2. Visit expo.dev dashboard to download directly
+3. Or use: `eas build:download`
+
+### EAS Cloud Builds for iOS Testing
+1. Development Build:
+```bash
+eas build --platform ios --profile development
+```
+
+2. Preview Build for TestFlight:
+```bash
+eas build --platform ios --profile preview
+```
+
+3. Submit to TestFlight:
+```bash
+eas submit --platform ios
+```
+
+### Using Expo Go (Legacy Instructions)
+Note: Only compatible with Expo SDK 52 and earlier
+
+Android:
+1. Install Expo Go from Play Store
+2. Run `npx expo start`
+3. Scan QR code with Expo Go app
+
+iOS:
+1. Install Expo Go from App Store
+2. Run `npx expo start`
+3. Scan QR code with iPhone camera
+
+### Local Android Development Workflow
+Common troubleshooting steps when experiencing build issues:
+
+1. Start Android emulator via Android Studio
+2. Clean project files:
+   ```bash
+   rm -rf expo/
+   rm -rf android/
+   rm -rf node_modules/
+   rm package-lock.json
+   ```
+3. Reinstall dependencies:
+   ```bash
+   npm install
+   ```
+4. Regenerate native code:
+   ```bash
+   npx expo prebuild
+   ```
+5. Build and run on emulator:
+   ```bash
+   npx expo run:android
+   ```
