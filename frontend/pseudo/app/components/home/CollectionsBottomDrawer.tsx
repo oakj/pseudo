@@ -34,7 +34,7 @@ export function CollectionsBottomDrawer({
           className="flex-row items-center justify-between px-4 mb-4"
           onPress={() => setIsExpanded(!isExpanded)}
         >
-          <Text className="text-xl font-montserrat font-semibold text-gray-800">
+          <Text className="font-montserrat-semibold text-lg text-black">
             Default Collections
           </Text>
           <Ionicons 
@@ -52,7 +52,7 @@ export function CollectionsBottomDrawer({
                 className="bg-gray-soft rounded-full mb-2 p-4"
                 onPress={() => onCollectionPress(collection.collection_id)}
               >
-                <Text className="font-montserrat text-base text-black">
+                <Text className="font-montserrat-medium text-xs text-black">
                   {collection.name}
                 </Text>
               </TouchableOpacity>

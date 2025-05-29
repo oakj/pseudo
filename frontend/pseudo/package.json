@@ -27,6 +27,7 @@
     "@rn-primitives/dropdown-menu": "^1.1.0",
     "@rn-primitives/hooks": "^1.1.0",
     "@rn-primitives/portal": "^1.1.0",
+    "@rn-primitives/radio-group": "^1.2.0",
     "@rn-primitives/select": "^1.1.0",
     "@rn-primitives/separator": "^1.1.0",
     "@rn-primitives/slot": "^1.1.0",

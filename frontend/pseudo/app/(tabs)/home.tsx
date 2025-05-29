@@ -9,10 +9,19 @@ import { useDrawer } from "../hooks/useDrawer"
 import { useHomeData } from "../hooks/useHomeData"
 import { Ionicons } from "@expo/vector-icons"
 import { format } from "date-fns"
-import { ScrollView as RNScrollView } from "react-native"
 import { CollectionsBottomDrawer } from "../components/home/CollectionsBottomDrawer"
 import { SaveQuestionToCollectionBottomDrawer } from "../components/home/SaveQuestionToCollectionBottomDrawer"
 import { useState } from "react"
+import { BottomSpacer } from "../components/shared/BottomSpacer"
+import { 
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator
+} from "../components/ui/dropdown-menu"
+import { SortQuestionsBottomDrawer } from "../components/home/SortQuestionsBottomDrawer"
+import { useRouter } from "expo-router"
 
 // This function determines if the date is completed, missed, upcoming, or current
 function determineStatus(date: Date, completed: number): "completed" | "missed" | "upcoming" | "current" {
@@ -72,6 +81,9 @@ export default function HomeScreen() {
   const { data, loading, error } = useHomeData()
   const [showSaveDrawer, setShowSaveDrawer] = useState(false)
   const [selectedQuestionId, setSelectedQuestionId] = useState<string | null>(null)
+  const [showSortDrawer, setShowSortDrawer] = useState(false)
+  const [selectedSort, setSelectedSort] = useState<"nameAsc" | "nameDesc" | "difficultyAsc" | "difficultyDesc">("nameAsc")
+  const router = useRouter()
 
   const profile = data?.profile;
   const weeklyStreak = data?.weeklyStreak;
@@ -139,9 +151,13 @@ export default function HomeScreen() {
             {/* Collections Section */}
             <View className="mt-6">
               <View className="flex-row justify-between items-center px-4 mb-3">
-                <Text className="font-montserrat-semibold text-lg text-black">Featured Collections</Text>
-                <TouchableOpacity onPress={showDrawer}>
-                  <Ionicons name="ellipsis-horizontal" size={20} color="#A1A1AA" />
+                <Text className="font-montserrat-semibold text-lg text-black">Collections</Text>
+                <TouchableOpacity 
+                  className="flex-row items-center gap-1 py-1 px-2 rounded-full bg-primary/10" 
+                  onPress={showDrawer}
+                >
+                  <Text className="text-sm text-primary font-medium">See All</Text>
+                  <Ionicons name="chevron-forward" size={14} color="#6366F1" />
                 </TouchableOpacity>
               </View>
               <ScrollView 
@@ -150,7 +166,7 @@ export default function HomeScreen() {
                 className="px-4"
                 style={{
                   flexGrow: 0,  // Prevents the ScrollView from expanding
-                  height: 58    // Gives enough room for the scrollbar (50px height + padding)
+                  height: 45    // Gives enough room for the scrollbar (50px height + padding)
                 }}
                 contentContainerStyle={{
                   paddingBottom: 8  // Adds space for the scrollbar
@@ -169,10 +185,24 @@ export default function HomeScreen() {
             {/* Questions Section */}
             <View className="mt-6 px-4 mb-6">
               <View className="flex-row justify-between items-center">
-                <Text className="font-montserrat-semibold text-lg text-black">Featured Questions</Text>
-                <TouchableOpacity>
-                  <Ionicons name="ellipsis-horizontal" size={20} color="#A1A1AA" />
-                </TouchableOpacity>
+                <Text className="font-montserrat-semibold text-lg text-black">Questions</Text>
+                <View className="flex-row gap-2">
+                  <TouchableOpacity 
+                    className="flex-row items-center gap-1 py-1 px-2 rounded-full bg-primary/10"
+                    onPress={() => setShowSortDrawer(true)}
+                  >
+                    <Text className="text-sm text-primary font-medium">Sort</Text>
+                    <Ionicons name="chevron-forward" size={14} color="#6366F1" />
+                  </TouchableOpacity>
+                  
+                  <TouchableOpacity 
+                    className="flex-row items-center gap-1 py-1 px-2 rounded-full bg-primary/10"
+                    onPress={() => router.push("/questions")}
+                  >
+                    <Text className="text-sm text-primary font-medium">See All</Text>
+                    <Ionicons name="chevron-forward" size={14} color="#6366F1" />
+                  </TouchableOpacity>
+                </View>
               </View>
               <QuestionsByCategory 
                 type="difficulty" 
@@ -227,7 +257,23 @@ export default function HomeScreen() {
             />
           </View>
         )}
+
+        {/* Add Sort Bottom Drawer */}
+        {showSortDrawer && (
+          <View className="absolute inset-0 bg-gray-soft/50">
+            <SortQuestionsBottomDrawer
+              selectedSort={selectedSort}
+              onSortChange={(value) => {
+                setSelectedSort(value)
+                setShowSortDrawer(false)
+                // TODO: Implement actual sorting logic
+              }}
+              onClose={() => setShowSortDrawer(false)}
+            />
+          </View>
+        )}
       </View>
+      <BottomSpacer />
     </SafeAreaView>
   )
 } 
