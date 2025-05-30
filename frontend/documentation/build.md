@@ -318,3 +318,52 @@ Common troubleshooting steps when experiencing build issues:
    ```bash
    npx expo run:android
    ```
+
+### Debugging EAS Builds Locally
+When encountering issues with EAS builds, you can debug the build process locally by following these steps:
+
+1. Clean project files:
+```bash
+rm -rf .expo/
+rm -rf android/
+rm -rf node_modules/
+rm package-lock.json
+```
+
+2. Reinstall dependencies:
+```bash
+npm install
+```
+
+3. Generate native code:
+```bash
+npx expo prebuild
+```
+
+4. Build Android variants locally:
+```bash
+cd android
+./gradlew assembleDebug --stacktrace
+./gradlew assembleRelease --stackrace
+```
+
+Key differences between debug and release builds:
+- `assembleDebug`: 
+  - Includes debugging tools and developer options
+  - Faster build time
+  - Larger APK size
+  - Not optimized for performance
+  - Can be installed directly on emulators/devices
+
+- `assembleRelease`:
+  - Optimized and minified code
+  - Requires signing configuration
+  - Smaller APK size
+  - Better performance
+  - Production-ready build
+
+This process helps verify if build issues are related to your local environment or EAS-specific configurations. If the local build succeeds but EAS build fails, the issue might be related to:
+- EAS build configuration
+- Cloud environment differences
+- Git commit state
+- Missing environment variables in EAS
