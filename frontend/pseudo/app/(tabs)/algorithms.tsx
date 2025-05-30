@@ -4,6 +4,8 @@ import { SafeAreaView } from "react-native"
 import { Header } from "../components/shared/Header"
 
 export default function AlgorithmsScreen() {
+  console.log('========= ALGORITHMS SCREEN IS LOADING ========');
+
   const statusBarHeight = Platform.OS === 'android' ? StatusBar.currentHeight : 0
 
   return (

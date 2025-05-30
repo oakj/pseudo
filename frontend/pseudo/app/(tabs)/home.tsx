@@ -77,6 +77,8 @@ interface WeeklyStreakData {
 }
 
 export default function HomeScreen() {
+  console.log('========= HOME SCREEN IS LOADING ========');
+
   const { drawerVisible, translateY, showDrawer, hideDrawer } = useDrawer()
   const { data, loading, error } = useHomeData()
   const [showSaveDrawer, setShowSaveDrawer] = useState(false)
@@ -165,11 +167,11 @@ export default function HomeScreen() {
                 showsHorizontalScrollIndicator={true}
                 className="px-4"
                 style={{
-                  flexGrow: 0,  // Prevents the ScrollView from expanding
-                  height: 45    // Gives enough room for the scrollbar (50px height + padding)
+                  flexGrow: 0,
+                  height: 45
                 }}
                 contentContainerStyle={{
-                  paddingBottom: 8  // Adds space for the scrollbar
+                  paddingBottom: 8
                 }}
               >
                 <Collections 
@@ -178,6 +180,15 @@ export default function HomeScreen() {
                     name: collection.collection_name,
                     isDefault: collection.is_default
                   }))}
+                  onCollectionPress={(collectionId: string, isDefault: boolean) => {
+                    router.push({
+                      pathname: "/collection",
+                      params: { 
+                        id: collectionId,
+                        isDefault: isDefault
+                      }
+                    })
+                  }}
                 />
               </ScrollView>
             </View>
@@ -231,8 +242,15 @@ export default function HomeScreen() {
                 name: collection.collection_name,
                 isDefault: collection.is_default
               })) || []}
-              onCollectionPress={(collectionId: string) => {
+              onCollectionPress={(collectionId: string, isDefault: boolean) => {
                 hideDrawer()
+                router.push({
+                  pathname: "/collection",
+                  params: { 
+                    id: collectionId,
+                    isDefault: isDefault
+                  }
+                })
               }}
               onClose={hideDrawer}
             />

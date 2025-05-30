@@ -4,13 +4,14 @@ import { Ionicons } from "@expo/vector-icons"
 import { useState } from "react"
 
 interface Collection {
-  collection_id: string
+  id: string
   name: string
+  isDefault: boolean
 }
 
 interface CollectionsBottomDrawerProps {
   collections: Collection[]
-  onCollectionPress: (collectionId: string) => void
+  onCollectionPress: (collectionId: string, isDefault: boolean) => void
   onClose: () => void
 }
 
@@ -48,9 +49,9 @@ export function CollectionsBottomDrawer({
           <ScrollView className="px-4">
             {collections.map((collection) => (
               <TouchableOpacity
-                key={collection.collection_id}
+                key={collection.id}
                 className="bg-gray-soft rounded-full mb-2 p-4"
-                onPress={() => onCollectionPress(collection.collection_id)}
+                onPress={() => onCollectionPress(collection.id, collection.isDefault)}
               >
                 <Text className="font-montserrat-medium text-xs text-black">
                   {collection.name}

@@ -6,6 +6,8 @@ import { testData } from "../supabase"
 import { useEffect, useState } from "react"
 
 export default function TestingScreen() {
+  console.log('========= TESTING SCREEN IS LOADING ========');
+
   const [profile, setProfile] = useState<any>(null)
   const [streak, setStreak] = useState<{streak_days: number[], week_start: Date} | null>(null)
   const [collections, setCollections] = useState<any[]>([])

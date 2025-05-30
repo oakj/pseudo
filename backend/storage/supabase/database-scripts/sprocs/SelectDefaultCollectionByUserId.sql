@@ -7,7 +7,7 @@ RETURNS TABLE (
     collection_name VARCHAR(255),
     question_id UUID,
     solved BOOLEAN,
-    blob_url TEXT,
+    blob_url VARCHAR,
     difficulty VARCHAR(20),
     design_patterns TEXT[]
 ) AS $$
@@ -20,7 +20,7 @@ BEGIN
         uq.solved,
         uq.blob_url,
         q.difficulty,
-        ARRAY_AGG(dp.name) as design_patterns
+        ARRAY_AGG(dp.name::text) as design_patterns
     FROM default_collection dc
     LEFT JOIN default_collection_question dcq ON dc.id = dcq.default_collection_id
     LEFT JOIN user_question uq ON dcq.question_id = uq.question_id AND uq.user_id = p_user_id

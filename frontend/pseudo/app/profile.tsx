@@ -21,6 +21,8 @@ import { Pencil } from "./lib/icons/Pencil"
 type ThemeOption = "light" | "dark" | "system"
 
 export default function ProfileScreen() {
+  console.log('========= PROFILE SCREEN IS LOADING ========');
+
   const router = useRouter()
   const { selectedAvatar, setSelectedAvatar } = useAvatar()
   const [theme, setTheme] = useState<ThemeOption>("system")

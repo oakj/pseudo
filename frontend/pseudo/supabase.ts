@@ -112,3 +112,21 @@ export const testData = {
 // TEST: CollectionScreen functions
 
 // TEST: SolveScreen functions
+
+// TEST: QuestionsScreen functions
+
+// temporarily hard coding a userId for testing purposes. change to `user.id` for final function
+export const collectionScreen = {
+  async getCollectionById(collectionId: string, isDefault: boolean = false) {
+    
+    const { data, error } = await supabase.rpc(
+      isDefault ? 'selectdefaultcollectionbyuserid' : 'selectcollectionbyuserid',
+      {
+        p_user_id: testUserId,
+        p_collection_id: collectionId
+      }
+    )
+
+    return { data, error }
+  }
+}

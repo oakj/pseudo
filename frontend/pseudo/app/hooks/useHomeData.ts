@@ -30,7 +30,6 @@ export interface HomeData {
 }
 
 export function useHomeData() {
-  console.log('========= USE HOME DATA HOOK IS BEING PROCESSED ========');
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [data, setData] = useState<HomeData | null>(null)
