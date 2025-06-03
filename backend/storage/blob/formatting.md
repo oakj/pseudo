@@ -8,7 +8,8 @@
 ## Base Structure
 ```json
 {
-    "question_id": "integer",
+    "question_id": "string",
+    "leetcode_id": "string",
     "metadata": {
         "difficulty": "string (easy|medium|hard)",
         "categories": ["array of strings"],

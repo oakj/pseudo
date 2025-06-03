@@ -6,12 +6,23 @@ import { collectionScreen } from "../supabase"
 import { useEffect, useState } from "react"
 
 interface CollectionQuestion {
-  question_id: string
-  question_title: string
-  solved: boolean
-  blob_url: string
-  difficulty: string
-  design_patterns: string[]
+  user: {
+    user_id: string
+  },
+  collection: {
+    collection_id: string
+    collection_name: string
+  },
+  questions: [
+    {
+      question_id: string
+      question_title: string
+      solved: boolean,
+      blob_url: string,
+      difficulty: string,
+      design_patterns: string[]
+    }
+  ]
 }
 
 export default function CollectionScreen() {
@@ -35,7 +46,6 @@ export default function CollectionScreen() {
       }
 
       try {
-        // Convert the isDefault string param to boolean
         const isDefaultBool = isDefault === 'true'
         const { data, error } = await collectionScreen.getCollectionById(id as string, isDefaultBool)
         if (error) throw error
@@ -49,7 +59,7 @@ export default function CollectionScreen() {
     }
 
     fetchCollection()
-  }, [id, isDefault])  // Added isDefault to dependencies
+  }, [id, isDefault])
 
   return (
     <SafeAreaView className="flex-1 bg-white">
@@ -77,11 +87,16 @@ export default function CollectionScreen() {
           </View>
         ) : (
           <View className="flex-1 p-4">
-            <Text className="font-montserrat-semibold text-lg mb-4">
-              Questions ({collectionData?.length ?? 0})
-            </Text>
+            <View className="items-center mb-8">
+              <Text className="font-montserrat-semibold text-2xl text-center">
+                {collectionData?.[0]?.collection?.collection_name}
+              </Text>
+              <Text className="font-montserrat-medium text-gray-600 mt-2 text-center">
+                {collectionData?.[0]?.questions?.filter(q => q.solved).length ?? 0} solved of {collectionData?.[0]?.questions?.length ?? 0} questions
+              </Text>
+            </View>
             
-            {collectionData?.map((question) => (
+            {collectionData?.[0]?.questions?.map((question) => (
               <View 
                 key={question.question_id} 
                 className="bg-gray-50 p-4 rounded-lg mb-2"

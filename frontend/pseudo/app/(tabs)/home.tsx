@@ -4,7 +4,6 @@ import { Header } from "../components/shared/Header"
 import { WeeklyStreak } from "../components/home/WeeklyStreak"
 import { Collections } from "../components/home/Collections"
 import { QuestionsByCategory } from "../components/home/QuestionsByCategory"
-import { MoreCollections } from "../components/home/MoreCollections"
 import { useDrawer } from "../hooks/useDrawer"
 import { useHomeData } from "../hooks/useHomeData"
 import { Ionicons } from "@expo/vector-icons"
@@ -13,13 +12,6 @@ import { CollectionsBottomDrawer } from "../components/home/CollectionsBottomDra
 import { SaveQuestionToCollectionBottomDrawer } from "../components/home/SaveQuestionToCollectionBottomDrawer"
 import { useState } from "react"
 import { BottomSpacer } from "../components/shared/BottomSpacer"
-import { 
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator
-} from "../components/ui/dropdown-menu"
 import { SortQuestionsBottomDrawer } from "../components/home/SortQuestionsBottomDrawer"
 import { useRouter } from "expo-router"
 
@@ -76,6 +68,26 @@ interface WeeklyStreakData {
   streak_days: number[]
 }
 
+// Add this sorting function before the HomeScreen component
+function sortQuestions(questions: any[], sortType: "nameAsc" | "nameDesc" | "difficultyAsc" | "difficultyDesc") {
+  const difficultyOrder = { easy: 1, medium: 2, hard: 3 };
+  
+  return [...questions].sort((a, b) => {
+    switch (sortType) {
+      case "nameAsc":
+        return a.question_title.localeCompare(b.question_title);
+      case "nameDesc":
+        return b.question_title.localeCompare(a.question_title);
+      case "difficultyAsc":
+        return difficultyOrder[a.question_difficulty.toLowerCase()] - difficultyOrder[b.question_difficulty.toLowerCase()];
+      case "difficultyDesc":
+        return difficultyOrder[b.question_difficulty.toLowerCase()] - difficultyOrder[a.question_difficulty.toLowerCase()];
+      default:
+        return 0;
+    }
+  });
+}
+
 export default function HomeScreen() {
   console.log('========= HOME SCREEN IS LOADING ========');
 
@@ -95,6 +107,9 @@ export default function HomeScreen() {
   // On Android, we need to manually account for the status bar height
   // On iOS, SafeAreaView handles this automatically
   const statusBarHeight = Platform.OS === 'android' ? (StatusBar.currentHeight ?? 24) : 0
+
+  // Sort the questions before mapping them
+  const sortedQuestions = questions ? sortQuestions(questions, selectedSort) : [];
 
   if (loading) {
     return (
@@ -217,7 +232,7 @@ export default function HomeScreen() {
               </View>
               <QuestionsByCategory 
                 type="difficulty" 
-                questions={(questions || []).map(question => ({
+                questions={(sortedQuestions || []).map(question => ({
                   id: question.question_id,
                   title: question.question_title,
                   difficulty: question.question_difficulty.toLowerCase(),

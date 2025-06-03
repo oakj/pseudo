@@ -1,5 +1,6 @@
 {
-    "question_id": 121,
+    "question_id": "cb8b2437-6618-42ce-a771-41a7b01cca4f",
+    "leetcode_id": "L-121",
     "metadata": {
         "difficulty": "easy",
         "categories": ["array", "dynamic programming"],

@@ -106,7 +106,7 @@ export default function ProfileScreen() {
           {/* Testing Link */}
           <View className="flex-row items-center mb-4">
             <Pressable 
-              onPress={() => router.push("/testing")}
+              onPress={() => router.push("/debug")}
               className="flex-row items-center gap-3"
             >
               <Bug size={24} className="text-black" />

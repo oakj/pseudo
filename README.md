@@ -110,4 +110,215 @@ Refer to ./instructions/instructions.md for high level details on the project su
 | 10 | Low     | Admin page                   | We need admin endpoints for creating, updating, and deleting questions and default collections.                                                 | Should this live with the app's landing page or its own webapp? | 🟡                              | Under consideration. This is close to MVP or post MVP. Leading towards adding this to the landing page. Will need a hidden route and auth for the page. |
 
 
+## Project File Tree
+```
+pseudo
+├─ backend
+│  └─ storage
+│     ├─ blob
+│     │  ├─ formatting.md
+│     │  └─ submission-eval-flow.md
+│     ├─ dummy-data
+│     │  ├─ blob-dummy-data.md
+│     │  ├─ questions
+│     │  │  ├─ L-1.json
+│     │  │  ├─ L-102.json
+│     │  │  ├─ L-121.json
+│     │  │  ├─ L-127.json
+│     │  │  ├─ L-15.json
+│     │  │  ├─ L-20.json
+│     │  │  ├─ L-200.json
+│     │  │  ├─ L-23.json
+│     │  │  ├─ L-295.json
+│     │  │  └─ L-3.json
+│     │  ├─ sql-dummy-data.md
+│     │  └─ userquestions
+│     │     ├─ 294a924b-4591-45ea-b3dd-c6c9c6112b2e.json
+│     │     ├─ 510f9dcc-464e-48ff-a920-43518eabbd54.json
+│     │     ├─ 803d9755-94ed-4749-9ed9-83e7b3f5abba.json
+│     │     ├─ 83481541-f24b-4906-b867-751125527037.json
+│     │     ├─ 8f580c6e-3c8e-4502-91de-21aafa7521f7.json
+│     │     ├─ 9756b403-0988-428f-9368-d16e8a520687.json
+│     │     ├─ cc61c2ec-30cf-405c-ba27-77708eac1ab2.json
+│     │     ├─ dba22364-c980-4a6e-bc54-566b609914c8.json
+│     │     ├─ df576c81-0d19-4471-83ae-511e1bbc4271.json
+│     │     └─ e69cbd17-09f6-4864-968a-de42da46df10.json
+│     └─ supabase
+│        └─ database-scripts
+│           ├─ README.md
+│           ├─ sprocs
+│           │  ├─ DeleteCollectionByUserId.sql
+│           │  ├─ InsertCollectionByUserId.sql
+│           │  ├─ InsertUserQuestion.sql
+│           │  ├─ SelectCollectionByUserId.sql
+│           │  ├─ SelectCollectionsByUserId.sql
+│           │  ├─ SelectDefaultCollectionByUserId.sql
+│           │  ├─ SelectProfileByUserId.sql
+│           │  ├─ SelectQuestionsByUserId.sql
+│           │  ├─ SelectUserQuestion.sql
+│           │  ├─ SelectWeeklyStreakByUserId.sql
+│           │  ├─ UpdateCollectionNameByUserId.sql
+│           │  ├─ UpdateProfileByUserId.sql
+│           │  ├─ UpdateUserQuestion.sql
+│           │  └─ UpdateWeeklyStreakByUserId.sql
+│           └─ upscripts
+├─ frontend
+│  ├─ documentation
+│  │  ├─ Assets.md
+│  │  ├─ build.md
+│  │  ├─ eas-init.png
+│  │  ├─ header-v1.png
+│  │  ├─ HomeScreen
+│  │  │  ├─ collections-v1.png
+│  │  │  ├─ collectionsbottomdrawer-v1.png
+│  │  │  ├─ homescreen-v1.png
+│  │  │  ├─ HomeScreen.md
+│  │  │  ├─ questions-v1.png
+│  │  │  ├─ savequestiontocollectionbottomdrawer-v1.png
+│  │  │  └─ weeklystreak-v1.png
+│  │  ├─ ProfileScreen
+│  │  │  └─ ProfileScreen.md
+│  │  └─ styling.md
+│  └─ pseudo
+│     ├─ .env
+│     ├─ app
+│     │  ├─ (tabs)
+│     │  │  ├─ algorithms.tsx
+│     │  │  ├─ flashcards.tsx
+│     │  │  ├─ home.tsx
+│     │  │  └─ _layout.tsx
+│     │  ├─ collection.tsx
+│     │  ├─ components
+│     │  │  ├─ home
+│     │  │  │  ├─ Collections.tsx
+│     │  │  │  ├─ CollectionsBottomDrawer.tsx
+│     │  │  │  ├─ Questions.tsx
+│     │  │  │  ├─ QuestionsByCategory.tsx
+│     │  │  │  ├─ SaveQuestionToCollectionBottomDrawer.tsx
+│     │  │  │  ├─ SortQuestionsBottomDrawer.tsx
+│     │  │  │  └─ WeeklyStreak
+│     │  │  │     ├─ DayColumn.tsx
+│     │  │  │     └─ index.tsx
+│     │  │  ├─ shared
+│     │  │  │  ├─ BottomSpacer.tsx
+│     │  │  │  └─ Header.tsx
+│     │  │  └─ ui
+│     │  │     ├─ avatar.tsx
+│     │  │     ├─ badge.tsx
+│     │  │     ├─ button.tsx
+│     │  │     ├─ card.tsx
+│     │  │     ├─ dropdown-menu.tsx
+│     │  │     ├─ input.tsx
+│     │  │     ├─ radio-group.tsx
+│     │  │     ├─ select.tsx
+│     │  │     ├─ separator.tsx
+│     │  │     └─ text.tsx
+│     │  ├─ contexts
+│     │  │  └─ AvatarContext.tsx
+│     │  ├─ hooks
+│     │  │  ├─ useDrawer.ts
+│     │  │  └─ useHomeData.ts
+│     │  ├─ index.tsx
+│     │  ├─ lib
+│     │  │  ├─ icons
+│     │  │  │  ├─ ArrowLeft.tsx
+│     │  │  │  ├─ Bell.tsx
+│     │  │  │  ├─ BellRing.tsx
+│     │  │  │  ├─ Bookmark.tsx
+│     │  │  │  ├─ Bug.tsx
+│     │  │  │  ├─ Check.tsx
+│     │  │  │  ├─ ChevronDown.tsx
+│     │  │  │  ├─ ChevronRight.tsx
+│     │  │  │  ├─ ChevronsDown.tsx
+│     │  │  │  ├─ ChevronsDownUp.tsx
+│     │  │  │  ├─ ChevronsRight.tsx
+│     │  │  │  ├─ ChevronsUpDown.tsx
+│     │  │  │  ├─ ChevronUp.tsx
+│     │  │  │  ├─ Circle.tsx
+│     │  │  │  ├─ CircleCheck.tsx
+│     │  │  │  ├─ Ellipsis.tsx
+│     │  │  │  ├─ House.tsx
+│     │  │  │  ├─ iconWithClassName.ts
+│     │  │  │  ├─ IdCard.tsx
+│     │  │  │  ├─ Layers.tsx
+│     │  │  │  ├─ Palette.tsx
+│     │  │  │  ├─ Pencil.tsx
+│     │  │  │  ├─ Sparkles.tsx
+│     │  │  │  ├─ SquareTerminal.tsx
+│     │  │  │  └─ UserRoundPen.tsx
+│     │  │  ├─ useColorScheme.tsx
+│     │  │  └─ utils.ts
+│     │  ├─ profile.tsx
+│     │  ├─ questions.tsx
+│     │  ├─ solve.tsx
+│     │  ├─ testing.tsx
+│     │  └─ _layout.tsx
+│     ├─ app.config.js
+│     ├─ assets
+│     │  ├─ avatars
+│     │  │  ├─ 1.png
+│     │  │  ├─ 2.png
+│     │  │  ├─ 3.png
+│     │  │  ├─ 4.png
+│     │  │  ├─ 5.png
+│     │  │  ├─ 6.png
+│     │  │  ├─ 7.png
+│     │  │  ├─ 8.png
+│     │  │  └─ bosty-1.png
+│     │  ├─ fonts
+│     │  │  ├─ Montserrat
+│     │  │  │  ├─ Montserrat-Italic-VariableFont_wght.ttf
+│     │  │  │  ├─ Montserrat-VariableFont_wght.ttf
+│     │  │  │  ├─ OFL.txt
+│     │  │  │  ├─ README.txt
+│     │  │  │  └─ static
+│     │  │  │     ├─ Montserrat-Black.ttf
+│     │  │  │     ├─ Montserrat-BlackItalic.ttf
+│     │  │  │     ├─ Montserrat-Bold.ttf
+│     │  │  │     ├─ Montserrat-BoldItalic.ttf
+│     │  │  │     ├─ Montserrat-ExtraBold.ttf
+│     │  │  │     ├─ Montserrat-ExtraBoldItalic.ttf
+│     │  │  │     ├─ Montserrat-ExtraLight.ttf
+│     │  │  │     ├─ Montserrat-ExtraLightItalic.ttf
+│     │  │  │     ├─ Montserrat-Italic.ttf
+│     │  │  │     ├─ Montserrat-Light.ttf
+│     │  │  │     ├─ Montserrat-LightItalic.ttf
+│     │  │  │     ├─ Montserrat-Medium.ttf
+│     │  │  │     ├─ Montserrat-MediumItalic.ttf
+│     │  │  │     ├─ Montserrat-Regular.ttf
+│     │  │  │     ├─ Montserrat-SemiBold.ttf
+│     │  │  │     ├─ Montserrat-SemiBoldItalic.ttf
+│     │  │  │     ├─ Montserrat-Thin.ttf
+│     │  │  │     └─ Montserrat-ThinItalic.ttf
+│     │  │  └─ SpaceMono-Regular.ttf
+│     │  └─ images
+│     │     ├─ adaptive-icon.png
+│     │     ├─ favicon.png
+│     │     ├─ icon.png
+│     │     ├─ partial-react-logo.png
+│     │     ├─ react-logo.png
+│     │     ├─ react-logo@2x.png
+│     │     ├─ react-logo@3x.png
+│     │     └─ splash-icon.png
+│     ├─ babel.config.js
+│     ├─ eas.json
+│     ├─ example.env
+│     ├─ expo-env.d.ts
+│     ├─ global.css
+│     ├─ metro.config.js
+│     ├─ nativewind-env.d.ts
+│     ├─ package-lock.json
+│     ├─ package.json
+│     ├─ README.md
+│     ├─ supabase.ts
+│     ├─ tailwind.config.js
+│     └─ tsconfig.json
+├─ instructions
+│  └─ instructions.md
+├─ notes
+│  ├─ lessons-learned.md
+│  ├─ pretty-json-template.json
+│  └─ README.md
+└─ README.md
 
+```

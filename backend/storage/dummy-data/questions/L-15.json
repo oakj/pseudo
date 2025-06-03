@@ -1,5 +1,6 @@
 {
-    "question_id": 15,
+    "question_id": "ea42cfe2-7e25-44e4-8e89-3c85661fa68a",
+    "leetcode_id": "L-15",
     "metadata": {
         "difficulty": "medium",
         "categories": ["array", "two pointers", "sorting"],

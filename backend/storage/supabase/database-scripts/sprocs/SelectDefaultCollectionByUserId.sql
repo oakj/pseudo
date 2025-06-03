@@ -6,6 +6,7 @@ RETURNS TABLE (
     collection_id UUID,
     collection_name VARCHAR(255),
     question_id UUID,
+    question_title VARCHAR(255),
     solved BOOLEAN,
     blob_url VARCHAR,
     difficulty VARCHAR(20),
@@ -17,6 +18,7 @@ BEGIN
         dc.id as collection_id,
         dc.name as collection_name,
         dcq.question_id,
+        q.title as question_title,
         uq.solved,
         uq.blob_url,
         q.difficulty,
@@ -33,6 +35,7 @@ BEGIN
         dc.id,
         dc.name,
         dcq.question_id,
+        q.title,
         uq.solved,
         uq.blob_url,
         q.difficulty;

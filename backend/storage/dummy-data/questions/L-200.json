@@ -1,5 +1,6 @@
 {
-    "question_id": 200,
+    "question_id": "beef45e6-0e2f-4ced-8a02-793660d1cba1",
+    "leetcode_id": "L-200",
     "metadata": {
         "difficulty": "medium",
         "categories": ["array", "depth-first search", "breadth-first search", "union find", "matrix"],

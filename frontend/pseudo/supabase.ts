@@ -112,13 +112,74 @@ export const testData = {
 // TEST: CollectionScreen functions
 
 // TEST: SolveScreen functions
+export const solveScreen = {
+    async getQuestionData(questionId: string, leetcodeId: string) {
+        try {
+            console.log(`Attempting to fetch L-${leetcodeId}.json from Supabase storage`);
+            
+            // First get the public URL for the file
+            const { data: publicURL } = supabase
+                .storage
+                .from('questions')
+                .getPublicUrl(`L-${leetcodeId}.json`);
+
+            console.log('Public URL:', publicURL);
+
+            // Fetch the file using the public URL
+            const response = await fetch(publicURL.publicUrl);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const questionData = await response.json();
+            return { data: questionData, error: null };
+
+        } catch (error) {
+            console.error('Error fetching question data:', error);
+            return { data: null, error };
+        }
+    }
+}
 
 // TEST: QuestionsScreen functions
 
+interface CollectionQuestion {
+  user: {
+    user_id: string
+  },
+  collection: {
+    collection_id: string
+    collection_name: string
+  },
+  questions: [
+    {
+      question_id: string
+      question_title: string
+      solved: boolean,
+      blob_url: string,
+      difficulty: string,
+      design_patterns: string[]
+    }
+  ]
+}
+
+interface DatabaseResponse {
+  collection_id: string
+  collection_name: string
+  question_id: string
+  question_title: string
+  solved: boolean
+  blob_url: string
+  difficulty: string
+  design_patterns: string[]
+}
+
 // temporarily hard coding a userId for testing purposes. change to `user.id` for final function
 export const collectionScreen = {
-  async getCollectionById(collectionId: string, isDefault: boolean = false) {
-    
+  async getCollectionById(collectionId: string, isDefault: boolean = false): Promise<{ 
+    data: CollectionQuestion[] | null, 
+    error: any 
+  }> {
     const { data, error } = await supabase.rpc(
       isDefault ? 'selectdefaultcollectionbyuserid' : 'selectcollectionbyuserid',
       {
@@ -127,6 +188,28 @@ export const collectionScreen = {
       }
     )
 
-    return { data, error }
+    if (error) return { data: null, error }
+    if (!data || data.length === 0) return { data: null, error: null }
+
+    // Group questions by collection
+    const mappedData: CollectionQuestion = {
+      user: {
+        user_id: testUserId
+      },
+      collection: {
+        collection_id: data[0].collection_id,
+        collection_name: data[0].collection_name
+      },
+      questions: data.map(row => ({
+        question_id: row.question_id,
+        question_title: row.question_title,
+        solved: row.solved,
+        blob_url: row.blob_url,
+        difficulty: row.difficulty,
+        design_patterns: row.design_patterns || []
+      }))
+    }
+
+    return { data: [mappedData], error: null }
   }
 }
