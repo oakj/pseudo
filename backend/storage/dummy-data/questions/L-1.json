@@ -98,7 +98,7 @@
     },
     "boilerplate_solution": {
         "language": "python",
-        "pseudocode": "class Solution:\n    def two_sum(self, nums: List[int], target: int) -> List[int]:\n        # TODO: Implement this function\n        # Return indices of two numbers that add up to target"
+        "pseudocode": "class Solution:\n    def two_sum(self, nums: List[int], target: int) -> List[int]:\n        # Implement this function"
     },
     "valid_solutions": [
         {

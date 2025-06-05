@@ -5,10 +5,11 @@ import { Avatar, AvatarImage } from "../ui/avatar"
 import { useAvatar } from "../../contexts/AvatarContext"
 
 interface HeaderProps {
-  title?: string
+  title?: string;
+  showBackButton?: boolean;
 }
 
-export function Header({ title = "Pseudo" }: HeaderProps) {
+export function Header({ title = "Pseudo", showBackButton = false }: HeaderProps) {
   const router = useRouter()
   const { selectedAvatar } = useAvatar()
 
@@ -16,7 +17,7 @@ export function Header({ title = "Pseudo" }: HeaderProps) {
     <View 
       className="flex-row justify-between items-center px-4 bg-white h-[60px] w-full"
     >
-      <TouchableOpacity onPress={() => router.push("/(tabs)/home")}>
+      <TouchableOpacity onPress={() => showBackButton ? router.back() : router.push("/(tabs)/home")}>
         <Text 
           className="text-black text-xl font-montserrat-semibold"
         >

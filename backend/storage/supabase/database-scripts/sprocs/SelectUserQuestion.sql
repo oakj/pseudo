@@ -3,23 +3,23 @@ CREATE OR REPLACE FUNCTION SelectUserQuestion(
     p_question_id UUID
 )
 RETURNS TABLE (
-    id UUID,
+    user_question_id UUID,
     user_id UUID,
     question_id UUID,
     solved BOOLEAN,
-    blob_url TEXT
+    blob_url VARCHAR(255)
 ) AS $$
 BEGIN
     RETURN QUERY
     SELECT 
-        id as user_question_id,
-        user_id,
-        question_id,
-        solved,
-        blob_url
-    FROM user_question
-    WHERE user_id = p_user_id
-    AND question_id = p_question_id
-    AND deleted_at IS NULL;
+        uq.id AS user_question_id,
+        uq.user_id,
+        uq.question_id,
+        uq.solved,
+        uq.blob_url
+    FROM user_question uq
+    WHERE uq.user_id = p_user_id
+    AND uq.question_id = p_question_id
+    AND uq.deleted_at IS NULL;
 END;
-$$ LANGUAGE plpgsql; 
+$$ LANGUAGE plpgsql;

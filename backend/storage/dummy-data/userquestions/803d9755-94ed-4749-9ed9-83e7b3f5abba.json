@@ -1,5 +1,5 @@
 {
-    "user_id": "af6eb13c-24d3-4622-8997-b386a076ede1",
+    "user_id": "3b68160b-4d21-41da-8856-a9549cd85577",
     "question_id": "b788a7db-c05d-4769-b231-2db1a6482a5e",
     "submission": {
         "solution": "class Solution:\n    def two_sum(self, nums: List[int], target: int) -> List[int]:\n        seen = {}\n        for i, num in enumerate(nums):\n            complement = target - num\n            if complement in seen:\n                return [seen[complement], i]\n            seen[num] = i\n        return []",

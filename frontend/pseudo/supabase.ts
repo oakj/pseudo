@@ -112,6 +112,33 @@ export const testData = {
 // TEST: CollectionScreen functions
 
 // TEST: SolveScreen functions
+interface UserQuestion {
+  id: string;
+  user_id: string;
+  question_id: string;
+  solved: boolean;
+  blob_url: string | null;
+}
+
+interface HintMessage {
+  from: 'user' | 'hint_bot';
+  message: string;
+  timestamp: string;
+}
+
+interface UserQuestionData {
+  user_id: string;
+  question_id: string;
+  submission?: {
+    solution: string;
+    timestamp: string;
+    evaluation?: any;
+  };
+  hint_chat: {
+    messages: HintMessage[];
+  };
+}
+
 export const solveScreen = {
     async getQuestionData(questionId: string, leetcodeId: string) {
         try {
@@ -136,6 +163,94 @@ export const solveScreen = {
 
         } catch (error) {
             console.error('Error fetching question data:', error);
+            return { data: null, error };
+        }
+    },
+
+    async getUserQuestion(userId: string, questionId: string): Promise<{ data: UserQuestion | null, error: any }> {
+        try {
+            const { data, error } = await supabase
+                .rpc('selectuserquestion', {
+                    p_user_id: userId,
+                    p_question_id: questionId
+                });
+
+            if (error) throw error;
+            
+            // Return the first result since we expect only one
+            return { data: data?.[0] || null, error: null };
+        } catch (error) {
+            console.error('Error fetching user question:', error);
+            return { data: null, error };
+        }
+    },
+
+    async createUserQuestion(userId: string, questionId: string): Promise<{ data: UserQuestion | null, error: any }> {
+        try {
+            // First, insert the record into user_question table
+            const { data, error } = await supabase
+                .from('user_question')
+                .insert({
+                    user_id: userId,
+                    question_id: questionId,
+                    solved: false
+                })
+                .select()
+                .single();
+
+            if (error) throw error;
+
+            // Create initial user question data
+            const initialData: UserQuestionData = {
+                user_id: userId,
+                question_id: questionId,
+                hint_chat: {
+                    messages: []
+                }
+            };
+
+            // Upload the JSON file to userquestions bucket
+            const { error: uploadError } = await supabase
+                .storage
+                .from('userquestions')
+                .upload(`${data.id}.json`, JSON.stringify(initialData));
+
+            if (uploadError) throw uploadError;
+
+            // Get the public URL for the uploaded file
+            const { data: publicURL } = supabase
+                .storage
+                .from('userquestions')
+                .getPublicUrl(`${data.id}.json`);
+
+            // Update the user_question record with the blob_url
+            const { data: updatedData, error: updateError } = await supabase
+                .from('user_question')
+                .update({ blob_url: publicURL.publicUrl })
+                .eq('id', data.id)
+                .select()
+                .single();
+
+            if (updateError) throw updateError;
+
+            return { data: updatedData, error: null };
+        } catch (error) {
+            console.error('Error creating user question:', error);
+            return { data: null, error };
+        }
+    },
+
+    async getUserQuestionData(blobUrl: string): Promise<{ data: UserQuestionData | null, error: any }> {
+        try {
+            const response = await fetch(blobUrl);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            return { data, error: null };
+        } catch (error) {
+            console.error('Error fetching user question data:', error);
             return { data: null, error };
         }
     }

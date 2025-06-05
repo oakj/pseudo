@@ -91,12 +91,6 @@ export default function TabsLayout() {
           tabBarIcon: ({ color }) => <SquareTerminal size={24} color={color} />,
         }}
       />
-      <Tabs.Screen
-        name="solve"
-        options={{
-          href: null,
-        }}
-      />
     </Tabs>
   )
 }
