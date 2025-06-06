@@ -217,32 +217,22 @@ export const solveScreen = {
 
             if (uploadError) throw uploadError;
 
-            // Get the public URL for the uploaded file
-            const { data: publicURL } = supabase
-                .storage
-                .from('userquestions')
-                .getPublicUrl(`${data.id}.json`);
-
-            // Update the user_question record with the blob_url
-            const { data: updatedData, error: updateError } = await supabase
-                .from('user_question')
-                .update({ blob_url: publicURL.publicUrl })
-                .eq('id', data.id)
-                .select()
-                .single();
-
-            if (updateError) throw updateError;
-
-            return { data: updatedData, error: null };
+            return { data, error: null };
         } catch (error) {
             console.error('Error creating user question:', error);
             return { data: null, error };
         }
     },
 
-    async getUserQuestionData(blobUrl: string): Promise<{ data: UserQuestionData | null, error: any }> {
+    async getUserQuestionData(userQuestionId: string): Promise<{ data: UserQuestionData | null, error: any }> {
         try {
-            const response = await fetch(blobUrl);
+            // Get the public URL for the file from userquestions bucket
+            const { data: publicURL } = supabase
+                .storage
+                .from('userquestions')
+                .getPublicUrl(`${userQuestionId}.json`);
+
+            const response = await fetch(publicURL.publicUrl);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }

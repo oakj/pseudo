@@ -54,16 +54,12 @@ export default function SolveScreen() {
           setQuestionData(qData);
 
           // Get or create user question
-          console.log('Fetching user question...');
           const { data: userQuestion, error: uqError } = await solveScreen.getUserQuestion(testUserId, id as string);
-          console.log('User question response:', userQuestion);
           if (uqError) throw uqError;
 
           if (!userQuestion) {
-            console.log('No existing user question, creating new one...');
             // Create new user question if it doesn't exist
             const { data: newUserQuestion, error: createError } = await solveScreen.createUserQuestion(testUserId, id as string);
-            console.log('New user question created:', newUserQuestion);
             if (createError) throw createError;
 
             // Initialize empty user question data
@@ -74,13 +70,12 @@ export default function SolveScreen() {
                 messages: []
               }
             };
-            console.log('Setting initial user question data:', initialData);
+
             setUserQuestionData(initialData);
-          } else if (userQuestion.blob_url) {
-            console.log('Found existing user question, fetching data from blob_url:', userQuestion.blob_url);
+          } else {
             // Load existing user question data
-            const { data: uqData, error: uqdError } = await solveScreen.getUserQuestionData(userQuestion.blob_url);
-            console.log('User question data from blob:', uqData);
+            const { data: uqData, error: uqdError } = await solveScreen.getUserQuestionData(userQuestion.user_question_id);
+
             if (uqdError) throw uqdError;
             setUserQuestionData(uqData);
           }
@@ -93,11 +88,6 @@ export default function SolveScreen() {
     }
     loadData();
   }, [id, leetcodeId]);
-
-  // Add a log when userQuestionData changes
-  useEffect(() => {
-    console.log('Current userQuestionData:', userQuestionData);
-  }, [userQuestionData]);
 
   const handleRequestHint = () => {
     // TODO: Implement hint request functionality
