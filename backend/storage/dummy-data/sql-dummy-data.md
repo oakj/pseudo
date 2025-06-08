@@ -19,7 +19,7 @@ DO $$
 BEGIN
     -- Only insert if questions table is empty
     IF NOT EXISTS (SELECT 1 FROM question WHERE title LIKE '[TEST]%' LIMIT 1) THEN
-        -- Insert questions (*This should be updated to have a leetcode_id)
+        -- Insert questions
         INSERT INTO question (title, difficulty, blob_url)
         SELECT 
             '[TEST] Question ' || n,
@@ -194,37 +194,37 @@ DELETE FROM design_pattern WHERE name LIKE '[TEST]%';
 
 6.a. Inserted question records to match dummy data version of question json files. This was executed on 3/27/2025 via the Supabase console's SQL editor.
 ```sql
-INSERT INTO public.question (title, difficulty, leetcode_id)
+INSERT INTO public.question (title, difficulty)
 VALUES 
   -- L-1: Two Sum
-  ('Two Sum', 'easy', '1'),
+  ('Two Sum', 'easy'),
   
   -- L-3: Longest Substring Without Repeating Characters
-  ('Longest Substring Without Repeating Characters', 'medium', '3'),
+  ('Longest Substring Without Repeating Characters', 'medium'),
   
   -- L-15: 3Sum
-  ('3Sum', 'medium', '15'),
+  ('3Sum', 'medium'),
   
   -- L-20: Valid Parentheses
-  ('Valid Parentheses', 'easy', '20'),
+  ('Valid Parentheses', 'easy'),
   
   -- L-23: Merge k Sorted Lists
-  ('Merge k Sorted Lists', 'hard', '23'),
+  ('Merge k Sorted Lists', 'hard'),
   
   -- L-102: Binary Tree Level Order Traversal
-  ('Binary Tree Level Order Traversal', 'medium', '102'),
+  ('Binary Tree Level Order Traversal', 'medium'),
   
   -- L-121: Best Time to Buy and Sell Stock
-  ('Best Time to Buy and Sell Stock', 'easy', '121'),
+  ('Best Time to Buy and Sell Stock', 'easy'),
   
   -- L-127: Word Ladder
-  ('Word Ladder', 'hard', '127'),
+  ('Word Ladder', 'hard'),
   
   -- L-200: Number of Islands
-  ('Number of Islands', 'medium', '200'),
+  ('Number of Islands', 'medium'),
   
   -- L-295: Find Median from Data Stream
-  ('Find Median from Data Stream', 'hard', '295');
+  ('Find Median from Data Stream', 'hard');
 
   -- To select the newly added questions, use the following query:
   select * from question where title NOT LIKE '[TEST]%';
@@ -268,15 +268,15 @@ VALUES
   SELECT * FROM user_question WHERE user_id = 'af6eb13c-24d3-4622-8997-b386a076ede1' AND submitted_at > 2025-03-27 18:00:00+00' AND submitted_at < '2025-03-27 19:00:00+00'; 
 ```
 6.b.1: The newly created user_question records for user _solvepseudo-test-1@gmail.com_ are:
-| user_question_id                          | question_id                              | question_leetcode_id | question_title                                      | solved |
-|-------------------------------------------|------------------------------------------|----------------------|----------------------------------------------------|--------|
-| 803d9755-94ed-4749-9ed9-83e7b3f5abba      | b788a7db-c05d-4769-b231-2db1a6482a5e     | 1                    | Two Sum                                           | true   |
-| e69cbd17-09f6-4864-968a-de42da46df10      | 087405c7-79ca-490d-bbcb-b7d31f72112a     | 3                    | Longest Substring Without Repeating Characters    | false  |
-| 510f9dcc-464e-48ff-a920-43518eabbd54      | ea42cfe2-7e25-44e4-8e89-3c85661fa68a     | 15                   | 3Sum                                              | true   |
-| 8f580c6e-3c8e-4502-91de-21aafa7521f7      | 9d8abe9c-316d-4e12-b288-5c5540db940e     | 20                   | Valid Parentheses                                 | false  |
-| df576c81-0d19-4471-83ae-511e1bbc4271      | ec1e64cb-a249-47cd-9a80-ddc45ff37836     | 23                   | Merge k Sorted Lists                              | true   |
-| cc61c2ec-30cf-405c-ba27-77708eac1ab2      | 781d865f-376f-495f-ab4b-52e3e9b2e35c     | 102                  | Binary Tree Level Order Traversal                 | false  |
-| 294a924b-4591-45ea-b3dd-c6c9c6112b2e      | cb8b2437-6618-42ce-a771-41a7b01cca4f     | 121                  | Best Time to Buy and Sell Stock                   | true   |
-| dba22364-c980-4a6e-bc54-566b609914c8      | cfde29c8-d215-420d-bfec-e632d781be9d     | 127                  | Word Ladder                                       | false  |
-| 83481541-f24b-4906-b867-751125527037      | beef45e6-0e2f-4ced-8a02-793660d1cba1     | 200                  | Number of Islands                                 | true   |
-| 9756b403-0988-428f-9368-d16e8a520687      | 8004809c-4523-4daf-bb2d-8344c4f1cb54     | 295                  | Find Median from Data Stream                      | false  |
+| user_question_id                          | question_id                              | question_title                                      | solved |
+|-------------------------------------------|------------------------------------------|----------------------------------------------------|--------|
+| 803d9755-94ed-4749-9ed9-83e7b3f5abba      | b788a7db-c05d-4769-b231-2db1a6482a5e     | Two Sum                                           | true   |
+| e69cbd17-09f6-4864-968a-de42da46df10      | 087405c7-79ca-490d-bbcb-b7d31f72112a     | Longest Substring Without Repeating Characters    | false  |
+| 510f9dcc-464e-48ff-a920-43518eabbd54      | ea42cfe2-7e25-44e4-8e89-3c85661fa68a     | 3Sum                                              | true   |
+| 8f580c6e-3c8e-4502-91de-21aafa7521f7      | 9d8abe9c-316d-4e12-b288-5c5540db940e     | Valid Parentheses                                 | false  |
+| df576c81-0d19-4471-83ae-511e1bbc4271      | ec1e64cb-a249-47cd-9a80-ddc45ff37836     | Merge k Sorted Lists                              | true   |
+| cc61c2ec-30cf-405c-ba27-77708eac1ab2      | 781d865f-376f-495f-ab4b-52e3e9b2e35c     | Binary Tree Level Order Traversal                 | false  |
+| 294a924b-4591-45ea-b3dd-c6c9c6112b2e      | cb8b2437-6618-42ce-a771-41a7b01cca4f     | Best Time to Buy and Sell Stock                   | true   |
+| dba22364-c980-4a6e-bc54-566b609914c8      | cfde29c8-d215-420d-bfec-e632d781be9d     | Word Ladder                                       | false  |
+| 83481541-f24b-4906-b867-751125527037      | beef45e6-0e2f-4ced-8a02-793660d1cba1     | Number of Islands                                 | true   |
+| 9756b403-0988-428f-9368-d16e8a520687      | 8004809c-4523-4daf-bb2d-8344c4f1cb54     | Find Median from Data Stream                      | false  |

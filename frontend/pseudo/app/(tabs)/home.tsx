@@ -237,7 +237,6 @@ export default function HomeScreen() {
                   title: question.question_title,
                   difficulty: question.question_difficulty.toLowerCase(),
                   isSolved: question.is_solved || false,
-                  leetcodeId: question.question_leetcode_id
                 }))}
                 onBookmarkPress={(questionId: string) => {
                   setSelectedQuestionId(questionId)

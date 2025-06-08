@@ -1,6 +1,5 @@
 {
     "question_id": "cfde29c8-d215-420d-bfec-e632d781be9d",
-    "leetcode_id": "L-127",
     "metadata": {
         "difficulty": "hard",
         "categories": ["string", "breadth-first search", "hash table"],

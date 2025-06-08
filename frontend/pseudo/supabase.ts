@@ -140,20 +140,17 @@ interface UserQuestionData {
 }
 
 export const solveScreen = {
-    async getQuestionData(questionId: string, leetcodeId: string) {
+    async getQuestionData(questionId: string) {
         try {
-            console.log(`Attempting to fetch L-${leetcodeId}.json from Supabase storage`);
-            
             // First get the public URL for the file
             const { data: publicURL } = supabase
                 .storage
                 .from('questions')
-                .getPublicUrl(`L-${leetcodeId}.json`);
-
-            console.log('Public URL:', publicURL);
+                .getPublicUrl(`${questionId}.json`);
 
             // Fetch the file using the public URL
             const response = await fetch(publicURL.publicUrl);
+            
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }

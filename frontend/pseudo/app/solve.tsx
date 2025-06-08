@@ -39,17 +39,20 @@ interface UserQuestionData {
 }
 
 export default function SolveScreen() {
-  const { id, title, leetcodeId } = useLocalSearchParams()
+  const { id, title } = useLocalSearchParams()
   const [questionData, setQuestionData] = useState<QuestionData | null>(null);
   const [userQuestionData, setUserQuestionData] = useState<UserQuestionData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function loadData() {
-      if (id && leetcodeId && testUserId) {
+      console.log('Loading data with id:', id, 'testUserId:', testUserId);
+      if (id && testUserId) {
         try {
           // Load question data
-          const { data: qData, error: qError } = await solveScreen.getQuestionData(id as string, leetcodeId as string);
+          console.log('Attempting to fetch question data for id:', id);
+          const { data: qData, error: qError } = await solveScreen.getQuestionData(id as string);
+          console.log('Question data response:', { data: qData, error: qError });
           if (qError) throw qError;
           setQuestionData(qData);
 
@@ -87,7 +90,7 @@ export default function SolveScreen() {
       }
     }
     loadData();
-  }, [id, leetcodeId]);
+  }, [id]);
 
   const handleRequestHint = () => {
     // TODO: Implement hint request functionality
@@ -120,7 +123,6 @@ export default function SolveScreen() {
           ) : questionData ? (
             <>
               <QuestionDescription
-                leetcodeId={leetcodeId as string}
                 title={title as string}
                 description={questionData.description}
                 constraints={questionData.constraints}

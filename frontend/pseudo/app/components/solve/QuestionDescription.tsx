@@ -5,13 +5,12 @@ import { useState } from 'react';
 import { cn } from '~/app/lib/utils';
 
 interface QuestionDescriptionProps {
-  leetcodeId: string;
   title: string;
   description: string;
   constraints: string[];
 }
 
-export function QuestionDescription({ leetcodeId, title, description, constraints }: QuestionDescriptionProps) {
+export function QuestionDescription({ title, description, constraints }: QuestionDescriptionProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   return (
@@ -30,11 +29,6 @@ export function QuestionDescription({ leetcodeId, title, description, constraint
           />
         </View>
         <View className="flex-row items-center gap-2">
-          <View className="px-2 py-1 rounded-0.5 bg-orange-soft">
-            <Text className="font-montserrat-medium text-xxs text-orange-hard">
-              L-{leetcodeId}
-            </Text>
-          </View>
           <View className="px-2 py-1 rounded-0.5 bg-green-soft">
             <Text className="font-montserrat-medium text-xxs text-green-hard">
               Easy

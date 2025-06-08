@@ -1,6 +1,5 @@
 {
     "question_id": "781d865f-376f-495f-ab4b-52e3e9b2e35c",
-    "leetcode_id": "L-102",
     "metadata": {
         "difficulty": "medium",
         "categories": ["tree", "breadth-first search", "binary tree"],

@@ -4,7 +4,6 @@ RETURNS TABLE (
     question_title VARCHAR(255),
     question_difficulty VARCHAR(20),
     question_blob_url VARCHAR(255),
-    question_leetcode_id VARCHAR(255),
     design_patterns VARCHAR[],
     is_solved BOOLEAN
 ) AS $$
@@ -15,7 +14,6 @@ BEGIN
         q.title as question_title,
         q.difficulty as question_difficulty,
         q.blob_url as question_blob_url,
-        q.leetcode_id as question_leetcode_id,
         ARRAY_AGG(dp.name) as design_patterns,
         uq.solved as is_solved
     FROM question q
@@ -28,7 +26,6 @@ BEGIN
         q.title,
         q.difficulty,
         q.blob_url,
-        q.leetcode_id,
         uq.solved;
 END;
 $$ LANGUAGE plpgsql; 

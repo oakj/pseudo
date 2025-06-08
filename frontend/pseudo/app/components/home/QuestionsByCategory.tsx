@@ -12,7 +12,6 @@ interface Question {
   title: string
   difficulty: string
   isSolved: boolean
-  leetcodeId: string
 }
 
 interface QuestionsByCategoryProps {
@@ -51,7 +50,6 @@ export function QuestionsByCategory({ type, questions = [], onBookmarkPress }: Q
               params: { 
                 id: question.id,
                 title: question.title,
-                leetcodeId: question.leetcodeId
               }
             })}
           >

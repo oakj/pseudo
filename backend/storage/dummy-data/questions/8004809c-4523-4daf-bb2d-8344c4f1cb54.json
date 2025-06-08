@@ -1,6 +1,5 @@
 {
     "question_id": "8004809c-4523-4daf-bb2d-8344c4f1cb54",
-    "leetcode_id": "L-295",
     "metadata": {
         "difficulty": "hard",
         "categories": ["heap", "design", "data stream", "two heaps"],

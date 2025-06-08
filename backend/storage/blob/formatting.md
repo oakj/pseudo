@@ -9,7 +9,6 @@
 ```json
 {
     "question_id": "string",
-    "leetcode_id": "string",
     "metadata": {
         "difficulty": "string (easy|medium|hard)",
         "categories": ["array of strings"],

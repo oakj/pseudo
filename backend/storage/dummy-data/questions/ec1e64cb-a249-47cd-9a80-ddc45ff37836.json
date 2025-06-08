@@ -1,6 +1,5 @@
 {
     "question_id": "ec1e64cb-a249-47cd-9a80-ddc45ff37836",
-    "leetcode_id": "L-23",
     "metadata": {
         "difficulty": "hard",
         "categories": ["linked list", "divide and conquer", "heap", "merge sort"],

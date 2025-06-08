@@ -25,7 +25,6 @@ export interface HomeData {
     difficulty: string
     design_patterns: string[]
     is_solved: boolean
-    leetcode_id: string
   }[]
 }
 
