@@ -22,3 +22,4 @@
     1. `npm install @supabase/supabase-js`
     2. Create a lib/supabase.ts file to configure the supabase client.
     3. supabase client can be called in any component to interact with the database.
+- We don't need to do HEAVY planning before starting a project. Things will change anyway. Just start building and find the issues while building. At the bare minimum I would consider: major features, the best tech stack including a UI framework and state management framework.

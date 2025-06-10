@@ -112,32 +112,7 @@ export const testData = {
 // TEST: CollectionScreen functions
 
 // TEST: SolveScreen functions
-interface UserQuestion {
-  id: string;
-  user_id: string;
-  question_id: string;
-  solved: boolean;
-  blob_url: string | null;
-}
-
-interface HintMessage {
-  from: 'user' | 'hint_bot';
-  message: string;
-  timestamp: string;
-}
-
-interface UserQuestionData {
-  user_id: string;
-  question_id: string;
-  submission?: {
-    solution: string;
-    timestamp: string;
-    evaluation?: any;
-  };
-  hint_chat: {
-    messages: HintMessage[];
-  };
-}
+import { UserQuestion, UserQuestionData, HintMessage } from '~/app/types';
 
 export const solveScreen = {
     async getQuestionData(questionId: string) {
@@ -206,11 +181,13 @@ export const solveScreen = {
                 }
             };
 
-            // Upload the JSON file to userquestions bucket
+            // Upload the JSON file to userquestions bucket with user-specific path
             const { error: uploadError } = await supabase
                 .storage
                 .from('userquestions')
-                .upload(`${data.id}.json`, JSON.stringify(initialData));
+                .upload(`${userId}/${data.id}.json`, JSON.stringify(initialData), {
+                    upsert: true
+                });
 
             if (uploadError) throw uploadError;
 
@@ -223,11 +200,56 @@ export const solveScreen = {
 
     async getUserQuestionData(userQuestionId: string): Promise<{ data: UserQuestionData | null, error: any }> {
         try {
+            // Get the current user's ID or use test user ID
+            let effectiveUserId: string;
+            
+            // First try to get the authenticated user
+            const { data: { user }, error: authError } = await supabase.auth.getUser();
+            
+            if (user) {
+                effectiveUserId = user.id;
+            } else if (testUserId) {
+                effectiveUserId = testUserId;
+            } else {
+                throw new Error('No user ID available');
+            }
+
+            // First check if the file exists
+            const { data: fileExists } = await supabase
+                .storage
+                .from('userquestions')
+                .list(`${effectiveUserId}`, {
+                    search: `${userQuestionId}.json`
+                });
+
+            if (!fileExists || fileExists.length === 0) {
+                // If file doesn't exist, create initial data structure
+                const initialData: UserQuestionData = {
+                    user_id: effectiveUserId,
+                    question_id: '', // This will be populated from the user question
+                    hint_chat: {
+                        messages: []
+                    }
+                };
+
+                // Upload the initial data with user-specific path
+                const { error: uploadError } = await supabase
+                    .storage
+                    .from('userquestions')
+                    .upload(`${effectiveUserId}/${userQuestionId}.json`, JSON.stringify(initialData), {
+                        upsert: true
+                    });
+
+                if (uploadError) throw uploadError;
+                
+                return { data: initialData, error: null };
+            }
+
             // Get the public URL for the file from userquestions bucket
             const { data: publicURL } = supabase
                 .storage
                 .from('userquestions')
-                .getPublicUrl(`${userQuestionId}.json`);
+                .getPublicUrl(`${effectiveUserId}/${userQuestionId}.json`);
 
             const response = await fetch(publicURL.publicUrl);
             if (!response.ok) {
@@ -240,41 +262,42 @@ export const solveScreen = {
             console.error('Error fetching user question data:', error);
             return { data: null, error };
         }
+    },
+
+    async updateUserQuestionFile(userQuestionId: string, data: UserQuestionData): Promise<{ error: any }> {
+        try {
+            // Get the current user's ID or use test user ID
+            let effectiveUserId: string;
+            
+            // First try to get the authenticated user
+            const { data: { user }, error: authError } = await supabase.auth.getUser();
+            
+            if (user) {
+                effectiveUserId = user.id;
+            } else if (testUserId) {
+                effectiveUserId = testUserId;
+            } else {
+                throw new Error('No user ID available');
+            }
+
+            const { error } = await supabase
+                .storage
+                .from('userquestions')
+                .update(`${effectiveUserId}/${userQuestionId}.json`, JSON.stringify(data), {
+                    upsert: true
+                });
+
+            return { error };
+        } catch (error) {
+            console.error('Error updating user question file:', error);
+            return { error };
+        }
     }
 }
 
 // TEST: QuestionsScreen functions
 
-interface CollectionQuestion {
-  user: {
-    user_id: string
-  },
-  collection: {
-    collection_id: string
-    collection_name: string
-  },
-  questions: [
-    {
-      question_id: string
-      question_title: string
-      solved: boolean,
-      blob_url: string,
-      difficulty: string,
-      design_patterns: string[]
-    }
-  ]
-}
-
-interface DatabaseResponse {
-  collection_id: string
-  collection_name: string
-  question_id: string
-  question_title: string
-  solved: boolean
-  blob_url: string
-  difficulty: string
-  design_patterns: string[]
-}
+import { CollectionQuestion, CollectionQuestionRow } from '~/app/types/api/collections';
 
 // temporarily hard coding a userId for testing purposes. change to `user.id` for final function
 export const collectionScreen = {
@@ -302,7 +325,7 @@ export const collectionScreen = {
         collection_id: data[0].collection_id,
         collection_name: data[0].collection_name
       },
-      questions: data.map(row => ({
+      questions: data.map((row: CollectionQuestionRow) => ({
         question_id: row.question_id,
         question_title: row.question_title,
         solved: row.solved,

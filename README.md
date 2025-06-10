@@ -320,5 +320,4 @@ pseudo
 │  ├─ pretty-json-template.json
 │  └─ README.md
 └─ README.md
-
 ```

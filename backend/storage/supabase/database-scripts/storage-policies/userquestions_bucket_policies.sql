@@ -1,9 +1,3 @@
-This document contains a history of any database schema alterations that has happened since creating the original tables.
-
-6/9/2025:
-```sql
--- As part of an effort to add row level security for our supabase buckets so that users can update/insert/delete/etc userQuestionFiles.
-
 -- Enable RLS on the storage.objects table
 ALTER TABLE storage.objects ENABLE ROW LEVEL SECURITY;
 
@@ -52,13 +46,3 @@ USING (
   bucket_id = 'userquestions' AND 
   storage.is_owner_or_test_user((storage.foldername(name))[1])
 ); 
-```
-
-6/7/2025:
-```sql
--- As part of an effort to remove references to leetcode, we are removing the leetcode_id fiels from the public.question table. 
-ALTER TABLE question
-DROP COLUMN leetcode_id;
-
--- also dropped and updated SelectQuestionsByUserId. See commit for this change.
-```

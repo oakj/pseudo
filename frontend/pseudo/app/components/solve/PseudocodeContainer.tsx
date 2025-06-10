@@ -22,6 +22,8 @@ interface PseudocodeContainerProps {
     };
   } | null;
   onRequestHint?: () => void;
+  onSave?: () => void;
+  isSaving?: boolean;
 }
 
 interface NumberedInput {
@@ -35,7 +37,9 @@ type FontSize = typeof fontSizes[number];
 export function PseudocodeContainer({ 
   boilerplateSolution, 
   userQuestionData,
-  onRequestHint 
+  onRequestHint,
+  onSave,
+  isSaving = false
 }: PseudocodeContainerProps) {
   console.log('PseudocodeContainer received userQuestionData:', userQuestionData);
 
@@ -222,6 +226,15 @@ export function PseudocodeContainer({
             </TouchableOpacity>
 
             <View className="flex-row items-center gap-2">
+              <TouchableOpacity 
+                onPress={onSave}
+                className="bg-gray-soft px-4 py-2 rounded-full"
+                disabled={isSaving}
+              >
+                <Text className="font-montserrat-medium text-xs">
+                  {isSaving ? 'Saving...' : 'Save'}
+                </Text>
+              </TouchableOpacity>
               <TouchableOpacity 
                 onPress={handleSubmit}
                 className="bg-red-soft px-4 py-2 rounded-full"

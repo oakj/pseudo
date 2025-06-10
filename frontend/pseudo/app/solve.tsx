@@ -8,6 +8,8 @@ import { solveScreen } from "../supabase"
 import { QuestionDescription } from "./components/solve/QuestionDescription"
 import { PseudocodeContainer } from "./components/solve/PseudocodeContainer"
 import Constants from 'expo-constants'
+import { createEmptyUserQuestionFile, mapToUserQuestionFile } from './lib/utils'
+import type { UserQuestionData, UserQuestion } from '@/types/api/userQuestions'
 
 const testUserId = Constants.expoConfig?.extra?.supabaseTestUserId
 
@@ -21,80 +23,98 @@ interface QuestionData {
   hints: string[];
 }
 
-interface UserQuestionData {
-  user_id: string;
-  question_id: string;
-  submission?: {
-    solution: string;
-    timestamp: string;
-    evaluation?: any;
-  };
-  hint_chat: {
-    messages: Array<{
-      from: 'user' | 'hint_bot';
-      message: string;
-      timestamp: string;
-    }>;
-  };
-}
-
 export default function SolveScreen() {
-  const { id, title } = useLocalSearchParams()
+  const params = useLocalSearchParams()
+  const { id: questionId, title } = params
   const [questionData, setQuestionData] = useState<QuestionData | null>(null);
   const [userQuestionData, setUserQuestionData] = useState<UserQuestionData | null>(null);
+  const [userQuestionId, setUserQuestionId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     async function loadData() {
-      console.log('Loading data with id:', id, 'testUserId:', testUserId);
-      if (id && testUserId) {
-        try {
-          // Load question data
-          console.log('Attempting to fetch question data for id:', id);
-          const { data: qData, error: qError } = await solveScreen.getQuestionData(id as string);
-          console.log('Question data response:', { data: qData, error: qError });
-          if (qError) throw qError;
-          setQuestionData(qData);
+      if (!questionId) {
+        setError('No question ID provided');
+        setLoading(false);
+        return;
+      }
 
-          // Get or create user question
-          const { data: userQuestion, error: uqError } = await solveScreen.getUserQuestion(testUserId, id as string);
-          if (uqError) throw uqError;
+      if (!testUserId) {
+        setError('No test user ID found');
+        setLoading(false);
+        return;
+      }
 
-          if (!userQuestion) {
-            // Create new user question if it doesn't exist
-            const { data: newUserQuestion, error: createError } = await solveScreen.createUserQuestion(testUserId, id as string);
-            if (createError) throw createError;
+      try {
+        const { data: qData, error: qError } = await solveScreen.getQuestionData(questionId as string);
+        if (qError) {
+          console.error('Error fetching question data:', qError);
+          throw qError;
+        }
+        setQuestionData(qData);
 
-            // Initialize empty user question data
-            const initialData = {
-              user_id: testUserId,
-              question_id: id as string,
-              hint_chat: {
-                messages: []
-              }
-            };
+        const { data: userQuestion, error: uqError } = await solveScreen.getUserQuestion(testUserId, questionId as string);
+        if (uqError) {
+          console.error('Error fetching user question:', uqError);
+          throw uqError;
+        }
 
+        if (!userQuestion) {
+          const { data: newUserQuestion, error: createError } = await solveScreen.createUserQuestion(testUserId, questionId as string);
+          if (createError) {
+            console.error('Error creating user question:', createError);
+            throw createError;
+          }
+          setUserQuestionId(newUserQuestion?.id);
+          const initialData = createEmptyUserQuestionFile(testUserId, questionId as string);
+          setUserQuestionData(initialData);
+        } else {
+          setUserQuestionId(userQuestion.id);
+          const { data: uqData, error: uqdError } = await solveScreen.getUserQuestionData(userQuestion.id);
+          if (uqdError) {
+            console.error('Error fetching user question data:', uqdError);
+            const initialData = createEmptyUserQuestionFile(testUserId, questionId as string);
             setUserQuestionData(initialData);
           } else {
-            // Load existing user question data
-            const { data: uqData, error: uqdError } = await solveScreen.getUserQuestionData(userQuestion.user_question_id);
-
-            if (uqdError) throw uqdError;
             setUserQuestionData(uqData);
           }
-        } catch (error) {
-          console.error('Error loading data:', error);
-        } finally {
-          setLoading(false);
         }
+      } catch (error) {
+        console.error('Error in loadData:', error);
+        setError(error instanceof Error ? error.message : 'An unknown error occurred');
+      } finally {
+        setLoading(false);
       }
     }
+
     loadData();
-  }, [id]);
+  }, [questionId]);
 
   const handleRequestHint = () => {
     // TODO: Implement hint request functionality
     console.log('Requesting new hint...');
+  };
+
+  const handleSave = async () => {
+    if (!userQuestionId || !userQuestionData) {
+      console.error('Cannot save: missing user question ID or data');
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      const { error } = await solveScreen.updateUserQuestionFile(userQuestionId, userQuestionData);
+      if (error) {
+        throw error;
+      }
+    } catch (error) {
+      console.error('Error saving question data:', error);
+      // You might want to show a toast or some other UI feedback here
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   // On Android, we need to manually account for the status bar height
@@ -120,6 +140,10 @@ export default function SolveScreen() {
         <ScrollView className="flex-1 px-4 mt-4">
           {loading ? (
             <Text className="text-center mt-4">Loading question data...</Text>
+          ) : error ? (
+            <Text className="text-center mt-4 text-red-500">
+              Error: {error}
+            </Text>
           ) : questionData ? (
             <>
               <QuestionDescription
@@ -132,6 +156,8 @@ export default function SolveScreen() {
                 boilerplateSolution={questionData.boilerplate_solution.pseudocode}
                 userQuestionData={userQuestionData}
                 onRequestHint={handleRequestHint}
+                onSave={handleSave}
+                isSaving={isSaving}
               />
             </>
           ) : (

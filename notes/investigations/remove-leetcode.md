@@ -39,7 +39,7 @@ We will need to review removing Leetcode references from the following places:
         - [X] L-295 "Find Median from Data Stream" -> 8004809c-4523-4daf-bb2d-8344c4f1cb54
             - [X] changed locally
             - [X] changed in supabase
-- [ ] finally, review any references by searching the repo: https://github.com/search?q=repo%3Aoakj%2Fpseudo%20leetcode&type=code
+- [X] finally, review any references by searching the repo: https://github.com/search?q=repo%3Aoakj%2Fpseudo%20leetcode&type=code
 
 How will we remove this?
 1. Remove the fields from the databases (Supabase SQL and Supabase Storage)
