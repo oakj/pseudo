@@ -4,14 +4,11 @@ import { Text } from "./components/ui/text"
 import { Header } from "./components/shared/Header"
 import { useLocalSearchParams } from "expo-router"
 import { useEffect, useState } from "react"
-import { solveScreen } from "../supabase"
+import { solveScreen, supabase } from "../supabase"
 import { QuestionDescription } from "./components/solve/QuestionDescription"
 import { PseudocodeContainer } from "./components/solve/PseudocodeContainer"
-import Constants from 'expo-constants'
 import { createEmptyUserQuestionFile, mapToUserQuestionFile } from './lib/utils'
 import type { UserQuestionData, UserQuestion } from '@/types/api/userQuestions'
-
-const testUserId = Constants.expoConfig?.extra?.supabaseTestUserId
 
 interface QuestionData {
   description: string;
@@ -41,12 +38,6 @@ export default function SolveScreen() {
         return;
       }
 
-      if (!testUserId) {
-        setError('No test user ID found');
-        setLoading(false);
-        return;
-      }
-
       try {
         const { data: qData, error: qError } = await solveScreen.getQuestionData(questionId as string);
         if (qError) {
@@ -55,28 +46,36 @@ export default function SolveScreen() {
         }
         setQuestionData(qData);
 
-        const { data: userQuestion, error: uqError } = await solveScreen.getUserQuestion(testUserId, questionId as string);
+        const { data: userQuestion, error: uqError } = await solveScreen.getUserQuestion(questionId as string);
         if (uqError) {
           console.error('Error fetching user question:', uqError);
           throw uqError;
         }
 
         if (!userQuestion) {
-          const { data: newUserQuestion, error: createError } = await solveScreen.createUserQuestion(testUserId, questionId as string);
+          const { data: newUserQuestion, error: createError } = await solveScreen.createUserQuestion(questionId as string);
           if (createError) {
             console.error('Error creating user question:', createError);
             throw createError;
           }
-          setUserQuestionId(newUserQuestion?.id);
-          const initialData = createEmptyUserQuestionFile(testUserId, questionId as string);
-          setUserQuestionData(initialData);
+          if (newUserQuestion?.id) {
+            setUserQuestionId(newUserQuestion.id);
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+              const initialData = createEmptyUserQuestionFile(user.id, questionId as string);
+              setUserQuestionData(initialData);
+            }
+          }
         } else {
           setUserQuestionId(userQuestion.id);
           const { data: uqData, error: uqdError } = await solveScreen.getUserQuestionData(userQuestion.id);
           if (uqdError) {
             console.error('Error fetching user question data:', uqdError);
-            const initialData = createEmptyUserQuestionFile(testUserId, questionId as string);
-            setUserQuestionData(initialData);
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+              const initialData = createEmptyUserQuestionFile(user.id, questionId as string);
+              setUserQuestionData(initialData);
+            }
           } else {
             setUserQuestionData(uqData);
           }

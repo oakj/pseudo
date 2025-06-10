@@ -17,6 +17,7 @@ import { Separator } from "./components/ui/separator"
 import { ArrowLeft } from "./lib/icons/ArrowLeft"
 import { useAvatar, DEFAULT_AVATARS } from "./contexts/AvatarContext"
 import { Pencil } from "./lib/icons/Pencil"
+import { useAuth } from "./contexts/AuthContext"
 
 type ThemeOption = "light" | "dark" | "system"
 
@@ -25,15 +26,28 @@ export default function ProfileScreen() {
 
   const router = useRouter()
   const { selectedAvatar, setSelectedAvatar } = useAvatar()
+  const { logout, user } = useAuth()
   const [theme, setTheme] = useState<ThemeOption>("system")
   const [displayName, setDisplayName] = useState("oonniejak")
   const statusBarHeight = Platform.OS === 'android' ? (StatusBar.currentHeight ?? 24) : 0
   const [isAvatarSheetOpen, setIsAvatarSheetOpen] = useState(false)
   const [isEditingName, setIsEditingName] = useState(false)
+  const [isLoggingOut, setIsLoggingOut] = useState(false)
 
   const handleLogout = async () => {
-    // TODO: Implement logout logic
-    router.replace("/(auth)/login")
+    setIsLoggingOut(true)
+    try {
+      const { error } = await logout()
+      if (error) {
+        console.error('Error logging out:', error)
+      }
+      // Regardless of error, navigate to login screen
+      router.replace('/(auth)/login')
+    } catch (err) {
+      console.error('Error during logout:', err)
+    } finally {
+      setIsLoggingOut(false)
+    }
   }
 
   return (
@@ -99,6 +113,7 @@ export default function ProfileScreen() {
                 </Pressable>
               </View>
             )}
+            <Text className="text-xs text-gray-500 font-montserrat">logged in as: {user?.email}</Text>
           </View>
         </View>
 
@@ -167,8 +182,11 @@ export default function ProfileScreen() {
             <Button 
               className="w-[40%] bg-red-soft rounded-[8px]"
               onPress={handleLogout}
+              disabled={isLoggingOut}
             >
-              <Text className="text-base text-black font-montserrat">Logout</Text>
+              <Text className="text-base text-black font-montserrat">
+                {isLoggingOut ? 'Logging out...' : 'Logout'}
+              </Text>
             </Button>
             <Button 
               className="w-[40%] bg-gray-100 rounded-[8px]"

@@ -4,7 +4,6 @@ import Constants from 'expo-constants'
 
 const supabaseUrl = Constants.expoConfig?.extra?.supabaseUrl ?? ''
 const supabaseAnonKey = Constants.expoConfig?.extra?.supabaseAnonKey ?? ''
-const testUserId = Constants.expoConfig?.extra?.supabaseTestUserId
 
 if (!supabaseUrl || !supabaseAnonKey) {
   throw new Error('Missing Supabase URL or Anon Key')
@@ -70,48 +69,57 @@ export const auth = {
     }
   }
 
-/* Below functions are temporary. They are intended to be used to fetch test data from supabase. */
+/* Data fetching functions */
 
-export const testData = {
-  // TEST: Profile functions
-  async getProfileByUserId(userId: string) {
+export const userData = {
+  // Profile functions
+  async getProfileByUserId() {
+    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    if (authError || !user) return { data: null, error: authError }
+
     const { data, error } = await supabase
       .rpc('selectprofilebyuserid', {
-        p_user_id: testUserId // temporarily hard coding a testUserId
+        p_user_id: user.id
       })
     return { data, error }
   },
   
-  // TEST: HomeScreen functions
-  async getStreakByUserId(userId: string) {
+  // HomeScreen functions
+  async getStreakByUserId() {
+    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    if (authError || !user) return { data: null, error: authError }
+
     const { data, error } = await supabase
       .rpc('selectweeklystreakbyuserid', {
-        p_user_id: testUserId // temporarily hard coding a testUserId
+        p_user_id: user.id
       })
     return { data, error }
   },
 
-  // leaving userId as null will return only default collections
-  async getCollectionsByUserId(userId: string) {
+  async getCollectionsByUserId() {
+    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    if (authError || !user) return { data: null, error: authError }
+
     const { data, error } = await supabase
       .rpc('selectcollectionsbyuserid', {
-        p_user_id: testUserId // temporarily hard coding a testUserId
+        p_user_id: user.id
       })
     return { data, error }
   },
 
-  async getQuestionsByUserId(userId: string) {
+  async getQuestionsByUserId() {
+    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    if (authError || !user) return { data: null, error: authError }
+
     const { data, error } = await supabase
       .rpc('selectquestionsbyuserid', {
-        p_user_id: testUserId // temporarily hard coding a testUserId
+        p_user_id: user.id
       })
     return { data, error }
   }
 }
 
-// TEST: CollectionScreen functions
-
-// TEST: SolveScreen functions
+// SolveScreen functions
 import { UserQuestion, UserQuestionData, HintMessage } from '~/app/types';
 
 export const solveScreen = {
@@ -139,11 +147,14 @@ export const solveScreen = {
         }
     },
 
-    async getUserQuestion(userId: string, questionId: string): Promise<{ data: UserQuestion | null, error: any }> {
+    async getUserQuestion(questionId: string): Promise<{ data: UserQuestion | null, error: any }> {
         try {
+            const { data: { user }, error: authError } = await supabase.auth.getUser()
+            if (authError || !user) return { data: null, error: authError }
+
             const { data, error } = await supabase
                 .rpc('selectuserquestion', {
-                    p_user_id: userId,
+                    p_user_id: user.id,
                     p_question_id: questionId
                 });
 
@@ -157,13 +168,16 @@ export const solveScreen = {
         }
     },
 
-    async createUserQuestion(userId: string, questionId: string): Promise<{ data: UserQuestion | null, error: any }> {
+    async createUserQuestion(questionId: string): Promise<{ data: UserQuestion | null, error: any }> {
         try {
+            const { data: { user }, error: authError } = await supabase.auth.getUser()
+            if (authError || !user) return { data: null, error: authError }
+
             // First, insert the record into user_question table
             const { data, error } = await supabase
                 .from('user_question')
                 .insert({
-                    user_id: userId,
+                    user_id: user.id,
                     question_id: questionId,
                     solved: false
                 })
@@ -174,7 +188,7 @@ export const solveScreen = {
 
             // Create initial user question data
             const initialData: UserQuestionData = {
-                user_id: userId,
+                user_id: user.id,
                 question_id: questionId,
                 hint_chat: {
                     messages: []
@@ -185,7 +199,7 @@ export const solveScreen = {
             const { error: uploadError } = await supabase
                 .storage
                 .from('userquestions')
-                .upload(`${userId}/${data.id}.json`, JSON.stringify(initialData), {
+                .upload(`${user.id}/${data.id}.json`, JSON.stringify(initialData), {
                     upsert: true
                 });
 
@@ -200,32 +214,21 @@ export const solveScreen = {
 
     async getUserQuestionData(userQuestionId: string): Promise<{ data: UserQuestionData | null, error: any }> {
         try {
-            // Get the current user's ID or use test user ID
-            let effectiveUserId: string;
-            
-            // First try to get the authenticated user
-            const { data: { user }, error: authError } = await supabase.auth.getUser();
-            
-            if (user) {
-                effectiveUserId = user.id;
-            } else if (testUserId) {
-                effectiveUserId = testUserId;
-            } else {
-                throw new Error('No user ID available');
-            }
+            const { data: { user }, error: authError } = await supabase.auth.getUser()
+            if (authError || !user) return { data: null, error: authError }
 
             // First check if the file exists
             const { data: fileExists } = await supabase
                 .storage
                 .from('userquestions')
-                .list(`${effectiveUserId}`, {
+                .list(`${user.id}`, {
                     search: `${userQuestionId}.json`
                 });
 
             if (!fileExists || fileExists.length === 0) {
                 // If file doesn't exist, create initial data structure
                 const initialData: UserQuestionData = {
-                    user_id: effectiveUserId,
+                    user_id: user.id,
                     question_id: '', // This will be populated from the user question
                     hint_chat: {
                         messages: []
@@ -236,7 +239,7 @@ export const solveScreen = {
                 const { error: uploadError } = await supabase
                     .storage
                     .from('userquestions')
-                    .upload(`${effectiveUserId}/${userQuestionId}.json`, JSON.stringify(initialData), {
+                    .upload(`${user.id}/${userQuestionId}.json`, JSON.stringify(initialData), {
                         upsert: true
                     });
 
@@ -249,7 +252,7 @@ export const solveScreen = {
             const { data: publicURL } = supabase
                 .storage
                 .from('userquestions')
-                .getPublicUrl(`${effectiveUserId}/${userQuestionId}.json`);
+                .getPublicUrl(`${user.id}/${userQuestionId}.json`);
 
             const response = await fetch(publicURL.publicUrl);
             if (!response.ok) {
@@ -266,24 +269,13 @@ export const solveScreen = {
 
     async updateUserQuestionFile(userQuestionId: string, data: UserQuestionData): Promise<{ error: any }> {
         try {
-            // Get the current user's ID or use test user ID
-            let effectiveUserId: string;
-            
-            // First try to get the authenticated user
-            const { data: { user }, error: authError } = await supabase.auth.getUser();
-            
-            if (user) {
-                effectiveUserId = user.id;
-            } else if (testUserId) {
-                effectiveUserId = testUserId;
-            } else {
-                throw new Error('No user ID available');
-            }
+            const { data: { user }, error: authError } = await supabase.auth.getUser()
+            if (authError || !user) return { error: authError }
 
             const { error } = await supabase
                 .storage
                 .from('userquestions')
-                .update(`${effectiveUserId}/${userQuestionId}.json`, JSON.stringify(data), {
+                .update(`${user.id}/${userQuestionId}.json`, JSON.stringify(data), {
                     upsert: true
                 });
 
@@ -295,20 +287,21 @@ export const solveScreen = {
     }
 }
 
-// TEST: QuestionsScreen functions
-
+// CollectionScreen functions
 import { CollectionQuestion, CollectionQuestionRow } from '~/app/types/api/collections';
 
-// temporarily hard coding a userId for testing purposes. change to `user.id` for final function
 export const collectionScreen = {
   async getCollectionById(collectionId: string, isDefault: boolean = false): Promise<{ 
     data: CollectionQuestion[] | null, 
     error: any 
   }> {
+    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    if (authError || !user) return { data: null, error: authError }
+
     const { data, error } = await supabase.rpc(
       isDefault ? 'selectdefaultcollectionbyuserid' : 'selectcollectionbyuserid',
       {
-        p_user_id: testUserId,
+        p_user_id: user.id,
         p_collection_id: collectionId
       }
     )
@@ -319,7 +312,7 @@ export const collectionScreen = {
     // Group questions by collection
     const mappedData: CollectionQuestion = {
       user: {
-        user_id: testUserId
+        user_id: user.id
       },
       collection: {
         collection_id: data[0].collection_id,

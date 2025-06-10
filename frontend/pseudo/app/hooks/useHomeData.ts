@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { testData } from '../../supabase'
+import { userData } from '../../supabase'
 
 export interface HomeData {
   profile: {
@@ -37,10 +37,10 @@ export function useHomeData() {
     async function fetchData() {
       try {
         const [profileRes, streakRes, collectionsRes, questionsRes] = await Promise.all([
-          testData.getProfileByUserId(''),
-          testData.getStreakByUserId(''),
-          testData.getCollectionsByUserId(''),
-          testData.getQuestionsByUserId('')
+          userData.getProfileByUserId(),
+          userData.getStreakByUserId(),
+          userData.getCollectionsByUserId(),
+          userData.getQuestionsByUserId()
         ])
 
         // Handle potential errors

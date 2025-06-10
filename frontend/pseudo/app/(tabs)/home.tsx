@@ -36,8 +36,27 @@ function determineStatus(date: Date, completed: number): "completed" | "missed" 
 }
 
 // This function maps weeklyStreak.streak_days to dayName, dayNumber and dayStatus
-function calculateStreak(weeklyStreak: WeeklyStreakData): StreakDay[] {
-  // Convert UTC date to local time
+function calculateStreak(weeklyStreak: WeeklyStreakData | null): StreakDay[] {
+  // Get today at midnight in local timezone
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  // If no weeklyStreak data, create a week starting from today with all days as upcoming except current
+  if (!weeklyStreak || !weeklyStreak.week_start_utc) {
+    return Array.from({ length: 7 }, (_, index) => {
+      const date = new Date(today);
+      date.setDate(today.getDate() - 3 + index); // Start 3 days before today
+      
+      return {
+        day: format(date, 'EEE').toUpperCase(),
+        date: date.getDate(),
+        // If it's today, mark as current, otherwise mark as upcoming
+        status: date.getTime() === today.getTime() ? "current" : "upcoming"
+      };
+    });
+  }
+
+  // If we have weeklyStreak data, use it
   const weekStartLocal = new Date(weeklyStreak.week_start_utc);
   // Adjust for timezone offset
   weekStartLocal.setMinutes(weekStartLocal.getMinutes() + weekStartLocal.getTimezoneOffset());
@@ -160,8 +179,8 @@ export default function HomeScreen() {
             {/* Weekly Streak Section */}
             <View className="px-4 items-center justify-center">
               <WeeklyStreak 
-                streak={calculateStreak(weeklyStreak)}
-                weekStart={weeklyStreak?.week_start_utc}
+                streak={calculateStreak(weeklyStreak || null)}
+                weekStart={weeklyStreak?.week_start_utc ?? new Date()}
               />
             </View>
 
