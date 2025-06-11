@@ -58,6 +58,7 @@ export default function SolveScreen() {
             console.error('Error creating user question:', createError);
             throw createError;
           }
+
           if (newUserQuestion?.id) {
             setUserQuestionId(newUserQuestion.id);
             const { data: { user } } = await supabase.auth.getUser();
@@ -67,8 +68,9 @@ export default function SolveScreen() {
             }
           }
         } else {
-          setUserQuestionId(userQuestion.id);
-          const { data: uqData, error: uqdError } = await solveScreen.getUserQuestionData(userQuestion.id);
+          setUserQuestionId(userQuestion.user_question_id);
+          
+          const { data: uqData, error: uqdError } = await solveScreen.getUserQuestionData(userQuestion.user_question_id);
           if (uqdError) {
             console.error('Error fetching user question data:', uqdError);
             const { data: { user } } = await supabase.auth.getUser();

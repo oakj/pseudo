@@ -41,8 +41,6 @@ export function PseudocodeContainer({
   onSave,
   isSaving = false
 }: PseudocodeContainerProps) {
-  console.log('PseudocodeContainer received userQuestionData:', userQuestionData);
-
   const [currentFontSizeIndex, setCurrentFontSizeIndex] = useState(1); // Start with 'xs'
   const [numberedInputs, setNumberedInputs] = useState<NumberedInput[]>([
     { number: 1, text: '' }

@@ -215,18 +215,20 @@ export const solveScreen = {
     async getUserQuestionData(userQuestionId: string): Promise<{ data: UserQuestionData | null, error: any }> {
         try {
             const { data: { user }, error: authError } = await supabase.auth.getUser()
-            if (authError || !user) return { data: null, error: authError }
+            if (authError || !user) {
+                console.error('Auth error or no user:', authError);
+                return { data: null, error: authError }
+            }
 
-            // First check if the file exists
-            const { data: fileExists } = await supabase
+            // Try to download the file directly
+            const { data: fileData, error: downloadError } = await supabase
                 .storage
                 .from('userquestions')
-                .list(`${user.id}`, {
-                    search: `${userQuestionId}.json`
-                });
+                .download(`${user.id}/${userQuestionId}.json`);
 
-            if (!fileExists || fileExists.length === 0) {
-                // If file doesn't exist, create initial data structure
+            // If file doesn't exist or there's an error, create a new one
+            if (downloadError || !fileData) {
+                // Create initial data structure
                 const initialData: UserQuestionData = {
                     user_id: user.id,
                     question_id: '', // This will be populated from the user question
@@ -243,26 +245,25 @@ export const solveScreen = {
                         upsert: true
                     });
 
-                if (uploadError) throw uploadError;
+                if (uploadError) {
+                    console.error('Error uploading new file:', uploadError);
+                    throw uploadError;
+                }
                 
                 return { data: initialData, error: null };
             }
 
-            // Get the public URL for the file from userquestions bucket
-            const { data: publicURL } = supabase
-                .storage
-                .from('userquestions')
-                .getPublicUrl(`${user.id}/${userQuestionId}.json`);
-
-            const response = await fetch(publicURL.publicUrl);
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+            // Handle the blob data - fileData is now a Blob
+            if (fileData instanceof Blob) {
+                const text = await new Response(fileData).text();
+                const data = JSON.parse(text);
+                
+                return { data, error: null };
+            } else {
+                throw new Error('Downloaded file data is not in the expected Blob format');
             }
-            
-            const data = await response.json();
-            return { data, error: null };
         } catch (error) {
-            console.error('Error fetching user question data:', error);
+            console.error('Error in getUserQuestionData:', error);
             return { data: null, error };
         }
     },
