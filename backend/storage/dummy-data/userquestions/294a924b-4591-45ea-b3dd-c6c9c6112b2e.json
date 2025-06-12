@@ -2,7 +2,50 @@
     "user_id": "af6eb13c-24d3-4622-8997-b386a076ede1",
     "question_id": "cb8b2437-6618-42ce-a771-41a7b01cca4f",
     "submission": {
-        "solution": "class Solution:\n    def max_profit(self, prices: List[int]) -> int:\n        if not prices:\n            return 0\n        min_price = float('inf')\n        max_profit = 0\n        for price in prices:\n            min_price = min(min_price, price)\n            max_profit = max(max_profit, price - min_price)\n        return max_profit",
+        "solution": {
+            "lines": [
+                {
+                    "number": 1,
+                    "text": "class Solution:"
+                },
+                {
+                    "number": 2,
+                    "text": "    def max_profit(self, prices: List[int]) -> int:"
+                },
+                {
+                    "number": 3,
+                    "text": "        if not prices:"
+                },
+                {
+                    "number": 4,
+                    "text": "            return 0"
+                },
+                {
+                    "number": 5,
+                    "text": "        min_price = float('inf')"
+                },
+                {
+                    "number": 6,
+                    "text": "        max_profit = 0"
+                },
+                {
+                    "number": 7,
+                    "text": "        for price in prices:"
+                },
+                {
+                    "number": 8,
+                    "text": "            min_price = min(min_price, price)"
+                },
+                {
+                    "number": 9,
+                    "text": "            max_profit = max(max_profit, price - min_price)"
+                },
+                {
+                    "number": 10,
+                    "text": "        return max_profit"
+                }
+            ]
+        },
         "timestamp": "2024-03-21T18:00:00Z",
         "evaluation": {
             "score": 100,
@@ -41,4 +84,4 @@
             }
         ]
     }
-} 
+}

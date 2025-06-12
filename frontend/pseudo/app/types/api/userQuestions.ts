@@ -5,33 +5,41 @@ export interface HintMessage {
 }
 
 export interface UserQuestion {
-  id: string;
-  user_id: string;
-  question_id: string;
-  solved: boolean;
-  blob_url: string | null;
   user_question_id: string;
+  question_id: string;
+  user_id: string;
+  solved: boolean;
 }
 
-export interface UserQuestionFile {
-  user_id: string;
-  question_id: string;
-  submission?: {
-    solution: string;
-    timestamp: string;
+export interface Solution {
+  lines: Array<{
+    number: number;
+    text: string;
+  }>;
+}
+
+export interface Evaluation {
+  score: number;
+  approach_identified: string;
+  complexity_analysis: {
+    time: string;
+    space: string;
   };
-  hint_chat: {
-    messages: Array<HintMessage>;
+  feedback: {
+    strengths: string[];
+    improvements: string[];
   };
+  requirements_met: string[];
+  requirements_missing: string[];
 }
 
 export interface UserQuestionData {
   user_id: string;
   question_id: string;
   submission?: {
-    solution: string;
+    solution: Solution;
     timestamp: string;
-    evaluation?: any;
+    evaluation?: Evaluation;
   };
   hint_chat: {
     messages: Array<HintMessage>;

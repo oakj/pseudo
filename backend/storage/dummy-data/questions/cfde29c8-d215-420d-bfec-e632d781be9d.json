@@ -66,20 +66,6 @@
             },
             "explanation": "Shortest possible transformation",
             "is_performance_test": false
-        },
-        {
-            "input": {
-                "beginWord": generateWord(10),
-                "endWord": generateWord(10),
-                "wordList": generateWordList(5000, 10),
-                "type": "word_ladder"
-            },
-            "output": {
-                "value": "LARGE_OUTPUT",
-                "type": "integer"
-            },
-            "explanation": "Maximum constraints test",
-            "is_performance_test": true
         }
     ],
     "pseudocode_requirements": {

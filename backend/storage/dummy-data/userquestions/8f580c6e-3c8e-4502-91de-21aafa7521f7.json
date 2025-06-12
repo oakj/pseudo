@@ -2,7 +2,9 @@
     "user_id": "af6eb13c-24d3-4622-8997-b386a076ede1",
     "question_id": "9d8abe9c-316d-4e12-b288-5c5540db940e",
     "submission": {
-        "solution": "",
+        "solution": {
+            "lines": []
+        },
         "timestamp": "2024-03-21T15:30:00Z"
     },
     "hint_chat": {
@@ -19,4 +21,4 @@
             }
         ]
     }
-} 
+}

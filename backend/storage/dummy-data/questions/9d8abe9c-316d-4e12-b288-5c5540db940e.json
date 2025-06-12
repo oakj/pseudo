@@ -103,18 +103,6 @@
             },
             "explanation": "No opening brackets",
             "is_performance_test": false
-        },
-        {
-            "input": {
-                "value": "(" + "[]".repeat(5000) + ")",
-                "type": "string"
-            },
-            "output": {
-                "value": true,
-                "type": "boolean"
-            },
-            "explanation": "Large nested structure",
-            "is_performance_test": true
         }
     ],
     "pseudocode_requirements": {

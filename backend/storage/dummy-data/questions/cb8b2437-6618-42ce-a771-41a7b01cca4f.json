@@ -68,18 +68,6 @@
             },
             "explanation": "Single day, no transaction possible",
             "is_performance_test": false
-        },
-        {
-            "input": {
-                "value": Array.from({length: 100000}, (_, i) => i % 2 === 0 ? 1 : 2),
-                "type": "array"
-            },
-            "output": {
-                "value": 1,
-                "type": "integer"
-            },
-            "explanation": "Large input with alternating prices",
-            "is_performance_test": true
         }
     ],
     "pseudocode_requirements": {

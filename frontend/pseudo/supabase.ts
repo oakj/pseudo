@@ -125,24 +125,53 @@ import { UserQuestion, UserQuestionData, HintMessage } from '~/app/types';
 export const solveScreen = {
     async getQuestionData(questionId: string) {
         try {
-            // First get the public URL for the file
-            const { data: publicURL } = supabase
+            console.log('getQuestionData called with ID:', questionId);
+            
+            // Download the file directly using Supabase storage
+            const { data: fileData, error: downloadError } = await supabase
                 .storage
                 .from('questions')
-                .getPublicUrl(`${questionId}.json`);
+                .download(`${questionId}.json`);
 
-            // Fetch the file using the public URL
-            const response = await fetch(publicURL.publicUrl);
-            
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+            if (downloadError) {
+                console.error('Error downloading file:', downloadError);
+                throw downloadError;
             }
-            
-            const questionData = await response.json();
-            return { data: questionData, error: null };
+
+            if (!fileData) {
+                throw new Error('No file data received');
+            }
+
+            // Handle the blob data
+            if (fileData instanceof Blob) {
+                const text = await new Response(fileData).text();
+                console.log('File size:', fileData.size, 'bytes');
+                console.log('Text length:', text.length, 'characters');
+                
+                try {
+                    const questionData = JSON.parse(text);
+                    console.log('Successfully parsed JSON data');
+                    return { data: questionData, error: null };
+                } catch (parseError) {
+                    console.error('JSON Parse error:', parseError);
+                    if (parseError instanceof Error) {
+                        const match = parseError.message.match(/position (\d+)/);
+                        if (match) {
+                            const position = parseInt(match[1]);
+                            const start = Math.max(0, position - 50);
+                            const end = Math.min(text.length, position + 50);
+                            console.error('Error context:', text.substring(start, end));
+                            console.error('Error position:', position);
+                        }
+                    }
+                    throw parseError;
+                }
+            } else {
+                throw new Error('Downloaded file data is not in the expected Blob format');
+            }
 
         } catch (error) {
-            console.error('Error fetching question data:', error);
+            console.error('Error in getQuestionData:', error);
             return { data: null, error };
         }
     },
@@ -190,6 +219,12 @@ export const solveScreen = {
             const initialData: UserQuestionData = {
                 user_id: user.id,
                 question_id: questionId,
+                submission: {
+                    solution: {
+                        lines: []
+                    },
+                    timestamp: new Date().toISOString()
+                },
                 hint_chat: {
                     messages: []
                 }
@@ -232,6 +267,12 @@ export const solveScreen = {
                 const initialData: UserQuestionData = {
                     user_id: user.id,
                     question_id: '', // This will be populated from the user question
+                    submission: {
+                        solution: {
+                            lines: []
+                        },
+                        timestamp: new Date().toISOString()
+                    },
                     hint_chat: {
                         messages: []
                     }

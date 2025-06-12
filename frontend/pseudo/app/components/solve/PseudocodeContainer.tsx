@@ -9,6 +9,7 @@ import { ListPlus } from '~/app/lib/icons/ListPlus';
 import { Maximize2 } from '~/app/lib/icons/Maximize2';
 import { Minimize2 } from '~/app/lib/icons/Minimize2';
 import { HintsBottomDrawer } from './HintsBottomDrawer';
+import type { Solution } from '~/app/types/api/userQuestions';
 
 interface PseudocodeContainerProps {
   boilerplateSolution: string;
@@ -20,9 +21,14 @@ interface PseudocodeContainerProps {
         timestamp: string;
       }>;
     };
+    submission?: {
+      solution: Solution;
+      timestamp: string;
+      evaluation?: any;
+    };
   } | null;
   onRequestHint?: () => void;
-  onSave?: () => void;
+  onSave?: (data: any) => void;
   isSaving?: boolean;
 }
 
@@ -42,9 +48,16 @@ export function PseudocodeContainer({
   isSaving = false
 }: PseudocodeContainerProps) {
   const [currentFontSizeIndex, setCurrentFontSizeIndex] = useState(1); // Start with 'xs'
-  const [numberedInputs, setNumberedInputs] = useState<NumberedInput[]>([
-    { number: 1, text: '' }
-  ]);
+  const [numberedInputs, setNumberedInputs] = useState<NumberedInput[]>(() => {
+    if (userQuestionData?.submission?.solution?.lines && 
+        userQuestionData.submission.solution.lines.length > 0) {
+      return userQuestionData.submission.solution.lines.map(line => ({
+        number: line.number,
+        text: line.text
+      }));
+    }
+    return [{ number: 1, text: '' }];
+  });
   const [isMaximized, setIsMaximized] = useState(false);
   const [showHintsDrawer, setShowHintsDrawer] = useState(false);
   const inputRefs = useRef<(TextInput | null)[]>([]);
@@ -112,13 +125,66 @@ export function PseudocodeContainer({
     setIsMaximized(!isMaximized);
   };
 
-  const handleSubmit = () => {
-    // TODO: Implement submit functionality
+  const handleSubmit = async () => {
+    // First save the current state
+    if (onSave) {
+      // Filter out empty lines at the end
+      const nonEmptyInputs = numberedInputs.filter((input, index) => {
+        if (index === numberedInputs.length - 1) {
+          return input.text.trim() !== '';
+        }
+        return true;
+      });
+
+      // Update the solution in the format we want
+      if (userQuestionData) {
+        const updatedData = {
+          ...userQuestionData,
+          submission: {
+            ...userQuestionData.submission,
+            solution: {
+              lines: nonEmptyInputs
+            },
+            timestamp: new Date().toISOString()
+          }
+        };
+        await onSave(updatedData);
+      }
+    }
+    
+    // TODO: Implement additional submit functionality
     console.log('Submit clicked');
   };
 
   const handleHints = () => {
     setShowHintsDrawer(true);
+  };
+
+  const handleSave = async () => {
+    if (!onSave) return;
+    
+    // Filter out empty lines at the end
+    const nonEmptyInputs = numberedInputs.filter((input, index) => {
+      if (index === numberedInputs.length - 1) {
+        return input.text.trim() !== '';
+      }
+      return true;
+    });
+
+    // Update the solution in the format we want
+    if (userQuestionData) {
+      const updatedData = {
+        ...userQuestionData,
+        submission: {
+          ...userQuestionData.submission,
+          solution: {
+            lines: nonEmptyInputs
+          },
+          timestamp: new Date().toISOString()
+        }
+      };
+      onSave(updatedData);
+    }
   };
 
   return (
@@ -225,7 +291,7 @@ export function PseudocodeContainer({
 
             <View className="flex-row items-center gap-2">
               <TouchableOpacity 
-                onPress={onSave}
+                onPress={handleSave}
                 className="bg-gray-soft px-4 py-2 rounded-full"
                 disabled={isSaving}
               >

@@ -2,7 +2,78 @@
     "user_id": "af6eb13c-24d3-4622-8997-b386a076ede1",
     "question_id": "ec1e64cb-a249-47cd-9a80-ddc45ff37836",
     "submission": {
-        "solution": "class Solution:\n    def merge_k_lists(self, lists: List[ListNode]) -> ListNode:\n        if not lists:\n            return None\n        heap = []\n        for i, lst in enumerate(lists):\n            if lst:\n                heapq.heappush(heap, (lst.val, i, lst))\n        dummy = ListNode(0)\n        curr = dummy\n        while heap:\n            val, i, node = heapq.heappop(heap)\n            curr.next = node\n            curr = curr.next\n            if node.next:\n                heapq.heappush(heap, (node.next.val, i, node.next))\n        return dummy.next",
+        "solution": {
+            "lines": [
+                {
+                    "number": 1,
+                    "text": "class Solution:"
+                },
+                {
+                    "number": 2,
+                    "text": "    def merge_k_lists(self, lists: List[ListNode]) -> ListNode:"
+                },
+                {
+                    "number": 3,
+                    "text": "        if not lists:"
+                },
+                {
+                    "number": 4,
+                    "text": "            return None"
+                },
+                {
+                    "number": 5,
+                    "text": "        heap = []"
+                },
+                {
+                    "number": 6,
+                    "text": "        for i, lst in enumerate(lists):"
+                },
+                {
+                    "number": 7,
+                    "text": "            if lst:"
+                },
+                {
+                    "number": 8,
+                    "text": "                heapq.heappush(heap, (lst.val, i, lst))"
+                },
+                {
+                    "number": 9,
+                    "text": "        dummy = ListNode(0)"
+                },
+                {
+                    "number": 10,
+                    "text": "        curr = dummy"
+                },
+                {
+                    "number": 11,
+                    "text": "        while heap:"
+                },
+                {
+                    "number": 12,
+                    "text": "            val, i, node = heapq.heappop(heap)"
+                },
+                {
+                    "number": 13,
+                    "text": "            curr.next = node"
+                },
+                {
+                    "number": 14,
+                    "text": "            curr = curr.next"
+                },
+                {
+                    "number": 15,
+                    "text": "            if node.next:"
+                },
+                {
+                    "number": 16,
+                    "text": "                heapq.heappush(heap, (node.next.val, i, node.next))"
+                },
+                {
+                    "number": 17,
+                    "text": "        return dummy.next"
+                }
+            ]
+        },
         "timestamp": "2024-03-21T16:45:00Z",
         "evaluation": {
             "score": 98,
@@ -45,4 +116,4 @@
             }
         ]
     }
-} 
+}

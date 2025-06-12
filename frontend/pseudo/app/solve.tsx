@@ -32,34 +32,49 @@ export default function SolveScreen() {
 
   useEffect(() => {
     async function loadData() {
+      console.log('=== Starting loadData function ===');
       if (!questionId) {
+        console.error('No question ID provided');
         setError('No question ID provided');
         setLoading(false);
         return;
       }
 
+      console.log('Loading data for question ID:', questionId);
       try {
+        console.log('Calling solveScreen.getQuestionData...');
         const { data: qData, error: qError } = await solveScreen.getQuestionData(questionId as string);
+        
         if (qError) {
-          console.error('Error fetching question data:', qError);
+          console.error('Error from getQuestionData:', qError);
+          console.error('Error details:', JSON.stringify(qError, Object.getOwnPropertyNames(qError)));
           throw qError;
         }
+
+        console.log('Question data successfully fetched:', qData ? 'Data present' : 'No data');
         setQuestionData(qData);
 
+        console.log('Fetching user question data...');
         const { data: userQuestion, error: uqError } = await solveScreen.getUserQuestion(questionId as string);
+        
         if (uqError) {
-          console.error('Error fetching user question:', uqError);
+          console.error('Error from getUserQuestion:', uqError);
+          console.error('Error details:', JSON.stringify(uqError, Object.getOwnPropertyNames(uqError)));
           throw uqError;
         }
 
         if (!userQuestion) {
+          console.log('No existing user question found, creating new one...');
           const { data: newUserQuestion, error: createError } = await solveScreen.createUserQuestion(questionId as string);
+          
           if (createError) {
             console.error('Error creating user question:', createError);
+            console.error('Error details:', JSON.stringify(createError, Object.getOwnPropertyNames(createError)));
             throw createError;
           }
 
           if (newUserQuestion?.id) {
+            console.log('New user question created with ID:', newUserQuestion.id);
             setUserQuestionId(newUserQuestion.id);
             const { data: { user } } = await supabase.auth.getUser();
             if (user) {
@@ -68,11 +83,13 @@ export default function SolveScreen() {
             }
           }
         } else {
+          console.log('Existing user question found with ID:', userQuestion.user_question_id);
           setUserQuestionId(userQuestion.user_question_id);
           
           const { data: uqData, error: uqdError } = await solveScreen.getUserQuestionData(userQuestion.user_question_id);
           if (uqdError) {
             console.error('Error fetching user question data:', uqdError);
+            console.error('Error details:', JSON.stringify(uqdError, Object.getOwnPropertyNames(uqdError)));
             const { data: { user } } = await supabase.auth.getUser();
             if (user) {
               const initialData = createEmptyUserQuestionFile(user.id, questionId as string);
@@ -84,8 +101,10 @@ export default function SolveScreen() {
         }
       } catch (error) {
         console.error('Error in loadData:', error);
+        console.error('Full error details:', JSON.stringify(error, Object.getOwnPropertyNames(error)));
         setError(error instanceof Error ? error.message : 'An unknown error occurred');
       } finally {
+        console.log('=== Finished loadData function ===');
         setLoading(false);
       }
     }
@@ -98,18 +117,20 @@ export default function SolveScreen() {
     console.log('Requesting new hint...');
   };
 
-  const handleSave = async () => {
-    if (!userQuestionId || !userQuestionData) {
+  const handleSave = async (updatedData: UserQuestionData) => {
+    if (!userQuestionId || !updatedData) {
       console.error('Cannot save: missing user question ID or data');
       return;
     }
 
     setIsSaving(true);
     try {
-      const { error } = await solveScreen.updateUserQuestionFile(userQuestionId, userQuestionData);
+      const { error } = await solveScreen.updateUserQuestionFile(userQuestionId, updatedData);
       if (error) {
         throw error;
       }
+      // Update local state
+      setUserQuestionData(updatedData);
     } catch (error) {
       console.error('Error saving question data:', error);
       // You might want to show a toast or some other UI feedback here

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { userData } from '../../supabase'
+import { supabase } from '../../supabase'
 
 export interface HomeData {
   profile: {
@@ -36,6 +37,20 @@ export function useHomeData() {
   useEffect(() => {
     async function fetchData() {
       try {
+        // First check if we have a valid session
+        const { data: session, error: sessionError } = await supabase.auth.getSession()
+        if (sessionError) {
+          console.error('Session error:', sessionError)
+          throw new Error('Failed to get session: ' + sessionError.message)
+        }
+        
+        if (!session.session) {
+          console.error('No active session found')
+          throw new Error('No active session')
+        }
+
+        console.log('Fetching home data...')
+        
         const [profileRes, streakRes, collectionsRes, questionsRes] = await Promise.all([
           userData.getProfileByUserId(),
           userData.getStreakByUserId(),
@@ -44,10 +59,10 @@ export function useHomeData() {
         ])
 
         // Handle potential errors
-        if (profileRes.error) throw new Error(profileRes.error.message)
-        if (streakRes.error) throw new Error(streakRes.error.message)
-        if (collectionsRes.error) throw new Error(collectionsRes.error.message)
-        if (questionsRes.error) throw new Error(questionsRes.error.message)
+        if (profileRes.error) throw new Error('Profile error: ' + profileRes.error.message)
+        if (streakRes.error) throw new Error('Streak error: ' + streakRes.error.message)
+        if (collectionsRes.error) throw new Error('Collections error: ' + collectionsRes.error.message)
+        if (questionsRes.error) throw new Error('Questions error: ' + questionsRes.error.message)
         
         // Convert week_start string to Date if it exists
         const streakData = Array.isArray(streakRes.data) && streakRes.data[0] 
@@ -64,6 +79,7 @@ export function useHomeData() {
           questions: Array.isArray(questionsRes.data) ? questionsRes.data : []
         })
       } catch (err) {
+        console.error('useHomeData error:', err)
         setError(err instanceof Error ? err.message : 'An error occurred')
       } finally {
         setLoading(false)

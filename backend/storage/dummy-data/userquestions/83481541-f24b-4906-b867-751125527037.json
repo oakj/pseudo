@@ -2,7 +2,90 @@
     "user_id": "af6eb13c-24d3-4622-8997-b386a076ede1",
     "question_id": "beef45e6-0e2f-4ced-8a02-793660d1cba1",
     "submission": {
-        "solution": "class Solution:\n    def num_islands(self, grid: List[List[str]]) -> int:\n        if not grid:\n            return 0\n        count = 0\n        for i in range(len(grid)):\n            for j in range(len(grid[0])):\n                if grid[i][j] == '1':\n                    self.dfs(grid, i, j)\n                    count += 1\n        return count\n    \n    def dfs(self, grid: List[List[str]], i: int, j: int) -> None:\n        if i < 0 or j < 0 or i >= len(grid) or j >= len(grid[0]) or grid[i][j] != '1':\n            return\n        grid[i][j] = '#'  # mark as visited\n        self.dfs(grid, i+1, j)\n        self.dfs(grid, i-1, j)\n        self.dfs(grid, i, j+1)\n        self.dfs(grid, i, j-1)",
+        "solution": {
+            "lines": [
+                {
+                    "number": 1,
+                    "text": "class Solution:"
+                },
+                {
+                    "number": 2,
+                    "text": "    def num_islands(self, grid: List[List[str]]) -> int:"
+                },
+                {
+                    "number": 3,
+                    "text": "        if not grid:"
+                },
+                {
+                    "number": 4,
+                    "text": "            return 0"
+                },
+                {
+                    "number": 5,
+                    "text": "        count = 0"
+                },
+                {
+                    "number": 6,
+                    "text": "        for i in range(len(grid)):"
+                },
+                {
+                    "number": 7,
+                    "text": "            for j in range(len(grid[0])):"
+                },
+                {
+                    "number": 8,
+                    "text": "                if grid[i][j] == '1':"
+                },
+                {
+                    "number": 9,
+                    "text": "                    self.dfs(grid, i, j)"
+                },
+                {
+                    "number": 10,
+                    "text": "                    count += 1"
+                },
+                {
+                    "number": 11,
+                    "text": "        return count"
+                },
+                {
+                    "number": 12,
+                    "text": "    "
+                },
+                {
+                    "number": 13,
+                    "text": "    def dfs(self, grid: List[List[str]], i: int, j: int) -> None:"
+                },
+                {
+                    "number": 14,
+                    "text": "        if i < 0 or j < 0 or i >= len(grid) or j >= len(grid[0]) or grid[i][j] != '1':"
+                },
+                {
+                    "number": 15,
+                    "text": "            return"
+                },
+                {
+                    "number": 16,
+                    "text": "        grid[i][j] = '#'  # mark as visited"
+                },
+                {
+                    "number": 17,
+                    "text": "        self.dfs(grid, i+1, j)"
+                },
+                {
+                    "number": 18,
+                    "text": "        self.dfs(grid, i-1, j)"
+                },
+                {
+                    "number": 19,
+                    "text": "        self.dfs(grid, i, j+1)"
+                },
+                {
+                    "number": 20,
+                    "text": "        self.dfs(grid, i, j-1)"
+                }
+            ]
+        },
         "timestamp": "2024-03-21T20:15:00Z",
         "evaluation": {
             "score": 95,
@@ -45,4 +128,4 @@
             }
         ]
     }
-} 
+}

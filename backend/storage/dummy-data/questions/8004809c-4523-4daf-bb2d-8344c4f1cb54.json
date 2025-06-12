@@ -62,13 +62,6 @@
             },
             "explanation": "Even number of elements",
             "is_performance_test": false
-        },
-        {
-            "operations": generateLargeOperations(50000),
-            "values": generateLargeValues(50000),
-            "type": "operations",
-            "explanation": "Maximum number of operations",
-            "is_performance_test": true
         }
     ],
     "pseudocode_requirements": {

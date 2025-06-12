@@ -68,18 +68,6 @@
             },
             "explanation": "Multiple solutions with some duplicates in input",
             "is_performance_test": false
-        },
-        {
-            "input": {
-                "value": Array.from({length: 3000}, (_, i) => i % 3 - 1),
-                "type": "array"
-            },
-            "output": {
-                "value": "LARGE_OUTPUT",
-                "type": "array_of_arrays"
-            },
-            "explanation": "Large input with repeating pattern",
-            "is_performance_test": true
         }
     ],
     "pseudocode_requirements": {

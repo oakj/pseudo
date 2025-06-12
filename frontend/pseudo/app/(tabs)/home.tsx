@@ -10,10 +10,11 @@ import { Ionicons } from "@expo/vector-icons"
 import { format } from "date-fns"
 import { CollectionsBottomDrawer } from "../components/home/CollectionsBottomDrawer"
 import { SaveQuestionToCollectionBottomDrawer } from "../components/home/SaveQuestionToCollectionBottomDrawer"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { BottomSpacer } from "../components/shared/BottomSpacer"
 import { SortQuestionsBottomDrawer } from "../components/home/SortQuestionsBottomDrawer"
 import { useRouter } from "expo-router"
+import Constants from 'expo-constants'
 
 // This function determines if the date is completed, missed, upcoming, or current
 function determineStatus(date: Date, completed: number): "completed" | "missed" | "upcoming" | "current" {
@@ -109,6 +110,13 @@ function sortQuestions(questions: any[], sortType: "nameAsc" | "nameDesc" | "dif
 
 export default function HomeScreen() {
   console.log('========= HOME SCREEN IS LOADING ========');
+  
+  // Add debug logging for Supabase configuration
+  useEffect(() => {
+    const supabaseUrl = Constants.expoConfig?.extra?.supabaseUrl;
+    const supabaseAnonKey = Constants.expoConfig?.extra?.supabaseAnonKey;
+    
+  }, []);
 
   const { drawerVisible, translateY, showDrawer, hideDrawer } = useDrawer()
   const { data, loading, error } = useHomeData()
@@ -129,6 +137,14 @@ export default function HomeScreen() {
 
   // Sort the questions before mapping them
   const sortedQuestions = questions ? sortQuestions(questions, selectedSort) : [];
+
+  // Add detailed error logging
+  useEffect(() => {
+    if (error) {
+      console.error('HomeScreen Error:', error);
+      console.error('Error Stack:', error instanceof Error ? error.stack : 'No stack trace available');
+    }
+  }, [error]);
 
   if (loading) {
     return (

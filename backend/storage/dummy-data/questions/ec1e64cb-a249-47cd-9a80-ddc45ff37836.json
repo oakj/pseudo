@@ -70,18 +70,6 @@
             },
             "explanation": "Multiple single-node lists",
             "is_performance_test": false
-        },
-        {
-            "input": {
-                "value": generateKSortedLists(10000, 500),
-                "type": "array_of_linked_lists"
-            },
-            "output": {
-                "value": "LARGE_OUTPUT",
-                "type": "linked_list"
-            },
-            "explanation": "Large input with maximum constraints",
-            "is_performance_test": true
         }
     ],
     "pseudocode_requirements": {

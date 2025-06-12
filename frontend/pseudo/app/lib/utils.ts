@@ -1,9 +1,9 @@
-import { clsx, type ClassValue } from 'clsx';
-import { twMerge } from 'tailwind-merge';
-import { UserQuestionFile, UserQuestionData } from '../types';
+import { type ClassValue, clsx } from "clsx"
+import { twMerge } from "tailwind-merge"
+import type { UserQuestionData, UserQuestionFile } from "../types/api/userQuestions"
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
+  return twMerge(clsx(inputs))
 }
 
 /**
@@ -35,10 +35,16 @@ export function mapToUserQuestionFile(data: UserQuestionData): UserQuestionFile 
  * @param questionId The question's ID
  * @returns An empty UserQuestionFile structure
  */
-export function createEmptyUserQuestionFile(userId: string, questionId: string): UserQuestionFile {
+export function createEmptyUserQuestionFile(userId: string, questionId: string): UserQuestionData {
   return {
     user_id: userId,
     question_id: questionId,
+    submission: {
+      solution: {
+        lines: []
+      },
+      timestamp: new Date().toISOString()
+    },
     hint_chat: {
       messages: []
     }
