@@ -180,6 +180,9 @@ export default function SolveScreen() {
                 onRequestHint={handleRequestHint}
                 onSave={handleSave}
                 isSaving={isSaving}
+                questionTitle={title as string}
+                questionDescription={questionData.description}
+                validApproaches={["two pointers", "hash map"]}
               />
             </>
           ) : (
