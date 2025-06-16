@@ -34,6 +34,8 @@ interface PseudocodeContainerProps {
   onRequestHint?: () => void;
   onSave?: (data: any) => void;
   isSaving?: boolean;
+  onViewResults?: () => void;
+  isSubmitting?: boolean;
 }
 
 interface NumberedInput {
@@ -52,7 +54,9 @@ export function PseudocodeContainer({
   userQuestionData,
   onRequestHint,
   onSave,
-  isSaving = false
+  isSaving = false,
+  onViewResults,
+  isSubmitting = false
 }: PseudocodeContainerProps) {
   const [currentFontSizeIndex, setCurrentFontSizeIndex] = useState(1); // Start with 'xs'
   const [numberedInputs, setNumberedInputs] = useState<NumberedInput[]>(() => {
@@ -373,11 +377,22 @@ export function PseudocodeContainer({
                   {isSaving ? 'Saving...' : 'Save'}
                 </Text>
               </TouchableOpacity>
+              {userQuestionData?.submission?.evaluation && (
+                <TouchableOpacity 
+                  onPress={onViewResults}
+                  className="bg-gray-soft px-4 py-2 rounded-full"
+                >
+                  <Text className="font-montserrat-medium text-xs">Results</Text>
+                </TouchableOpacity>
+              )}
               <TouchableOpacity 
                 onPress={handleSubmit}
                 className="bg-red-soft px-4 py-2 rounded-full"
+                disabled={isSubmitting}
               >
-                <Text className="font-montserrat-medium text-xs">Submit</Text>
+                <Text className="font-montserrat-medium text-xs">
+                  {isSubmitting ? 'Submitting...' : 'Submit'}
+                </Text>
               </TouchableOpacity>
               <TouchableOpacity 
                 onPress={handleHints}

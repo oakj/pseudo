@@ -2,7 +2,7 @@ import React from 'react';
 import { View, SafeAreaView, Platform, StatusBar, ScrollView } from "react-native"
 import { Text } from "./components/ui/text"
 import { Header } from "./components/shared/Header"
-import { useLocalSearchParams } from "expo-router"
+import { useLocalSearchParams, useRouter } from "expo-router"
 import { useEffect, useState } from "react"
 import { solveScreen, supabase } from "../supabase"
 import { QuestionDescription } from "./components/solve/QuestionDescription"
@@ -21,6 +21,7 @@ interface QuestionData {
 }
 
 export default function SolveScreen() {
+  const router = useRouter();
   const params = useLocalSearchParams()
   const { id: questionId, title } = params
   const [questionData, setQuestionData] = useState<QuestionData | null>(null);
@@ -29,6 +30,7 @@ export default function SolveScreen() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     async function loadData() {
@@ -139,6 +141,39 @@ export default function SolveScreen() {
     }
   };
 
+  const handleViewResults = () => {
+    router.push({
+      pathname: '/result',
+      params: { id: questionId }
+    });
+  };
+
+  const handleSubmit = async (updatedData: UserQuestionData) => {
+    if (!userQuestionId || !updatedData) {
+      console.error('Cannot save: missing user question ID or data');
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const { error } = await solveScreen.updateUserQuestionFile(userQuestionId, updatedData);
+      if (error) {
+        throw error;
+      }
+      // Update local state
+      setUserQuestionData(updatedData);
+      // Navigate to results
+      router.push({
+        pathname: '/result',
+        params: { id: questionId }
+      });
+    } catch (error) {
+      console.error('Error saving question data:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   // On Android, we need to manually account for the status bar height
   // On iOS, SafeAreaView handles this automatically
   const statusBarHeight = Platform.OS === 'android' ? (StatusBar.currentHeight ?? 24) : 0
@@ -180,6 +215,8 @@ export default function SolveScreen() {
                 onRequestHint={handleRequestHint}
                 onSave={handleSave}
                 isSaving={isSaving}
+                isSubmitting={isSubmitting}
+                onViewResults={handleViewResults}
                 questionTitle={title as string}
                 questionDescription={questionData.description}
                 validApproaches={["two pointers", "hash map"]}
