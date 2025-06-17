@@ -45,13 +45,11 @@ export function HintsBottomDrawer({ messages, onClose, onRequestHint }: HintsBot
               messages.map((message, index) => (
                 <View 
                   key={index} 
-                  className={`rounded-lg p-4 mb-3 ${
-                    message.from === 'hint_bot' ? 'bg-gray-50' : 'bg-primary/10'
-                  }`}
+                  className="bg-gray-50 rounded-lg p-4 mb-3"
                 >
                   <View className="flex-row justify-between items-center mb-1">
                     <Text className="font-montserrat-medium text-xs text-gray-500">
-                      {message.from === 'hint_bot' ? 'Hint Bot' : 'You'}
+                      Hint Bot
                     </Text>
                     <Text className="text-xs text-gray-400">
                       {format(new Date(message.timestamp), 'MMM d, h:mm a')}

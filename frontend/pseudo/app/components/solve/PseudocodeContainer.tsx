@@ -213,12 +213,15 @@ export function PseudocodeContainer({
     }
   };
 
-  const handleHints = async () => {
+  const handleHints = () => {
+    setShowHintsDrawer(true);
+  };
+
+  const handleRequestHint = async () => {
     try {
       console.log('Generating hint...');
       if (!userQuestionData) return;
 
-      /*
       const solution: Solution = {
         lines: numberedInputs
       };
@@ -231,7 +234,7 @@ export function PseudocodeContainer({
         userQuestionData.hint_chat.messages
       );
 
-      // Update hint chat
+      // Update hint chat by appending new hint
       const updatedData = {
         ...userQuestionData,
         hint_chat: {
@@ -249,8 +252,6 @@ export function PseudocodeContainer({
       if (onSave) {
         await onSave(updatedData);
       }
-      */
-      setShowHintsDrawer(true);
     } catch (error) {
       console.error('Error generating hint:', error);
       // TODO: Show error to user
@@ -430,7 +431,7 @@ export function PseudocodeContainer({
           <HintsBottomDrawer
             messages={userQuestionData?.hint_chat.messages || []}
             onClose={() => setShowHintsDrawer(false)}
-            onRequestHint={onRequestHint}
+            onRequestHint={handleRequestHint}
           />
         </View>
       )}
