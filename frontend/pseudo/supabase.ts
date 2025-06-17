@@ -125,8 +125,6 @@ import { UserQuestion, UserQuestionData, HintMessage } from '~/app/types';
 export const solveScreen = {
     async getQuestionData(questionId: string) {
         try {
-            console.log('getQuestionData called with ID:', questionId);
-            
             // Download the file directly using Supabase storage
             const { data: fileData, error: downloadError } = await supabase
                 .storage
@@ -145,12 +143,9 @@ export const solveScreen = {
             // Handle the blob data
             if (fileData instanceof Blob) {
                 const text = await new Response(fileData).text();
-                console.log('File size:', fileData.size, 'bytes');
-                console.log('Text length:', text.length, 'characters');
                 
                 try {
                     const questionData = JSON.parse(text);
-                    console.log('Successfully parsed JSON data');
                     return { data: questionData, error: null };
                 } catch (parseError) {
                     console.error('JSON Parse error:', parseError);

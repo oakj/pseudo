@@ -20,17 +20,20 @@ export interface Solution {
 
 export interface Evaluation {
   score: number;
-  approach_identified: string;
-  complexity_analysis: {
-    time: string;
-    space: string;
-  };
   feedback: {
-    strengths: string[];
-    improvements: string[];
+    correctness: {
+      score: number;
+      comments: string;
+    };
+    complexity: {
+      score: number;
+      comments: string;
+    };
+    implementation: {
+      score: number;
+      comments: string;
+    };
   };
-  requirements_met: string[];
-  requirements_missing: string[];
 }
 
 export interface UserQuestionData {

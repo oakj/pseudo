@@ -9,7 +9,7 @@ import { ListPlus } from '~/app/lib/icons/ListPlus';
 import { Maximize2 } from '~/app/lib/icons/Maximize2';
 import { Minimize2 } from '~/app/lib/icons/Minimize2';
 import { HintsBottomDrawer } from './HintsBottomDrawer';
-import type { Solution } from '~/app/types/api/userQuestions';
+import type { Solution, Evaluation, HintMessage } from '~/app/types/api/userQuestions';
 import { evaluateSolution, generateHint, validateSolution } from '~/llm';
 
 interface PseudocodeContainerProps {
@@ -164,14 +164,27 @@ export function PseudocodeContainer({
 
         // Get evaluation from LLM
         console.log('Getting evaluation from LLM...');
-        const evaluation = await evaluateSolution(
+        const evaluationResponse = await evaluateSolution(
           questionTitle,
           validApproaches,
           solution
         );
-        console.log('Evaluation received:', evaluation);
+        console.log('Evaluation received:', evaluationResponse);
 
-        // Update the solution with evaluation
+        // Transform evaluation response to match UserQuestionData.Evaluation
+        const evaluation: Evaluation = {
+          score: evaluationResponse.score,
+          feedback: evaluationResponse.feedback
+        };
+
+        // Convert suggestions to hint messages
+        const hintMessages: HintMessage[] = evaluationResponse.suggestions.map(suggestion => ({
+          from: 'hint_bot',
+          message: suggestion,
+          timestamp: new Date().toISOString()
+        }));
+
+        // Update the solution with evaluation and hints
         const updatedData = {
           ...userQuestionData,
           submission: {
@@ -179,6 +192,12 @@ export function PseudocodeContainer({
             solution,
             timestamp: new Date().toISOString(),
             evaluation
+          },
+          hint_chat: {
+            messages: [
+              ...(userQuestionData?.hint_chat.messages || []),
+              ...hintMessages
+            ]
           }
         };
 
