@@ -149,6 +149,7 @@ export default function SolveScreen() {
   };
 
   const handleSubmit = async (updatedData: UserQuestionData) => {
+    console.log('=== Starting handleSubmit in solve.tsx ===');
     if (!userQuestionId || !updatedData) {
       console.error('Cannot save: missing user question ID or data');
       return;
@@ -156,21 +157,31 @@ export default function SolveScreen() {
 
     setIsSubmitting(true);
     try {
+      console.log('Updating user question file...');
       const { error } = await solveScreen.updateUserQuestionFile(userQuestionId, updatedData);
       if (error) {
+        console.error('Error updating file:', error);
         throw error;
       }
+      console.log('File updated successfully');
+      
       // Update local state
+      console.log('Updating local state...');
       setUserQuestionData(updatedData);
+      
       // Navigate to results
+      console.log('Attempting navigation to results...');
       router.push({
         pathname: '/result',
         params: { id: questionId }
       });
+      console.log('Navigation command sent');
     } catch (error) {
-      console.error('Error saving question data:', error);
+      console.error('Error in handleSubmit:', error);
+      // TODO: Show error to user
     } finally {
       setIsSubmitting(false);
+      console.log('=== Finished handleSubmit in solve.tsx ===');
     }
   };
 
@@ -214,6 +225,7 @@ export default function SolveScreen() {
                 userQuestionData={userQuestionData}
                 onRequestHint={handleRequestHint}
                 onSave={handleSave}
+                onSubmit={handleSubmit}
                 isSaving={isSaving}
                 isSubmitting={isSubmitting}
                 onViewResults={handleViewResults}

@@ -33,6 +33,7 @@ interface PseudocodeContainerProps {
   } | null;
   onRequestHint?: () => void;
   onSave?: (data: any) => void;
+  onSubmit?: (data: any) => void;
   isSaving?: boolean;
   onViewResults?: () => void;
   isSubmitting?: boolean;
@@ -54,6 +55,7 @@ export function PseudocodeContainer({
   userQuestionData,
   onRequestHint,
   onSave,
+  onSubmit,
   isSaving = false,
   onViewResults,
   isSubmitting = false
@@ -137,11 +139,9 @@ export function PseudocodeContainer({
   };
 
   const handleSubmit = async () => {
-    console.log('Submit button clicked');
+    console.log('=== Starting handleSubmit in PseudocodeContainer ===');
     try {
-      // First save the current state
-      if (onSave) {
-        console.log('Filtering empty lines...');
+      if (onSubmit) {
         // Filter out empty lines at the end
         const nonEmptyInputs = numberedInputs.filter((input, index) => {
           if (index === numberedInputs.length - 1) {
@@ -149,12 +149,10 @@ export function PseudocodeContainer({
           }
           return true;
         });
-        console.log('Filtered inputs:', nonEmptyInputs);
         
         const solution: Solution = {
           lines: nonEmptyInputs
         };
-        console.log('Created solution object:', solution);
 
         // Validate solution before evaluation
         console.log('Validating solution...');
@@ -165,16 +163,15 @@ export function PseudocodeContainer({
         console.log('Solution validation passed');
 
         // Get evaluation from LLM
-        console.log('Requesting LLM evaluation...');
+        console.log('Getting evaluation from LLM...');
         const evaluation = await evaluateSolution(
           questionTitle,
           validApproaches,
           solution
         );
-        console.log('Received evaluation:', evaluation);
+        console.log('Evaluation received:', evaluation);
 
         // Update the solution with evaluation
-        console.log('Updating solution with evaluation...');
         const updatedData = {
           ...userQuestionData,
           submission: {
@@ -184,13 +181,16 @@ export function PseudocodeContainer({
             evaluation
           }
         };
-        console.log('Saving updated data...');
-        await onSave(updatedData);
-        console.log('Save completed successfully');
+
+        console.log('Calling onSubmit with updated data...');
+        await onSubmit(updatedData);
+        console.log('onSubmit completed successfully');
       }
     } catch (error) {
       console.error('Error in handleSubmit:', error);
       // TODO: Show error to user
+    } finally {
+      console.log('=== Finished handleSubmit in PseudocodeContainer ===');
     }
   };
 
