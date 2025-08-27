@@ -1,5 +1,6 @@
 import { View, TouchableOpacity, ScrollView } from "react-native"
 import { Text } from "../ui/text"
+import { useEffect } from "react"
 
 interface Collection {
   collection_id: string
@@ -11,13 +12,28 @@ interface SaveQuestionToCollectionBottomDrawerProps {
   collections: Collection[]
   onCollectionPress: (collectionId: string) => void
   onClose: () => void
+  onDrawerStateChange: (isOpen: boolean) => void
 }
 
 export function SaveQuestionToCollectionBottomDrawer({ 
   collections, 
   onCollectionPress,
-  onClose 
+  onClose,
+  onDrawerStateChange
 }: SaveQuestionToCollectionBottomDrawerProps) {
+
+  useEffect(() => {
+    if (onDrawerStateChange){
+      onDrawerStateChange(true)
+    }
+
+    return () => {
+      if (onDrawerStateChange){
+        onDrawerStateChange(false)
+      }
+    };
+  }, [onDrawerStateChange]);
+
   return (
     <View className="absolute inset-0 z-50">
       <TouchableOpacity 
@@ -29,7 +45,11 @@ export function SaveQuestionToCollectionBottomDrawer({
         <Text className="text-xl font-montserrat font-semibold text-center mb-4">
           Save To:
         </Text>
-        <ScrollView className="px-4">
+        <ScrollView 
+          className="px-4"
+          nestedScrollEnabled={true}
+          contentContainerStyle={{ flexGrow: collections.length === 0 ? 1 : undefined }}
+        >
           {collections.map((collection) => (
             <TouchableOpacity
               key={collection.collection_id}

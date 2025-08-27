@@ -9,6 +9,7 @@ import { QuestionDescription } from "./components/solve/QuestionDescription"
 import { PseudocodeContainer } from "./components/solve/PseudocodeContainer"
 import { createEmptyUserQuestionFile, mapToUserQuestionFile } from './lib/utils'
 import type { UserQuestionData, UserQuestion } from '@/types/api/userQuestions'
+import { cn } from '~/app/lib/utils';
 
 interface QuestionData {
   description: string;
@@ -18,6 +19,9 @@ interface QuestionData {
     pseudocode: string;
   };
   hints: string[];
+  metadata: {
+    difficulty: string;
+  };
 }
 
 export default function SolveScreen() {
@@ -31,6 +35,8 @@ export default function SolveScreen() {
   const [error, setError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isAnyDrawerOpen, setIsAnyDrawerOpen] = useState(false);
+  const [isPseudocodeMaximized, setIsPseudocodeMaximized] = useState(false);
 
   useEffect(() => {
     async function loadData() {
@@ -52,8 +58,8 @@ export default function SolveScreen() {
           console.error('Error details:', JSON.stringify(qError, Object.getOwnPropertyNames(qError)));
           throw qError;
         }
-
         console.log('Question data successfully fetched:', qData ? 'Data present' : 'No data');
+        console.log('Question data difficulty:', qData?.metadata?.difficulty);
         setQuestionData(qData);
 
         console.log('Fetching user question data...');
@@ -75,9 +81,9 @@ export default function SolveScreen() {
             throw createError;
           }
 
-          if (newUserQuestion?.id) {
-            console.log('New user question created with ID:', newUserQuestion.id);
-            setUserQuestionId(newUserQuestion.id);
+          if (newUserQuestion?.user_question_id) {
+            console.log('New user question created with ID:', newUserQuestion.user_question_id);
+            setUserQuestionId(newUserQuestion.user_question_id);
             const { data: { user } } = await supabase.auth.getUser();
             if (user) {
               const initialData = createEmptyUserQuestionFile(user.id, questionId as string);
@@ -147,6 +153,10 @@ export default function SolveScreen() {
       params: { id: questionId }
     });
   };
+  
+  const handleDrawerStateChange = (isOpen: boolean) => {
+    setIsAnyDrawerOpen(isOpen);
+  };
 
   const handleSubmit = async (updatedData: UserQuestionData) => {
     console.log('=== Starting handleSubmit in solve.tsx ===');
@@ -185,17 +195,21 @@ export default function SolveScreen() {
     }
   };
 
+  const handleMaximizeStateChange = (isMaximized: boolean) => {
+    setIsPseudocodeMaximized(isMaximized);
+  };
+
   // On Android, we need to manually account for the status bar height
   // On iOS, SafeAreaView handles this automatically
   const statusBarHeight = Platform.OS === 'android' ? (StatusBar.currentHeight ?? 24) : 0
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50">
+    <SafeAreaView className="flex-1 bg-white">
       <StatusBar 
         barStyle="dark-content"
         {...(Platform.OS === 'android' 
           ? {
-              backgroundColor: "#F9FAFB",
+              backgroundColor: "#FFFFFF",
               translucent: true
             } 
           : {}
@@ -203,9 +217,13 @@ export default function SolveScreen() {
       />
       
       <View style={{ paddingTop: statusBarHeight }} className="flex-1">
-        <Header showBackButton title="Pseudo" />
+        {!isPseudocodeMaximized && <Header showBackButton title="Pseudo" />}
         
-        <ScrollView className="flex-1 px-4 mt-4">
+        <ScrollView 
+          className={cn("flex-1", !isPseudocodeMaximized ? "px-4 mt-4 mb-4" : "p-0 m-0")}
+          scrollEnabled={!isAnyDrawerOpen && !isPseudocodeMaximized}
+          contentContainerStyle={!isPseudocodeMaximized ? { paddingBottom: 16 } : {}}
+        >
           {loading ? (
             <Text className="text-center mt-4">Loading question data...</Text>
           ) : error ? (
@@ -214,11 +232,14 @@ export default function SolveScreen() {
             </Text>
           ) : questionData ? (
             <>
-              <QuestionDescription
-                title={title as string}
-                description={questionData.description}
-                constraints={questionData.constraints}
-              />
+              {!isPseudocodeMaximized && (
+                <QuestionDescription
+                  title={title as string}
+                  description={questionData.description}
+                  constraints={questionData.constraints}
+                  difficulty={questionData.metadata?.difficulty}
+                />
+              )}
               
               <PseudocodeContainer
                 boilerplateSolution={questionData.boilerplate_solution.pseudocode}
@@ -232,6 +253,8 @@ export default function SolveScreen() {
                 questionTitle={title as string}
                 questionDescription={questionData.description}
                 validApproaches={["two pointers", "hash map"]}
+                onDrawerStateChange={handleDrawerStateChange}
+                onMaximizeStateChange={handleMaximizeStateChange}
               />
             </>
           ) : (

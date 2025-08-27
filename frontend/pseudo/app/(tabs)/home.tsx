@@ -110,6 +110,11 @@ function sortQuestions(questions: any[], sortType: "nameAsc" | "nameDesc" | "dif
 
 export default function HomeScreen() {
   console.log('========= HOME SCREEN IS LOADING ========');
+
+    // disable scrolling if any child drawers are open
+  const handleDrawerStateChange = (isOpen: boolean) => {
+    setIsAnyDrawerOpen(isOpen);
+  }
   
   // Add debug logging for Supabase configuration
   useEffect(() => {
@@ -124,6 +129,7 @@ export default function HomeScreen() {
   const [selectedQuestionId, setSelectedQuestionId] = useState<string | null>(null)
   const [showSortDrawer, setShowSortDrawer] = useState(false)
   const [selectedSort, setSelectedSort] = useState<"nameAsc" | "nameDesc" | "difficultyAsc" | "difficultyDesc">("nameAsc")
+  const [isAnyDrawerOpen, setIsAnyDrawerOpen] = useState(false)
   const router = useRouter()
 
   const profile = data?.profile;
@@ -190,7 +196,9 @@ export default function HomeScreen() {
           iOS handles this automatically with SafeAreaView */}
       <View style={{ paddingTop: statusBarHeight }} className="flex-1">
         <Header />
-        <ScrollView>
+        <ScrollView
+          scrollEnabled={!isAnyDrawerOpen}
+        >
           <View className="mt-2">
             {/* Weekly Streak Section */}
             <View className="px-4 items-center justify-center">
@@ -289,7 +297,7 @@ export default function HomeScreen() {
               collections={collections.map(collection => ({
                 id: collection.collection_id,
                 name: collection.collection_name,
-                isDefault: collection.is_default
+                isDefault: collection.is_default,
               })) || []}
               onCollectionPress={(collectionId: string, isDefault: boolean) => {
                 hideDrawer()
@@ -302,6 +310,7 @@ export default function HomeScreen() {
                 })
               }}
               onClose={hideDrawer}
+              onDrawerStateChange={handleDrawerStateChange}
             />
           </View>
         )}
@@ -321,6 +330,7 @@ export default function HomeScreen() {
                 setShowSaveDrawer(false)
                 setSelectedQuestionId(null)
               }}
+              onDrawerStateChange={handleDrawerStateChange}
             />
           </View>
         )}

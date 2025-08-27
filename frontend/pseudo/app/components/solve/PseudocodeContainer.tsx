@@ -37,6 +37,7 @@ interface PseudocodeContainerProps {
   isSaving?: boolean;
   onViewResults?: () => void;
   isSubmitting?: boolean;
+  onDrawerStateChange?: (isOpen: boolean) => void;
 }
 
 interface NumberedInput {
@@ -58,7 +59,8 @@ export function PseudocodeContainer({
   onSubmit,
   isSaving = false,
   onViewResults,
-  isSubmitting = false
+  isSubmitting = false,
+  onDrawerStateChange
 }: PseudocodeContainerProps) {
   const [currentFontSizeIndex, setCurrentFontSizeIndex] = useState(1); // Start with 'xs'
   const [numberedInputs, setNumberedInputs] = useState<NumberedInput[]>(() => {
@@ -76,12 +78,17 @@ export function PseudocodeContainer({
   const inputRefs = useRef<(TextInput | null)[]>([]);
   const screenHeight = Dimensions.get('window').height;
 
-  // Log when hints drawer visibility changes
+  // Log when hints drawer visibility changes and notify parent
   useEffect(() => {
     if (showHintsDrawer) {
       console.log('Opening hints drawer with messages:', userQuestionData?.hint_chat.messages);
     }
-  }, [showHintsDrawer, userQuestionData]);
+    
+    // Notify parent component about drawer state change
+    if (onDrawerStateChange) {
+      onDrawerStateChange(showHintsDrawer);
+    }
+  }, [showHintsDrawer, userQuestionData, onDrawerStateChange]);
 
   const decreaseFontSize = () => {
     if (currentFontSizeIndex > 0) {
@@ -289,7 +296,7 @@ export function PseudocodeContainer({
     <>
       <View 
         className={cn(
-          "bg-white rounded-lg shadow-sm border border-gray-200 p-4 mt-4 w-full",
+          "bg-white rounded-xl shadow-sm border border-gray-200 p-4 mt-4 w-full",
           isMaximized && "absolute top-0 left-0 right-0 z-50 m-0 rounded-none"
         )}
         style={isMaximized ? { height: screenHeight } : {}}
@@ -338,11 +345,11 @@ export function PseudocodeContainer({
           </Text>
         </View>
 
-        <View className="bg-gray-50 rounded-lg">
+        <View className="bg-white rounded-xl">
           {numberedInputs.map((input, index) => (
             <View 
               key={input.number} 
-              className="w-full flex-row items-start bg-gray-100 rounded-lg p-2"
+              className="w-full flex-row items-start bg-gray-100 rounded-xl p-2"
               style={{
                 marginBottom: index === numberedInputs.length - 1 ? 0 : 8
               }}
@@ -378,7 +385,7 @@ export function PseudocodeContainer({
               />
             </View>
           ))}
-
+        
           <View className="flex-row justify-between items-center py-2 px-2">
             <TouchableOpacity 
               onPress={addNewInput}

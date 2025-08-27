@@ -3,6 +3,7 @@ import { Text } from "../ui/text"
 import { Link, useRouter } from "expo-router"
 import { Avatar, AvatarImage } from "../ui/avatar"
 import { useAvatar } from "../../contexts/AvatarContext"
+import { ArrowLeft } from "../../lib/icons/ArrowLeft"
 
 interface HeaderProps {
   title?: string;
@@ -17,13 +18,25 @@ export function Header({ title = "Pseudo", showBackButton = false }: HeaderProps
     <View 
       className="flex-row justify-between items-center px-4 bg-white h-[60px] w-full"
     >
-      <TouchableOpacity onPress={() => showBackButton ? router.back() : router.push("/(tabs)/home")}>
-        <Text 
-          className="text-black text-xl font-montserrat-semibold"
-        >
-          {title}
-        </Text>
-      </TouchableOpacity>
+      <View className="flex-row items-center">
+        {
+          showBackButton && (
+            <TouchableOpacity 
+              onPress={() => router.back()}
+              className="mr-2"
+            >
+              <ArrowLeft size={24} className="text-black" />
+            </TouchableOpacity>
+          )
+        }
+        <TouchableOpacity onPress={() => router.push("/(tabs)/home")}>
+          <Text 
+            className="text-black text-xl font-montserrat-semibold"
+          >
+            {title}
+          </Text>
+        </TouchableOpacity>
+      </View>
 
       <Link href="/profile" asChild>
         <TouchableOpacity>

@@ -1,7 +1,7 @@
 import { View, TouchableOpacity, ScrollView } from "react-native"
 import { Text } from "../ui/text"
 import { Ionicons } from "@expo/vector-icons"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 interface Collection {
   id: string
@@ -13,18 +13,34 @@ interface CollectionsBottomDrawerProps {
   collections: Collection[]
   onCollectionPress: (collectionId: string, isDefault: boolean) => void
   onClose: () => void
+  onDrawerStateChange: (isOpen: boolean) => void
 }
 
 export function CollectionsBottomDrawer({
   collections,
   onCollectionPress,
-  onClose
+  onClose,
+  onDrawerStateChange
 }: CollectionsBottomDrawerProps) {
   const [isDefaultExpanded, setIsDefaultExpanded] = useState(true)
   const [isCustomExpanded, setIsCustomExpanded] = useState(true)
 
   const defaultCollections = collections.filter(c => c.isDefault)
   const customCollections = collections.filter(c => !c.isDefault)
+
+  useEffect(() => {
+    // disable scrolling in parent component when this drawer mounts
+    if (onDrawerStateChange){
+      onDrawerStateChange(true);
+    }
+
+    // enable scrolling in parent component when this drawer unmounts
+    return () => {
+      if (onDrawerStateChange){
+        onDrawerStateChange(false);
+      }
+    }
+  }, [onDrawerStateChange]);
 
   return (
     <View className="absolute inset-0 z-50">
@@ -51,7 +67,11 @@ export function CollectionsBottomDrawer({
         </TouchableOpacity>
 
         {isDefaultExpanded && defaultCollections.length > 0 && (
-          <ScrollView className="px-4 mb-4">
+          <ScrollView 
+            className="px-4 mb-4"
+            nestedScrollEnabled={true}
+            contentContainerStyle={{ flexGrow: defaultCollections.length === 0 ? 1 : undefined }}
+          >
             {defaultCollections.map((collection) => (
               <TouchableOpacity
                 key={collection.id}
@@ -82,7 +102,11 @@ export function CollectionsBottomDrawer({
         </TouchableOpacity>
 
         {isCustomExpanded && customCollections.length > 0 && (
-          <ScrollView className="px-4">
+          <ScrollView 
+            className="px-4"
+            nestedScrollEnabled={true}
+            contentContainerStyle={{ flexGrow: customCollections.length === 0 ? 1 : undefined }}
+          >
             {customCollections.map((collection) => (
               <TouchableOpacity
                 key={collection.id}

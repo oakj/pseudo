@@ -1,6 +1,7 @@
 import { View, TouchableOpacity } from "react-native"
 import { Text } from "../ui/text"
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group"
+import { useEffect } from "react"
 
 type SortOption = "nameAsc" | "nameDesc" | "difficultyAsc" | "difficultyDesc"
 
@@ -39,7 +40,7 @@ function RadioGroupItemWithLabel({
 export function SortQuestionsBottomDrawer({ 
   selectedSort,
   onSortChange,
-  onClose 
+  onClose,
 }: SortQuestionsBottomDrawerProps) {
   const sortOptions = [
     { value: 'nameAsc', label: 'Name (A to Z)' },
