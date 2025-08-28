@@ -10,6 +10,8 @@ import { PseudocodeContainer } from "./components/solve/PseudocodeContainer"
 import { createEmptyUserQuestionFile, mapToUserQuestionFile } from './lib/utils'
 import type { UserQuestionData, UserQuestion } from '@/types/api/userQuestions'
 import { cn } from '~/app/lib/utils';
+import { HintsBottomDrawer } from "./components/solve/HintsBottomDrawer"
+import { generateHint } from '~/llm';
 
 interface QuestionData {
   description: string;
@@ -37,6 +39,7 @@ export default function SolveScreen() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isAnyDrawerOpen, setIsAnyDrawerOpen] = useState(false);
   const [isPseudocodeMaximized, setIsPseudocodeMaximized] = useState(false);
+  const [showHintsDrawer, setShowHintsDrawer] = useState(false);
 
   useEffect(() => {
     async function loadData() {
@@ -120,9 +123,43 @@ export default function SolveScreen() {
     loadData();
   }, [questionId]);
 
-  const handleRequestHint = () => {
-    // TODO: Implement hint request functionality
-    console.log('Requesting new hint...');
+  const handleRequestHint = async () => {
+    if (!userQuestionData || !userQuestionId) return;
+    
+    try {
+      console.log('Generating hint...');
+      
+      const solution = {
+        lines: userQuestionData.submission?.solution?.lines || []
+      };
+      
+      // Generate hint using LLM
+      const hint = await generateHint(
+        title as string,
+        questionData?.description || '',
+        solution,
+        userQuestionData.hint_chat.messages
+      );
+      
+      // Update hint chat by appending new hint
+      const updatedData = {
+        ...userQuestionData,
+        hint_chat: {
+          messages: [
+            ...userQuestionData.hint_chat.messages,
+            {
+              from: 'hint_bot',
+              message: hint.message,
+              timestamp: hint.timestamp
+            }
+          ]
+        }
+      };
+      
+      await handleSave(updatedData);
+    } catch (error) {
+      console.error('Error generating hint:', error);
+    }
   };
 
   const handleSave = async (updatedData: UserQuestionData) => {
@@ -255,6 +292,9 @@ export default function SolveScreen() {
                 validApproaches={["two pointers", "hash map"]}
                 onDrawerStateChange={handleDrawerStateChange}
                 onMaximizeStateChange={handleMaximizeStateChange}
+                showHintsDrawer={showHintsDrawer}
+                setShowHintsDrawer={setShowHintsDrawer}
+                statusBarHeight={statusBarHeight}
               />
             </>
           ) : (
@@ -264,6 +304,17 @@ export default function SolveScreen() {
           )}
         </ScrollView>
       </View>
+      
+      {/* Render HintsBottomDrawer at the root level */}
+      {showHintsDrawer && (
+        <View className="absolute inset-0 bg-gray-soft/50 z-50">
+          <HintsBottomDrawer
+            messages={userQuestionData?.hint_chat.messages || []}
+            onClose={() => setShowHintsDrawer(false)}
+            onRequestHint={handleRequestHint}
+          />
+        </View>
+      )}
     </SafeAreaView>
   )
 }

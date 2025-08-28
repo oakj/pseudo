@@ -20,7 +20,7 @@ export function HintsBottomDrawer({ messages, onClose, onRequestHint }: HintsBot
   console.log('HintsBottomDrawer received messages:', messages);
   
   return (
-    <View className="absolute inset-0 z-50">
+    <View className="absolute inset-0 z-[60]">
       <TouchableOpacity 
         className="absolute inset-0 bg-gray-500/50" 
         activeOpacity={1} 

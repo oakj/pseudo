@@ -38,6 +38,10 @@ interface PseudocodeContainerProps {
   onViewResults?: () => void;
   isSubmitting?: boolean;
   onDrawerStateChange?: (isOpen: boolean) => void;
+  onMaximizeStateChange?: (isMaximized: boolean) => void;
+  showHintsDrawer?: boolean;
+  setShowHintsDrawer?: (show: boolean) => void;
+  statusBarHeight?: number;
 }
 
 interface NumberedInput {
@@ -60,7 +64,11 @@ export function PseudocodeContainer({
   isSaving = false,
   onViewResults,
   isSubmitting = false,
-  onDrawerStateChange
+  onDrawerStateChange,
+  onMaximizeStateChange,
+  showHintsDrawer = false,
+  setShowHintsDrawer,
+  statusBarHeight = 0,
 }: PseudocodeContainerProps) {
   const [currentFontSizeIndex, setCurrentFontSizeIndex] = useState(1); // Start with 'xs'
   const [numberedInputs, setNumberedInputs] = useState<NumberedInput[]>(() => {
@@ -74,7 +82,6 @@ export function PseudocodeContainer({
     return [{ number: 1, text: '' }];
   });
   const [isMaximized, setIsMaximized] = useState(false);
-  const [showHintsDrawer, setShowHintsDrawer] = useState(false);
   const inputRefs = useRef<(TextInput | null)[]>([]);
   const screenHeight = Dimensions.get('window').height;
 
@@ -142,7 +149,13 @@ export function PseudocodeContainer({
   };
 
   const toggleMaximize = () => {
-    setIsMaximized(!isMaximized);
+    const newMaximizedState = !isMaximized;
+    setIsMaximized(newMaximizedState);
+    
+    // Notify parent component about maximize state change
+    if (onMaximizeStateChange) {
+      onMaximizeStateChange(newMaximizedState);
+    }
   };
 
   const handleSubmit = async () => {
@@ -221,7 +234,9 @@ export function PseudocodeContainer({
   };
 
   const handleHints = () => {
-    setShowHintsDrawer(true);
+    if (setShowHintsDrawer) {
+      setShowHintsDrawer(true);
+    }
   };
 
   const handleRequestHint = async () => {
@@ -296,10 +311,14 @@ export function PseudocodeContainer({
     <>
       <View 
         className={cn(
-          "bg-white rounded-xl shadow-sm border border-gray-200 p-4 mt-4 w-full",
-          isMaximized && "absolute top-0 left-0 right-0 z-50 m-0 rounded-none"
+          "bg-white rounded-xl shadow-sm p-4 mt-4 w-full",
+          isMaximized 
+            ? "absolute left-0 right-0 m-0 rounded-none border-0" 
+            : "border border-gray-200"
         )}
-        style={isMaximized ? { height: screenHeight } : {}}
+        style={isMaximized ? { 
+          height: screenHeight
+        } : {}}
       >
         <View className="flex-row justify-between items-center mb-4">
           <Text className="font-montserrat-semibold text-lg">
@@ -386,7 +405,7 @@ export function PseudocodeContainer({
             </View>
           ))}
         
-          <View className="flex-row justify-between items-center py-2 px-2">
+          <View className="flex-row justify-between items-center py-2 px-2 mt-2">
             <TouchableOpacity 
               onPress={addNewInput}
               className="p-2"
@@ -431,17 +450,6 @@ export function PseudocodeContainer({
           </View>
         </View>
       </View>
-
-      {/* Hints Bottom Drawer */}
-      {showHintsDrawer && (
-        <View className="absolute inset-0 bg-gray-soft/50">
-          <HintsBottomDrawer
-            messages={userQuestionData?.hint_chat.messages || []}
-            onClose={() => setShowHintsDrawer(false)}
-            onRequestHint={handleRequestHint}
-          />
-        </View>
-      )}
     </>
   );
 } 
