@@ -14,28 +14,30 @@ namespace PseudoApi.Services
 
         public async Task<Session> SignInWithEmailAsync(string email, string password)
         {
-            var client = await _supabaseService.GetClientWithUserToken();
-            var response = await client.Auth.SignIn(email, password);
-            
-            if (response.Error != null)
+            try
             {
-                throw new Exception($"Authentication failed: {response.Error.Message}");
+                var client = await _supabaseService.GetClientWithUserToken();
+                var session = await client.Auth.SignIn(email, password);
+                return session;
             }
-            
-            return response;
+            catch (Exception ex)
+            {
+                throw new Exception($"Authentication failed: {ex.Message}");
+            }
         }
 
         public async Task<Session> SignUpWithEmailAsync(string email, string password)
         {
-            var client = await _supabaseService.GetClientWithUserToken();
-            var response = await client.Auth.SignUp(email, password);
-            
-            if (response.Error != null)
+            try
             {
-                throw new Exception($"Registration failed: {response.Error.Message}");
+                var client = await _supabaseService.GetClientWithUserToken();
+                var session = await client.Auth.SignUp(email, password);
+                return session;
             }
-            
-            return response;
+            catch (Exception ex)
+            {
+                throw new Exception($"Registration failed: {ex.Message}");
+            }
         }
 
         public async Task SignOutAsync()

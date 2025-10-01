@@ -38,25 +38,26 @@ namespace PseudoApi.Managers.UserQuestion
                 {
                     throw new UnauthorizedAccessException("User ID not found in token");
                 }
-                
+
                 var client = await _supabaseService.GetClientWithUserToken();
-                
+
                 // Get or create user question
                 var existingResult = await client.From<UserQuestionDto>()
                     .Where(uq => uq.UserId == userId && uq.QuestionId == req.QuestionId)
-                    .Single();
+                    .Get();
                 
-                if (existingResult.Error == null && existingResult.Data != null)
+                if (existingResult.ResponseMessage.IsSuccessStatusCode && existingResult.Models.Any())
                 {
                     // Return existing user question
+                    var existingUserQuestion = existingResult.Models.First();
                     return new UserQuestionResponse
                     {
                         Data = new UserQuestionResponse.UserQuestion
                         {
-                            UserQuestionId = existingResult.Data.UserQuestionId,
-                            QuestionId = existingResult.Data.QuestionId,
-                            UserId = existingResult.Data.UserId,
-                            Solved = existingResult.Data.Solved
+                            UserQuestionId = existingUserQuestion.UserQuestionId,
+                            QuestionId = existingUserQuestion.QuestionId,
+                            UserId = existingUserQuestion.UserId,
+                            Solved = existingUserQuestion.Solved
                         }
                     };
                 }
@@ -71,12 +72,12 @@ namespace PseudoApi.Managers.UserQuestion
                 
                 var createResult = await client.From<UserQuestionDto>().Insert(newUserQuestion);
                 
-                if (createResult.Error != null)
+                if (!createResult.ResponseMessage.IsSuccessStatusCode)
                 {
-                    throw new Exception($"Error creating user question: {createResult.Error.Message}");
+                    throw new Exception($"Error creating user question: {createResult.ResponseMessage.ReasonPhrase}");
                 }
                 
-                var userQuestion = createResult.Data.FirstOrDefault();
+                var userQuestion = createResult.Models.FirstOrDefault();
                 if (userQuestion == null)
                 {
                     throw new Exception("Failed to create user question");
@@ -87,16 +88,16 @@ namespace PseudoApi.Managers.UserQuestion
                 {
                     UserId = userId,
                     QuestionId = req.QuestionId,
-                    HintChat = new UserQuestionDataResponse.UserQuestionData.HintChat
+                    HintChatData = new UserQuestionDataResponse.UserQuestionData.HintChat
                     {
-                        Messages = new List<UserQuestionDataResponse.UserQuestionData.HintChat.Message>()
+                        Messages = new List<UserQuestionDataResponse.UserQuestionData.Message>()
                     }
                 };
                 
                 var json = JsonSerializer.Serialize(emptyData);
                 using var stream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(json));
                 
-                await _storageService.UploadFileAsync("userquestions", $"{userQuestion.UserQuestionId}.json", stream);
+                await _storageService.UploadFileAsync("userquestions", $"{userId}/{userQuestion.UserQuestionId}.json", stream);
                 
                 return new UserQuestionResponse
                 {
@@ -125,15 +126,15 @@ namespace PseudoApi.Managers.UserQuestion
                 var client = await _supabaseService.GetClientWithUserToken();
                 var verifyResult = await client.From<UserQuestionDto>()
                     .Where(uq => uq.UserQuestionId == req.UserQuestionId && uq.UserId == userId)
-                    .Single();
+                    .Get();
                 
-                if (verifyResult.Error != null || verifyResult.Data == null)
+                if (!verifyResult.ResponseMessage.IsSuccessStatusCode || !verifyResult.Models.Any())
                 {
                     throw new UnauthorizedAccessException("User question not found or you do not have permission to access it");
                 }
                 
                 // Download user question data from storage
-                var stream = await _storageService.DownloadFileAsync("userquestions", $"{req.UserQuestionId}.json");
+                var stream = await _storageService.DownloadFileAsync("userquestions", $"{userId}/{req.UserQuestionId}.json");
                 
                 using var reader = new StreamReader(stream);
                 var json = await reader.ReadToEndAsync();
@@ -167,16 +168,16 @@ namespace PseudoApi.Managers.UserQuestion
                 var client = await _supabaseService.GetClientWithUserToken();
                 var verifyResult = await client.From<UserQuestionDto>()
                     .Where(uq => uq.UserQuestionId == req.UserQuestionId && uq.UserId == userId)
-                    .Single();
+                    .Get();
                 
-                if (verifyResult.Error != null || verifyResult.Data == null)
+                if (!verifyResult.ResponseMessage.IsSuccessStatusCode || !verifyResult.Models.Any())
                 {
                     throw new UnauthorizedAccessException("User question not found or you do not have permission to update it");
                 }
                 
                 // Check if the solution is being submitted/evaluated
-                var userQuestion = verifyResult.Data;
-                var isNowSolved = req.Data.Submission?.Evaluation != null && !userQuestion.Solved;
+                var userQuestion = verifyResult.Models.First();
+                var isNowSolved = req.Data.SubmissionData?.EvaluationData != null && !userQuestion.Solved;
                 
                 if (isNowSolved)
                 {
@@ -186,9 +187,9 @@ namespace PseudoApi.Managers.UserQuestion
                         .Set(uq => uq.Solved, true)
                         .Update();
                     
-                    if (updateResult.Error != null)
+                    if (!updateResult.ResponseMessage.IsSuccessStatusCode)
                     {
-                        throw new Exception($"Error updating user question: {updateResult.Error.Message}");
+                        throw new Exception($"Error updating user question: {updateResult.ResponseMessage.ReasonPhrase}");
                     }
                 }
                 
@@ -196,7 +197,7 @@ namespace PseudoApi.Managers.UserQuestion
                 var json = JsonSerializer.Serialize(req.Data);
                 using var stream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(json));
                 
-                await _storageService.UploadFileAsync("userquestions", $"{req.UserQuestionId}.json", stream);
+                await _storageService.UploadFileAsync("userquestions", $"{userId}/{req.UserQuestionId}.json", stream);
                 
                 return new UserQuestionDataResponse
                 {

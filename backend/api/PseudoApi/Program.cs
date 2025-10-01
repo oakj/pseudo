@@ -50,6 +50,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+// Supabase http client
+builder.Services.AddHttpClient("supabase", client =>
+{
+    var url = builder.Configuration["Supabase:Url"];
+    client.BaseAddress = new Uri(url);
+    client.DefaultRequestHeaders.Add("apikey", builder.Configuration["Supabase:AnonKey"]);
+});
+
 // Configure CORS
 builder.Services.AddCors(options =>
 {
@@ -61,6 +69,8 @@ builder.Services.AddCors(options =>
             .AllowCredentials();
     });
 });
+
+builder.Services.AddHealthChecks();
 
 builder.Services.AddControllers();
 

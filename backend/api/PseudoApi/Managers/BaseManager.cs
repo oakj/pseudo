@@ -90,7 +90,9 @@ namespace PseudoApi.Managers
         
         protected string? GetUserId()
         {
-            return _httpContextAccessor.HttpContext?.Items["UserId"] as string;
+            var userId = _httpContextAccessor.HttpContext?.Items["UserId"] as string;
+            Console.WriteLine($"UserId: {userId}");
+            return userId;
         }
         
         protected async Task<ApiResponse<TResponse>> ValidateAndProcessAsync<TRequest, TResponse>(
@@ -135,11 +137,13 @@ namespace PseudoApi.Managers
         protected ApiResponse<T> HandleException<T>(Exception ex) where T : class
         {
             // Log exception
+            Console.WriteLine($"Exception: {ex.Message}");
+            Console.WriteLine($"Stack trace: {ex.StackTrace}");
             
             return new ApiResponse<T>
             {
                 Success = false,
-                Error = "An error occurred while processing your request",
+                Error = $"Error: {ex.Message}",  // Include actual error message
                 ErrorCode = "INTERNAL_SERVER_ERROR",
                 TraceId = Activity.Current?.Id ?? _httpContextAccessor.HttpContext?.TraceIdentifier ?? "unknown"
             };

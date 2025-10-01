@@ -36,15 +36,21 @@ namespace PseudoApi.Managers.Collection
             var client = await _supabaseService.GetClientWithUserToken();
             
             // Call Supabase RPC function
-            var result = await client.Rpc<List<CollectionDto>>("selectcollectionsbyuserid", new Dictionary<string, object>
+            var result = await client.Rpc("selectcollectionsbyuserid", new Dictionary<string, object>
             {
                 { "p_user_id", userId }
             });
             
-            if (result.Error != null)
+            // Check for errors in the response
+            if (!result.ResponseMessage.IsSuccessStatusCode)
             {
-                throw new Exception($"Error calling Supabase: {result.Error.Message}");
+                throw new Exception($"Error calling Supabase: {result.ResponseMessage.ReasonPhrase}");
             }
+            
+            // Deserialize the response manually
+            var collections = Newtonsoft.Json.JsonConvert.DeserializeObject<List<CollectionDto>>(
+                result.Content
+            );
             
             // Map to response
             return new ApiResponse<CollectionResponse>
@@ -52,7 +58,7 @@ namespace PseudoApi.Managers.Collection
                 Success = true,
                 Data = new CollectionResponse
                 {
-                    Data = result.Data?.Select(c => new CollectionResponse.Collection
+                    Data = collections?.Select(c => new CollectionResponse.Collection
                     {
                         CollectionId = c.CollectionId,
                         CollectionName = c.CollectionName,
@@ -75,20 +81,26 @@ namespace PseudoApi.Managers.Collection
                 var client = await _supabaseService.GetClientWithUserToken();
                 
                 // Call Supabase RPC function
-                var result = await client.Rpc<CollectionDetailResponse.CollectionQuestion>("selectcollectionbyid", new Dictionary<string, object>
+                var result = await client.Rpc("selectcollectionbyid", new Dictionary<string, object>
                 {
                     { "p_collection_id", req.CollectionId },
                     { "p_user_id", userId }
                 });
                 
-                if (result.Error != null)
+                // Check for errors in the response
+                if (!result.ResponseMessage.IsSuccessStatusCode)
                 {
-                    throw new Exception($"Error calling Supabase: {result.Error.Message}");
+                    throw new Exception($"Error calling Supabase: {result.ResponseMessage.ReasonPhrase}");
                 }
+                
+                // Deserialize the response manually
+                var collectionQuestion = Newtonsoft.Json.JsonConvert.DeserializeObject<CollectionDetailResponse.CollectionQuestion>(
+                    result.Content
+                );
                 
                 return new CollectionDetailResponse
                 {
-                    Data = result.Data
+                    Data = collectionQuestion
                 };
             });
         }
@@ -115,12 +127,12 @@ namespace PseudoApi.Managers.Collection
                 
                 var result = await client.From<CollectionDto>().Insert(newCollection);
                 
-                if (result.Error != null)
+                if (!result.ResponseMessage.IsSuccessStatusCode)
                 {
-                    throw new Exception($"Error creating collection: {result.Error.Message}");
+                    throw new Exception($"Error creating collection: {result.ResponseMessage.ReasonPhrase}");
                 }
                 
-                var collection = result.Data.FirstOrDefault();
+                var collection = result.Models.FirstOrDefault();
                 if (collection == null)
                 {
                     throw new Exception("Failed to create collection");
@@ -159,12 +171,12 @@ namespace PseudoApi.Managers.Collection
                     .Set(c => c.CollectionName, req.CollectionName)
                     .Update();
                 
-                if (result.Error != null)
+                if (!result.ResponseMessage.IsSuccessStatusCode)
                 {
-                    throw new Exception($"Error updating collection: {result.Error.Message}");
+                    throw new Exception($"Error updating collection: {result.ResponseMessage.ReasonPhrase}");
                 }
                 
-                var collection = result.Data.FirstOrDefault();
+                var collection = result.Models.FirstOrDefault();
                 if (collection == null)
                 {
                     throw new Exception("Collection not found or you do not have permission to update it");
@@ -198,28 +210,39 @@ namespace PseudoApi.Managers.Collection
             // Check if collection is default
             var checkResult = await client.From<CollectionDto>()
                 .Where(c => c.CollectionId == collectionId && c.UserId == userId)
-                .Single();
-            
-            if (checkResult.Error != null)
+                .Get();
+
+            if (!checkResult.ResponseMessage.IsSuccessStatusCode)
             {
-                throw new Exception($"Error checking collection: {checkResult.Error.Message}");
+                throw new Exception($"Error checking collection: {checkResult.ResponseMessage.ReasonPhrase}");
             }
-            
-            if (checkResult.Data.IsDefault)
+
+            var collection = checkResult.Models.FirstOrDefault();
+            if (collection == null)
+            {
+                throw new Exception("Collection not found");
+            }
+
+            if (collection.IsDefault)
             {
                 throw new Exception("Cannot delete default collection");
             }
             
             // Delete collection
-            var result = await client.From<CollectionDto>()
+            await client.From<CollectionDto>()
                 .Where(c => c.CollectionId == collectionId && c.UserId == userId)
                 .Delete();
-            
-            if (result.Error != null)
+
+            // Since we can't check the response directly, we can verify deletion by trying to get the collection again
+            var verifyResult = await client.From<CollectionDto>()
+                .Where(c => c.CollectionId == collectionId && c.UserId == userId)
+                .Get();
+
+            if (verifyResult.Models.Any())
             {
-                throw new Exception($"Error deleting collection: {result.Error.Message}");
+                throw new Exception("Failed to delete collection");
             }
-            
+
             return new ApiResponse<object>
             {
                 Success = true,

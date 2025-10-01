@@ -34,28 +34,33 @@ namespace PseudoApi.Managers.Question
             var client = await _supabaseService.GetClientWithUserToken();
             
             // Call Supabase RPC function
-            var result = await client.Rpc<List<QuestionDto>>("selectquestionsbyuserid", new Dictionary<string, object>
+            var result = await client.Rpc("selectquestionsbyuserid", new Dictionary<string, object>
             {
                 { "p_user_id", userId }
             });
-            
-            if (result.Error != null)
+
+            if (!result.ResponseMessage.IsSuccessStatusCode)
             {
-                throw new Exception($"Error calling Supabase: {result.Error.Message}");
+                throw new Exception($"Error calling Supabase: {result.ResponseMessage.ReasonPhrase}");
             }
-            
+
+            // Deserialize the response manually
+            var questions = Newtonsoft.Json.JsonConvert.DeserializeObject<List<QuestionDto>>(
+                result.Content
+            );
+
             // Map to response
             return new ApiResponse<QuestionResponse>
             {
                 Success = true,
                 Data = new QuestionResponse
                 {
-                    Data = result.Data?.Select(q => new QuestionResponse.Question
+                    Data = questions?.Select(q => new QuestionResponse.Question
                     {
                         QuestionId = q.QuestionId,
                         Title = q.Title,
                         Difficulty = q.Difficulty,
-                        IsSolved = q.IsSolved,
+                        IsSolved = q.IsSolved ?? false,
                         DesignPatterns = q.DesignPatterns
                     }).ToList()
                 }
@@ -77,14 +82,18 @@ namespace PseudoApi.Managers.Question
                 // Get question by ID
                 var result = await client.From<QuestionDto>()
                     .Where(q => q.QuestionId == req.QuestionId)
-                    .Single();
-                
-                if (result.Error != null)
+                    .Get();
+
+                if (!result.ResponseMessage.IsSuccessStatusCode)
                 {
-                    throw new Exception($"Error retrieving question: {result.Error.Message}");
+                    throw new Exception($"Error retrieving question: {result.ResponseMessage.ReasonPhrase}");
                 }
-                
-                var question = result.Data;
+
+                var question = result.Models.FirstOrDefault();
+                if (question == null)
+                {
+                    throw new Exception("Question not found");
+                }
                 
                 return new QuestionResponse
                 {
@@ -95,7 +104,7 @@ namespace PseudoApi.Managers.Question
                             QuestionId = question.QuestionId,
                             Title = question.Title,
                             Difficulty = question.Difficulty,
-                            IsSolved = question.IsSolved,
+                            IsSolved = question.IsSolved ?? false,
                             DesignPatterns = question.DesignPatterns
                         }
                     }

@@ -32,14 +32,18 @@ namespace PseudoApi.Managers.Profile
             // Query the profiles table for the user's profile
             var response = await client.From<Models.DTO.ProfileDto>()
                 .Where(p => p.UserId == userId)
-                .Single();
-            
-            if (response.Error != null)
+                .Get();
+
+            if (!response.ResponseMessage.IsSuccessStatusCode)
             {
-                throw new Exception($"Error retrieving profile: {response.Error.Message}");
+                throw new Exception($"Error retrieving profile: {response.ResponseMessage.ReasonPhrase}");
             }
-            
-            var profile = response.Data;
+
+            var profile = response.Models.FirstOrDefault();
+            if (profile == null)
+            {
+                throw new Exception("Profile not found");
+            }
             
             return new ApiResponse<ProfileResponse>
             {
@@ -75,13 +79,13 @@ namespace PseudoApi.Managers.Profile
                     .Set(p => p.AvatarUrl, req.AvatarUrl)
                     .Set(p => p.DarkModePreference, req.DarkModePreference)
                     .Update();
-                
-                if (response.Error != null)
+
+                if (!response.ResponseMessage.IsSuccessStatusCode)
                 {
-                    throw new Exception($"Error updating profile: {response.Error.Message}");
+                    throw new Exception($"Error updating profile: {response.ResponseMessage.ReasonPhrase}");
                 }
-                
-                var profile = response.Data.FirstOrDefault();
+
+                var profile = response.Models.FirstOrDefault();
                 if (profile == null)
                 {
                     throw new Exception("Profile not found");

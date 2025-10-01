@@ -36,11 +36,12 @@ namespace PseudoApi.Managers.Streak
             // Get or create streak for current week
             var existingResult = await client.From<StreakDto>()
                 .Where(s => s.UserId == userId && s.WeekStartUtc == currentWeekStart)
-                .Single();
-            
-            if (existingResult.Error == null && existingResult.Data != null)
+                .Get();
+
+            if (existingResult.ResponseMessage.IsSuccessStatusCode && existingResult.Models.Any())
             {
                 // Return existing streak
+                var existingStreak = existingResult.Models.First();
                 return new ApiResponse<WeeklyStreakResponse>
                 {
                     Success = true,
@@ -48,8 +49,8 @@ namespace PseudoApi.Managers.Streak
                     {
                         Data = new WeeklyStreakResponse.WeeklyStreak
                         {
-                            StreakDays = existingResult.Data.StreakDays,
-                            WeekStartUtc = existingResult.Data.WeekStartUtc
+                            StreakDays = existingStreak.StreakDays,
+                            WeekStartUtc = existingStreak.WeekStartUtc
                         }
                     }
                 };
@@ -65,13 +66,13 @@ namespace PseudoApi.Managers.Streak
             
             var createResult = await client.From<StreakDto>().Insert(newStreak);
             
-            if (createResult.Error != null)
+            if (!createResult.ResponseMessage.IsSuccessStatusCode)
             {
-                throw new Exception($"Error creating streak: {createResult.Error.Message}");
+                throw new Exception($"Error creating streak: {createResult.ResponseMessage.ReasonPhrase}");
             }
             
-            var streak = createResult.Data.FirstOrDefault();
-            if (streak == null)
+            var createdStreak = createResult.Models.FirstOrDefault();
+            if (createdStreak == null)
             {
                 throw new Exception("Failed to create streak");
             }
@@ -83,8 +84,8 @@ namespace PseudoApi.Managers.Streak
                 {
                     Data = new WeeklyStreakResponse.WeeklyStreak
                     {
-                        StreakDays = streak.StreakDays,
-                        WeekStartUtc = streak.WeekStartUtc
+                        StreakDays = createdStreak.StreakDays,
+                        WeekStartUtc = createdStreak.WeekStartUtc
                     }
                 }
             };
@@ -109,23 +110,24 @@ namespace PseudoApi.Managers.Streak
                 // Get or create streak for current week
                 var existingResult = await client.From<StreakDto>()
                     .Where(s => s.UserId == userId && s.WeekStartUtc == currentWeekStart)
-                    .Single();
-                
-                if (existingResult.Error == null && existingResult.Data != null)
+                    .Get();
+
+                if (existingResult.ResponseMessage.IsSuccessStatusCode && existingResult.Models.Any())
                 {
                     // Update existing streak
+                    var existingStreak = existingResult.Models.First();
                     var updateResult = await client.From<StreakDto>()
-                        .Where(s => s.StreakId == existingResult.Data.StreakId)
+                        .Where(s => s.StreakId == existingStreak.StreakId)
                         .Set(s => s.StreakDays, req.StreakDays)
                         .Update();
                     
-                    if (updateResult.Error != null)
+                    if (!updateResult.ResponseMessage.IsSuccessStatusCode)
                     {
-                        throw new Exception($"Error updating streak: {updateResult.Error.Message}");
+                        throw new Exception($"Error updating streak: {updateResult.ResponseMessage.ReasonPhrase}");
                     }
                     
-                    var streak = updateResult.Data.FirstOrDefault();
-                    if (streak == null)
+                    var updatedStreak = updateResult.Models.FirstOrDefault();
+                    if (updatedStreak == null)
                     {
                         throw new Exception("Failed to update streak");
                     }
@@ -134,8 +136,8 @@ namespace PseudoApi.Managers.Streak
                     {
                         Data = new WeeklyStreakResponse.WeeklyStreak
                         {
-                            StreakDays = streak.StreakDays,
-                            WeekStartUtc = streak.WeekStartUtc
+                            StreakDays = updatedStreak.StreakDays,
+                            WeekStartUtc = updatedStreak.WeekStartUtc
                         }
                     };
                 }
@@ -151,13 +153,13 @@ namespace PseudoApi.Managers.Streak
                     
                     var createResult = await client.From<StreakDto>().Insert(newStreak);
                     
-                    if (createResult.Error != null)
+                    if (!createResult.ResponseMessage.IsSuccessStatusCode)
                     {
-                        throw new Exception($"Error creating streak: {createResult.Error.Message}");
+                        throw new Exception($"Error creating streak: {createResult.ResponseMessage.ReasonPhrase}");
                     }
                     
-                    var streak = createResult.Data.FirstOrDefault();
-                    if (streak == null)
+                    var createdStreak = createResult.Models.FirstOrDefault();
+                    if (createdStreak == null)
                     {
                         throw new Exception("Failed to create streak");
                     }
@@ -166,8 +168,8 @@ namespace PseudoApi.Managers.Streak
                     {
                         Data = new WeeklyStreakResponse.WeeklyStreak
                         {
-                            StreakDays = streak.StreakDays,
-                            WeekStartUtc = streak.WeekStartUtc
+                            StreakDays = createdStreak.StreakDays,
+                            WeekStartUtc = createdStreak.WeekStartUtc
                         }
                     };
                 }
