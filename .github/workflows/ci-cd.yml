@@ -42,7 +42,7 @@ jobs:
       - name: Build and push
         run: |
           IMAGE=ghcr.io/${{ github.repository }}/dotnet-api:latest
-          docker build -t $IMAGE . -f backend/api/Dockerfile.dev backend/api
+          docker build -t $IMAGE -f backend/api/Dockerfile.dev backend/api
           docker push $IMAGE
 
   # deploy artifact to Droplet 
