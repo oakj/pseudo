@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PseudoApi.Managers.Auth;
 using PseudoApi.Models.Request;
@@ -30,6 +31,7 @@ namespace PseudoApi.Controllers
         }
         
         [HttpPost("signout")]
+        [Authorize]
         public new async Task<IActionResult> SignOut()
         {
             var response = await _authManager.SignOutAsync();

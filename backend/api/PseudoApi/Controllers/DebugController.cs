@@ -25,7 +25,7 @@ namespace PseudoApi.Controllers
         }
         
         [HttpGet("auth")]
-        [AllowAnonymous] // Allow this endpoint to be accessed without authentication
+        [Authorize]
         public async Task<IActionResult> TestAuth()
         {
             try
@@ -60,7 +60,7 @@ namespace PseudoApi.Controllers
         }
         
         [HttpGet("storage")]
-        [AllowAnonymous]
+        [Authorize]
         public async Task<IActionResult> TestStorage()
         {
             try
@@ -121,7 +121,7 @@ namespace PseudoApi.Controllers
         }
         
         [HttpGet("rpc")]
-        [AllowAnonymous]
+        [Authorize]
         public async Task<IActionResult> TestRpc()
         {
             try
