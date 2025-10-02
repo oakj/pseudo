@@ -23,7 +23,7 @@ jobs:
         run: dotnet build backend/api/pseudo.sln --configuration Release --no-restore
 
       - name: Test
-        run: dotnet test backend/api/pseudo.sln --no-build --verbosity normal
+        run: dotnet test backend/api/pseudo.sln --configuration Release --no-build --verbosity normal
 
   # build application per Dockerfile and push image (artifact) to GHCR
   docker-build-push:
