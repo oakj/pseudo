@@ -1,0 +1,152 @@
+.result-container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.loading {
+  text-align: center;
+  padding: 3rem;
+  color: rgba(255, 255, 255, 0.87);
+}
+
+.error-message {
+  background-color: #ff4444;
+  color: white;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+}
+
+.back-button {
+  background-color: #1a1a1a;
+  color: rgba(255, 255, 255, 0.87);
+  border: 1px solid #333;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 2rem;
+  font-size: 1rem;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.back-button:hover {
+  background-color: #2a2a2a;
+  border-color: #646cff;
+}
+
+.result-content {
+  background-color: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 2rem;
+}
+
+.result-title {
+  margin: 0 0 2rem 0;
+  font-size: 2rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.87);
+}
+
+.evaluation-section {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.evaluation-item {
+  border-bottom: 1px solid #333;
+  padding-bottom: 1.5rem;
+}
+
+.evaluation-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.evaluation-key {
+  margin: 0 0 1rem 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.87);
+}
+
+.evaluation-value {
+  background-color: #242424;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 1.5rem;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.6;
+}
+
+.object-value-container {
+  padding: 1rem;
+}
+
+.object-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.object-content.nested {
+  margin-left: 1rem;
+  border-left: 2px solid #333;
+  padding-left: 1rem;
+}
+
+.object-entry {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.object-entry.nested-entry {
+  flex-direction: column;
+}
+
+.object-key {
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.87);
+  min-width: 150px;
+}
+
+.object-value {
+  color: rgba(255, 255, 255, 0.7);
+  flex: 1;
+}
+
+.nested-object {
+  margin-top: 0.5rem;
+  padding-left: 1rem;
+}
+
+.suggestions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.suggestion-item {
+  background-color: #2a2a2a;
+  border-left: 3px solid #646cff;
+  padding: 1rem;
+  border-radius: 4px;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.6;
+}
+
+.array-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.array-item {
+  padding: 0.5rem;
+  background-color: #2a2a2a;
+  border-radius: 4px;
+  color: rgba(255, 255, 255, 0.7);
+}
